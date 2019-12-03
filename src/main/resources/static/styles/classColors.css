@@ -1,0 +1,141 @@
+.wow-class-icon {
+	height: 80px;
+	width: 80px;
+	padding: 20px;
+	margin: 10px;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.wow-class-icon:hover {
+	border: 2px solid #000000;
+}
+
+.wow-class-icon-selected {
+	box-shadow: 0 0 20px 10px #FFFFFF !important;
+}
+
+.wow-class-icon-selected:hover {
+	border: 0px solid #000000 !important;
+}
+
+.wow-card-container {
+	color: #0B0C10 !important;
+	max-width: 16rem;
+	margin: auto;
+	border: 0px !important;
+}
+
+.wow-card {
+
+}
+
+.player-rolling {
+	box-shadow: 0 0 20px 15px #FFFFFF !important;
+}
+
+.player-in-game {
+	text-align: center;
+	position: absolute !important;
+	width: 100px;
+	height: 100px;
+	line-height: 100px;
+	margin: auto;
+	word-wrap: break-word;
+}
+
+.death-knight {
+	color: #C41F3B !important;
+}
+
+.death-knight-bg {
+	background-color: #C41F3B !important;
+}
+
+.demon-hunter {
+	color: #A330C9 !important;
+}
+
+.demon-hunter-bg {
+	background-color: #A330C9 !important;
+}
+
+.druid {
+	color: #FF7D0A !important;
+}
+
+.druid-bg {
+	background-color: #FF7D0A !important;
+}
+
+.hunter {
+	color: #ABD473 !important;
+}
+
+.hunter-bg {
+	background-color: #ABD473 !important;
+}
+
+.mage {
+	color: #40C7EB !important;
+}
+
+.mage-bg {
+	background-color: #40C7EB !important;
+}
+
+.monk {
+	color: #00FF96 !important;
+}
+
+.monk-bg {
+	background-color: #00FF96 !important;
+}
+
+.paladin {
+	color: #F58CBA !important;
+}
+
+.paladin-bg {
+	background-color: #F58CBA !important;
+}
+
+.priest {
+	color: #FFFFFF !important;
+}
+
+.priest-bg {
+	background-color: #FFFFFF !important;
+}
+
+.rogue {
+	color: #FFF569 !important;
+}
+
+.rogue-bg {
+	background-color: #FFF569 !important;
+}
+
+.shaman {
+	color: #0070DE !important;
+}
+
+.shaman-bg {
+	background-color: #0070DE !important;
+}
+
+.warlock {
+	color: #8787ED !important;
+}
+
+.warlock-bg {
+	background-color: #8787ED !important;
+}
+
+.warrior {
+	color: #C79C6E !important;
+}
+
+.warrior-bg {
+	background-color: #C79C6E !important;
+}
