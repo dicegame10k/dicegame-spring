@@ -1,27 +1,40 @@
 package com.cb.dicegame.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DiceGame {
 
 	private List<Player> players;
+	private List<Player> graveyard;
+	private Player currentlyRollingPlayer;
+	private int currentRoll;
 
-	public DiceGame() {
+	public DiceGame(Player startingPlayer, List<Player> lobby) {
+		this.players = lobby;
+		this.graveyard = new ArrayList<Player>();
+		this.currentlyRollingPlayer = startingPlayer;
+		this.currentRoll = 100;
 	}
 
-	public DiceGame(List<Player> players) {
-		this.players = players;
-	}
+	public void roll(Player p, boolean force) {
 
-	public void lightUp() {
-		// TODO: coming soon..
 	}
 
 	public List<Player> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(List<Player> players) {
-		this.players = players;
+	public List<Player> getGraveyard() {
+		return graveyard;
 	}
+
+	public Player getCurrentlyRollingPlayer() {
+		return currentlyRollingPlayer;
+	}
+
+	public int getCurrentRoll() {
+		return currentRoll;
+	}
+
 }

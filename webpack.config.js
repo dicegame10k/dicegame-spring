@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
 	entry: {
-		app: ['./src/main/js/app/dicegame.js'],
+		app: ['./src/main/js/app/dicegamecontainer.js'],
 		login: ['./src/main/js/login/login.js'],
 	},
 	devtool: 'sourcemaps',

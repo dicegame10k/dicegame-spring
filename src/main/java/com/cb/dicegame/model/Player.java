@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import java.util.Objects;
+
 @Entity
 public class Player {
 
@@ -22,7 +24,7 @@ public class Player {
 
 	public Player(String name, String password, WowClass wowClass, long dkp) {
 		this.name = name;
-		this.password = DiceGameUtil.getPasswordEncoder().encode(password);
+		this.password = encryptPassword(password);
 		this.wowClass = wowClass;
 		this.dkp = dkp;
 	}
@@ -49,7 +51,7 @@ public class Player {
 
 	// Ensures that passwords are never stored in cleartext
 	public void setPassword(String password) {
-		this.password = DiceGameUtil.getPasswordEncoder().encode(password);
+		this.password = encryptPassword(password);
 	}
 
 	public WowClass getWowClass() {
@@ -66,6 +68,24 @@ public class Player {
 
 	public void setDkp(long dkp) {
 		this.dkp = dkp;
+	}
+
+	private String encryptPassword(String cleartext) {
+		return DiceGameUtil.getPasswordEncoder().encode(cleartext);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Player player = (Player) o;
+		return id.equals(player.id) &&
+				name.equals(player.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
 	}
 
 	@Override

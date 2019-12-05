@@ -8,6 +8,8 @@ export class ForgotPassword extends React.Component {
 	constructor(props) {
 		super(props);
 		this.resetPassword = this.resetPassword.bind(this);
+		// TODO: link to icyveins?
+		this.props.setInfoMsg("Wow really? Did you forget your rotation too?");
 	}
 
 	resetPassword(event) {

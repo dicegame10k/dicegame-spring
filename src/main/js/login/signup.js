@@ -11,6 +11,7 @@ export class SignUp extends React.Component {
 		this.wowClass = null;
 		this.signUp = this.signUp.bind(this);
 		this.selectClass = this.selectClass.bind(this);
+		this.props.setInfoMsg("Password not sent securely. I'm too poor to afford an HTTPS certificate");
 	}
 
 	signUp(event) {
@@ -67,7 +68,7 @@ export class SignUp extends React.Component {
 					</p>
 					<p>
 						<label htmlFor="password" className="sr-only">Enter a password</label>
-						<input type="password" name="password" id="password" placeholder="Enter a password" className="form-control" onFocus={this.props.clearAlerts}></input>
+						<input type="password" name="password" id="password" placeholder="Enter a password" className="form-control" autoComplete="new-password" onFocus={this.props.clearAlerts}></input>
 					</p>
 					<p>
 						<label htmlFor="password" className="sr-only">Verify your password</label>
@@ -75,8 +76,8 @@ export class SignUp extends React.Component {
 					</p>
 					<div className="form-group">
 						<div>Choose a class:</div>
-						<div>
-							{wowClasses.map((wowClass, i) => {
+						<div className="dg-wowclass-container">
+							{wowClasses.map((wowClass) => {
 								return <span onClick={this.selectClass} className={`wow-class-icon rounded ${wowClass}-bg`} id={wowClass} key={wowClass}/>;
 							})}
 						</div>

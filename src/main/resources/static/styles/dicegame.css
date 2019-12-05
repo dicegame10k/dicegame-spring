@@ -19,6 +19,11 @@
 	padding-left: 0 !important;
 }
 
+.dg-wowclass-container {
+	text-align: center;
+	padding-top: 10px;
+}
+
 th {
 	text-align: center !important;
 }
@@ -40,6 +45,26 @@ th {
 .dicegame-nav-username {
 	margin-left: auto !important;
 	margin-right: 30px !important;
+}
+
+.dg-playing-field {
+	width: 100%;
+}
+
+.dg-field-header {
+	margin-top: 10px !important;
+}
+
+.dg-lobby-td {
+	width: 20%;
+}
+
+.dg-game-td {
+	width: 60%;
+}
+
+.dg-player-in-game-name {
+	font-weight: bold;
 }
 
 .lobby {
@@ -88,6 +113,19 @@ th {
 	padding: 0 20px 35px 0;
 }
 
+.dg-chat-controls {
+	flex-flow: nowrap !important;
+}
+
+.dg-chat-input {
+	width: 85% !important;
+}
+
+.dg-chat-btn {
+	margin-left: 5px;
+	color: #070708 !important;
+}
+
 .all-chat-messages {
 	height: 100px;
 	max-height: 100px;
@@ -102,11 +140,24 @@ th {
   margin: 1px 10px; 1px 10px;
 }
 
+.dg-leaderboard-container {
+	height: 650px !important;
+	overflow: auto !important;
+}
+
 .dicegame-leaderboard {
 	width: 95% !important;
 	margin: 10px auto;
 	border-top-left-radius: 25px;
 	border-top-right-radius: 25px;
+}
+
+.dg-dkp-header {
+	cursor: help;
+}
+
+.dg-leaderboard-text {
+	color: black !important;
 }
 
 .dicegame-leaderboard-cell {

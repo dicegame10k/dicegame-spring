@@ -39196,9 +39196,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -39211,16 +39211,99 @@ var Chat =
 function (_React$Component) {
   _inherits(Chat, _React$Component);
 
-  function Chat() {
+  function Chat(props) {
+    var _this;
+
     _classCallCheck(this, Chat);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Chat).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Chat).call(this, props));
+    _this.sendChat = _this.sendChat.bind(_assertThisInitialized(_this));
+    _this.toggleAutoscroll = _this.toggleAutoscroll.bind(_assertThisInitialized(_this));
+    _this.turnOnAutoscroll = _this.turnOnAutoscroll.bind(_assertThisInitialized(_this));
+    _this.turnOffAutoscroll = _this.turnOffAutoscroll.bind(_assertThisInitialized(_this));
+    _this.isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+
+    _this.turnOnAutoscroll();
+
+    return _this;
   }
 
   _createClass(Chat, [{
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.turnOffAutoscroll();
+    }
+  }, {
+    key: "toggleAutoscroll",
+    value: function toggleAutoscroll() {
+      var isChecked = document.getElementById('autoscrollCheckbox').checked;
+      if (isChecked) this.turnOnAutoscroll();else this.turnOffAutoscroll();
+    }
+  }, {
+    key: "turnOnAutoscroll",
+    value: function turnOnAutoscroll() {
+      this.chatWindowScrollIntvlId = setInterval(function () {
+        var chatBoxElem = document.getElementById('allChatMessages');
+        chatBoxElem.scrollTop = chatBoxElem.scrollHeight;
+      }, 100);
+    }
+  }, {
+    key: "turnOffAutoscroll",
+    value: function turnOffAutoscroll() {
+      clearInterval(this.chatWindowScrollIntvlId);
+    }
+  }, {
+    key: "sendChat",
+    value: function sendChat(event) {
+      event.preventDefault();
+      var data = new FormData(event.target);
+      var msg = data.get('msg');
+      if (!msg) return; // TODO: handle admin commands
+
+      this.props.socket.send('/app/chat', {}, msg);
+      document.getElementById('msg').value = '';
+    }
+  }, {
     key: "render",
     value: function render() {
-      return React.createElement("div", null, "The Chat");
+      // TODO: this doesn't really work
+      var autoScrollCheckboxMobile = !this.isMobileDevice ? '' : React.createElement("div", null, React.createElement("input", {
+        type: "checkbox",
+        id: "autoscrollCheckbox",
+        name: "autoscrollChat",
+        onChange: this.toggleAutoscroll,
+        checked: true
+      }), React.createElement("label", {
+        htmlFor: "autoscrollCheckbox"
+      }, "Autoscroll Chat"));
+      return React.createElement("div", {
+        id: "chat",
+        className: "chat"
+      }, autoScrollCheckboxMobile, React.createElement("div", {
+        id: "allChatMessages",
+        className: "all-chat-messages border border-dark rounded",
+        onMouseEnter: this.turnOffAutoscroll,
+        onMouseLeave: this.turnOnAutoscroll
+      }, this.props.chatMsgs.map(function (chat, i) {
+        return React.createElement("div", {
+          className: "message",
+          key: i
+        }, React.createElement("span", {
+          className: "".concat(chat.player.wowClass)
+        }, chat.player.name, ": "), React.createElement("span", null, chat.msg));
+      })), React.createElement("form", {
+        onSubmit: this.sendChat
+      }, React.createElement("div", {
+        className: "form-inline dg-chat-controls"
+      }, React.createElement("input", {
+        id: "msg",
+        name: "msg",
+        className: "form-control dg-chat-input",
+        autoComplete: "off"
+      }), React.createElement("button", {
+        type: "submit",
+        className: "form-control btn dg-chat-btn ".concat(this.props.player.wowClass, "-bg")
+      }, "Send"))));
     }
   }]);
 
@@ -39233,17 +39316,12 @@ function (_React$Component) {
 /*!*************************************!*\
   !*** ./src/main/js/app/dicegame.js ***!
   \*************************************/
-/*! no exports provided */
+/*! exports provided: DiceGame */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _lobby_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lobby.js */ "./src/main/js/app/lobby.js");
-/* harmony import */ var _graveyard_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./graveyard.js */ "./src/main/js/app/graveyard.js");
-/* harmony import */ var _leaderboard_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./leaderboard.js */ "./src/main/js/app/leaderboard.js");
-/* harmony import */ var _chat_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./chat.js */ "./src/main/js/app/chat.js");
-
-
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DiceGame", function() { return DiceGame; });
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39254,26 +39332,15 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-
-
-
-
-
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-
-var SockJS = __webpack_require__(/*! sockjs-client */ "./node_modules/sockjs-client/lib/entry.js");
-
-__webpack_require__(/*! stompjs */ "./node_modules/stompjs/lib/stomp.js");
 
 var DiceGame =
 /*#__PURE__*/
@@ -39281,94 +39348,135 @@ function (_React$Component) {
   _inherits(DiceGame, _React$Component);
 
   function DiceGame(props) {
-    var _this;
-
     _classCallCheck(this, DiceGame);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(DiceGame).call(this, props));
-    _this.state = {
-      leaderboardEntries: []
-    };
-    _this.updateGameState = _this.updateGameState.bind(_assertThisInitialized(_this));
-    return _this;
+    return _possibleConstructorReturn(this, _getPrototypeOf(DiceGame).call(this, props));
   }
 
   _createClass(DiceGame, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      var sjs = SockJS('/10k'); // url endpoint that initiates the socket
-
-      this.socket = Stomp.over(sjs); // the stompClient web socket
-
-      this.socket.connect({}, function () {
-        // this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
-        _this2.gameStateRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
-
-        _this2.socket.send('/app/lightUp', {}, "the lightUp Body");
-      }, function (e) {
-        console.error("Failed to connect to server", e);
-      });
-    }
-  }, {
-    key: "updateGameState",
-    value: function updateGameState(message) {
-      debugger; //<Leaderboard leaderboardEntries={this.state.leaderboardEntries}/>
-    }
-  }, {
     key: "render",
     value: function render() {
-      return React.createElement("div", null, React.createElement(_lobby_js__WEBPACK_IMPORTED_MODULE_0__["Lobby"], null), React.createElement(_graveyard_js__WEBPACK_IMPORTED_MODULE_1__["Graveyard"], null), React.createElement(_chat_js__WEBPACK_IMPORTED_MODULE_3__["Chat"], null));
+      return React.createElement("div", null, React.createElement("table", {
+        className: "dg-playing-field"
+      }, React.createElement("tr", null, React.createElement("th", null, React.createElement("h3", {
+        className: "dg-field-header"
+      }, "Lobby")), React.createElement("th", null), React.createElement("th", null, React.createElement("h3", {
+        className: "dg-field-header"
+      }, "Graveyard"))), React.createElement("tr", null, React.createElement(Lobby, {
+        lobby: this.props.lobby
+      }), React.createElement(Game, {
+        gameState: this.props.gameState,
+        player: this.props.player,
+        lightUp: this.props.lightUp,
+        roll: this.props.roll
+      }), React.createElement(Graveyard, {
+        graveyard: this.props.gameState.graveyard
+      }))));
     }
   }]);
 
   return DiceGame;
 }(React.Component);
 
-ReactDOM.render(React.createElement(DiceGame, null), document.getElementById('react'));
+var Game =
+/*#__PURE__*/
+function (_React$Component2) {
+  _inherits(Game, _React$Component2);
 
-/***/ }),
+  function Game(props) {
+    _classCallCheck(this, Game);
 
-/***/ "./src/main/js/app/graveyard.js":
-/*!**************************************!*\
-  !*** ./src/main/js/app/graveyard.js ***!
-  \**************************************/
-/*! exports provided: Graveyard */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+    return _possibleConstructorReturn(this, _getPrototypeOf(Game).call(this, props));
+  }
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Graveyard", function() { return Graveyard; });
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+  _createClass(Game, [{
+    key: "render",
+    value: function render() {
+      var myself = this.props.player;
+      var gameInProgress = this.props.gameState.gameInProgress;
+      var dgPlayers = this.props.gameState.dgPlayers;
+      var currentlyRollingPlayer = this.props.gameState.currentlyRollingPlayer;
+      var currentRoll = this.props.gameState.currentRoll;
+      var lightUpBtn = gameInProgress ? '' : React.createElement("button", {
+        onClick: this.props.lightUp,
+        className: "btn btn-danger light-up-btn"
+      }, "Light Up");
+      var rollBtn = currentlyRollingPlayer.name !== myself.name ? '' : React.createElement("button", {
+        onClick: this.props.roll,
+        id: "rollButton",
+        className: "btn roll-btn ".concat(myself.wowClass, "-bg")
+      }, "Roll");
+      var fireGif = !gameInProgress ? '' : React.createElement("img", {
+        id: "fire",
+        className: "fire",
+        src: "/resources/static/images/fire.gif"
+      });
+      var dgPlayerCards = !gameInProgress ? '' : dgPlayers.map(function (player, i) {
+        return React.createElement("div", {
+          key: i,
+          id: "".concat(player.name),
+          className: "wow-card-container text-center player-in-game rounded ".concat(player.wowClass, "-bg")
+        }, React.createElement("span", {
+          className: "dg-player-in-game-name"
+        }, player.name));
+      });
+      var currRollElem = !gameInProgress ? '' : React.createElement("div", {
+        id: "currRoll",
+        className: "currentRoll"
+      }, currentRoll);
+      return React.createElement("td", {
+        className: "dg-game-td"
+      }, lightUpBtn, fireGif, dgPlayerCards, currRollElem, rollBtn);
+    }
+  }]);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  return Game;
+}(React.Component);
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+var Lobby =
+/*#__PURE__*/
+function (_React$Component3) {
+  _inherits(Lobby, _React$Component3);
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+  function Lobby(props) {
+    _classCallCheck(this, Lobby);
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+    return _possibleConstructorReturn(this, _getPrototypeOf(Lobby).call(this, props));
+  }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+  _createClass(Lobby, [{
+    key: "render",
+    value: function render() {
+      return React.createElement("td", {
+        className: "dg-lobby-td"
+      }, React.createElement("div", {
+        id: "lobby",
+        className: "lobby"
+      }, this.props.lobby.map(function (player, i) {
+        return React.createElement("div", {
+          key: i,
+          className: "card wow-card-container text-center mb-3"
+        }, React.createElement("div", {
+          className: "card-body wow-card rounded ".concat(player.wowClass, "-bg")
+        }, React.createElement("h5", {
+          className: "card-text"
+        }, player.name)));
+      })));
+    }
+  }]);
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+  return Lobby;
+}(React.Component);
 
 var Graveyard =
 /*#__PURE__*/
-function (_React$Component) {
-  _inherits(Graveyard, _React$Component);
+function (_React$Component4) {
+  _inherits(Graveyard, _React$Component4);
 
-  function Graveyard() {
+  function Graveyard(props) {
     _classCallCheck(this, Graveyard);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Graveyard).apply(this, arguments));
+    return _possibleConstructorReturn(this, _getPrototypeOf(Graveyard).call(this, props));
   }
 
   _createClass(Graveyard, [{
@@ -39383,6 +39491,257 @@ function (_React$Component) {
 
 /***/ }),
 
+/***/ "./src/main/js/app/dicegamecontainer.js":
+/*!**********************************************!*\
+  !*** ./src/main/js/app/dicegamecontainer.js ***!
+  \**********************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./nav.js */ "./src/main/js/app/nav.js");
+/* harmony import */ var _dicegame_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dicegame.js */ "./src/main/js/app/dicegame.js");
+/* harmony import */ var _leaderboard_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./leaderboard.js */ "./src/main/js/app/leaderboard.js");
+/* harmony import */ var _chat_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./chat.js */ "./src/main/js/app/chat.js");
+/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
+
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+
+
+var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+
+var SockJS = __webpack_require__(/*! sockjs-client */ "./node_modules/sockjs-client/lib/entry.js");
+
+__webpack_require__(/*! stompjs */ "./node_modules/stompjs/lib/stomp.js");
+
+var DiceGameContainer =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(DiceGameContainer, _React$Component);
+
+  function DiceGameContainer(props) {
+    var _this;
+
+    _classCallCheck(this, DiceGameContainer);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(DiceGameContainer).call(this, props));
+    _this.state = {
+      player: {},
+      page: 'dicegame',
+      chatMsgs: [],
+      lobby: [],
+      gameState: {
+        gameInProgress: false,
+        dgPlayers: [],
+        graveyard: [],
+        currentlyRollingPlayer: 'some_bottom_deeps_scrub_pug',
+        currentRoll: 100
+      }
+    };
+    _this.receiveChat = _this.receiveChat.bind(_assertThisInitialized(_this));
+    _this.updateLobby = _this.updateLobby.bind(_assertThisInitialized(_this));
+    _this.updateGameState = _this.updateGameState.bind(_assertThisInitialized(_this));
+    _this.switchPage = _this.switchPage.bind(_assertThisInitialized(_this));
+    _this.lightUp = _this.lightUp.bind(_assertThisInitialized(_this));
+    _this.roll = _this.roll.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(DiceGameContainer, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var sjs = SockJS('/10k'); // url endpoint that initiates the socket
+
+      this.socket = Stomp.over(sjs); // the stompClient web socket
+
+      this.socket.connect({}, function () {
+        // this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
+        _this2.lobbyRegistration = _this2.socket.subscribe('/topic/lobby', _this2.updateLobby);
+        _this2.gameStateRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
+        _this2.chatRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat); // registrations done, now try to enter the lobby
+
+        fetch('/enterLobby').then(function (response) {
+          return response.text();
+        }).then(function (playerInfo) {
+          try {
+            playerInfo = JSON.parse(playerInfo);
+            playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__["wowClassFromEnum"])(playerInfo.wowClass);
+          } catch (e) {
+            alert("Session expired. Redirecting to login");
+            console.error("Error with /loadPlayer endpoint", e);
+            window.location.href = '/logout';
+          } // TODO: the spaces are getting stripped out
+          //				let chatMsgs = this.state.chatMsgs;
+          //				for (let i = 0; i < dicegameAscii.length; i += 1) {
+          //					let chatMsg = {};
+          //					 TODO: do i need to clone playerInfo?
+          //					chatMsg.player = playerInfo;
+          //					chatMsg.msg = dicegameAscii[i];
+          //					chatMsgs.push(chatMsg);
+          //				}
+
+
+          _this2.setState({
+            player: playerInfo
+          });
+        });
+      }, function (e) {
+        console.error("Failed to setup connections to server", e);
+      });
+    }
+  }, {
+    key: "lightUp",
+    value: function lightUp() {
+      this.socket.send('/app/lightUp');
+    }
+  }, {
+    key: "roll",
+    value: function roll() {
+      this.socket.send('/app/roll');
+    } // Receives response from /app/chat
+
+  }, {
+    key: "receiveChat",
+    value: function receiveChat(response) {
+      var chatMsg;
+
+      try {
+        chatMsg = JSON.parse(response.body);
+        chatMsg.player.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__["wowClassFromEnum"])(chatMsg.player.wowClass);
+      } catch (e) {
+        console.error("Failed to parse chat message", e);
+        return;
+      }
+
+      var msgs = this.state.chatMsgs;
+      msgs.push(chatMsg);
+      this.setState({
+        chatMsgs: msgs
+      });
+    }
+  }, {
+    key: "updateLobby",
+    value: function updateLobby(lobbyResponse) {
+      try {
+        var lobby = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__["normalizeWowClasses"])(JSON.parse(lobbyResponse.body));
+        this.setState({
+          lobby: lobby
+        });
+      } catch (e) {
+        alert("Failed to enter the lobby. Contact failbeats dev");
+        console.error("Failed to enter the lobby", e);
+      }
+    }
+  }, {
+    key: "updateGameState",
+    value: function updateGameState(gameStateResponse) {
+      try {
+        var gameState = JSON.parse(gameStateResponse.body);
+        Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__["normalizeWowClasses"])(gameState.dgPlayers);
+        this.setState({
+          gameState: gameState
+        });
+      } catch (e) {
+        alert("Failed to parse game state. Contact failbeats dev");
+        console.error("Failed to parse game state", e);
+      }
+    }
+  }, {
+    key: "switchPage",
+    value: function switchPage(page) {
+      this.setState({
+        page: page
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var page = React.createElement(_dicegame_js__WEBPACK_IMPORTED_MODULE_1__["DiceGame"], {
+        player: this.state.player,
+        socket: this.socket,
+        lobby: this.state.lobby,
+        gameState: this.state.gameState,
+        lightUp: this.lightUp,
+        roll: this.roll
+      });
+      if (this.state.page === 'leaderboard') page = React.createElement(_leaderboard_js__WEBPACK_IMPORTED_MODULE_2__["Leaderboard"], {
+        player: this.state.player
+      });
+      return React.createElement("div", null, React.createElement(_nav_js__WEBPACK_IMPORTED_MODULE_0__["DiceGameNav"], {
+        player: this.state.player,
+        socket: this.socket,
+        switchPage: this.switchPage
+      }), page, React.createElement(_chat_js__WEBPACK_IMPORTED_MODULE_3__["Chat"], {
+        player: this.state.player,
+        socket: this.socket,
+        chatMsgs: this.state.chatMsgs
+      }));
+    }
+  }]);
+
+  return DiceGameContainer;
+}(React.Component);
+
+ReactDOM.render(React.createElement(DiceGameContainer, null), document.getElementById('react'));
+
+/***/ }),
+
+/***/ "./src/main/js/app/dicegameutil.js":
+/*!*****************************************!*\
+  !*** ./src/main/js/app/dicegameutil.js ***!
+  \*****************************************/
+/*! exports provided: wowClassFromEnum, normalizeWowClasses, dicegameAscii */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wowClassFromEnum", function() { return wowClassFromEnum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeWowClasses", function() { return normalizeWowClasses; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dicegameAscii", function() { return dicegameAscii; });
+function wowClassFromEnum(enumStr) {
+  return enumStr.toLowerCase().replace('_', '-');
+}
+function normalizeWowClasses(listOfPlayers) {
+  for (var i = 0; i < listOfPlayers.length; i += 1) {
+    var player = listOfPlayers[i];
+    player.wowClass = wowClassFromEnum(player.wowClass);
+  }
+
+  return listOfPlayers;
+}
+var dicegameAscii = ["    ____  _           ______                   ", "   / __ \\(_)_______  / ____/___ _____ ___  ___ ", "  / / / / / ___/ _ \\/ / __/ __ `/ __ `__ \\/ _ \\", " / /_/ / / /__/  __/ /_/ / /_/ / / / / / /  __/", "/_____/_/\\___/\\___/\\____/\\__,_/_/ /_/ /_/\\___/"];
+
+/***/ }),
+
 /***/ "./src/main/js/app/leaderboard.js":
 /*!****************************************!*\
   !*** ./src/main/js/app/leaderboard.js ***!
@@ -39393,6 +39752,7 @@ function (_React$Component) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Leaderboard", function() { return Leaderboard; });
+/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39410,6 +39770,9 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
 
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
@@ -39418,60 +39781,86 @@ var Leaderboard =
 function (_React$Component) {
   _inherits(Leaderboard, _React$Component);
 
-  function Leaderboard() {
+  function Leaderboard(props) {
+    var _this;
+
     _classCallCheck(this, Leaderboard);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Leaderboard).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Leaderboard).call(this, props));
+    _this.state = {
+      players: []
+    };
+    return _this;
   }
 
   _createClass(Leaderboard, [{
-    key: "render",
-    value: function render() {
-      var entries = this.props.leaderboardEntries.map(function (entry) {
-        return React.createElement(LeaderboardEntry, {
-          entry: entry
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      fetch('/leaderboard').then(function (response) {
+        return response.text();
+      }).then(function (players) {
+        try {
+          players = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_0__["normalizeWowClasses"])(JSON.parse(players));
+        } catch (e) {
+          players = [];
+          alert("Failed to load leaderboard");
+          console.error("Failed to load leaderboard", e);
+        }
+
+        _this2.setState({
+          players: players
         });
       });
-      return React.createElement("table", null, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, "Name"))), React.createElement("tbody", null, entries));
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      //TODO: table hover doesn't work
+      //TODO: needs a max height/scrollbar
+      return React.createElement("div", {
+        className: "dg-leaderboard-container"
+      }, React.createElement("table", {
+        className: "dicegame-leaderboard table table-striped table-dark table-bordered table-hover table-sm"
+      }, React.createElement("thead", null, React.createElement("th", {
+        className: "dicegame-leaderboard-header"
+      }, "Username"), React.createElement("th", {
+        className: "dicegame-leaderboard-header"
+      }, React.createElement("div", {
+        className: "dg-dkp-header",
+        "data-toggle": "tooltip",
+        title: "DiceGame Kill Points: You get 1 DKP for each person you beat in a game"
+      }, "DKP"))), React.createElement("tbody", {
+        id: "leaderboardBody"
+      }, this.state.players.map(function (player, i) {
+        return React.createElement("tr", {
+          key: i,
+          className: "".concat(player.wowClass, "-bg dg-leaderboard-text")
+        }, React.createElement("td", {
+          className: "dicegame-leaderboard-cell"
+        }, player.name), React.createElement("td", {
+          className: "dicegame-leaderboard-cell"
+        }, player.dkp));
+      }))));
     }
   }]);
 
   return Leaderboard;
 }(React.Component);
 
-var LeaderboardEntry =
-/*#__PURE__*/
-function (_React$Component2) {
-  _inherits(LeaderboardEntry, _React$Component2);
-
-  function LeaderboardEntry() {
-    _classCallCheck(this, LeaderboardEntry);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(LeaderboardEntry).apply(this, arguments));
-  }
-
-  _createClass(LeaderboardEntry, [{
-    key: "render",
-    value: function render() {
-      return React.createElement("tr", null, React.createElement("td", null, this.props.entry.name));
-    }
-  }]);
-
-  return LeaderboardEntry;
-}(React.Component);
-
 /***/ }),
 
-/***/ "./src/main/js/app/lobby.js":
-/*!**********************************!*\
-  !*** ./src/main/js/app/lobby.js ***!
-  \**********************************/
-/*! exports provided: Lobby */
+/***/ "./src/main/js/app/nav.js":
+/*!********************************!*\
+  !*** ./src/main/js/app/nav.js ***!
+  \********************************/
+/*! exports provided: DiceGameNav */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Lobby", function() { return Lobby; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DiceGameNav", function() { return DiceGameNav; });
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39482,9 +39871,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -39492,37 +39881,85 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
-var Lobby =
+var DiceGameNav =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(Lobby, _React$Component);
+  _inherits(DiceGameNav, _React$Component);
 
-  function Lobby() {
-    _classCallCheck(this, Lobby);
+  function DiceGameNav(props) {
+    var _this;
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Lobby).apply(this, arguments));
+    _classCallCheck(this, DiceGameNav);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(DiceGameNav).call(this, props));
+    _this.addNavItemHoverClass = _this.addNavItemHoverClass.bind(_assertThisInitialized(_this));
+    _this.removeNavItemHoverClass = _this.removeNavItemHoverClass.bind(_assertThisInitialized(_this));
+    _this.showDiceGame = _this.showDiceGame.bind(_assertThisInitialized(_this));
+    _this.showLeaderboard = _this.showLeaderboard.bind(_assertThisInitialized(_this));
+    _this.toggleProfileEdit = _this.toggleProfileEdit.bind(_assertThisInitialized(_this));
+    return _this;
   }
 
-  _createClass(Lobby, [{
+  _createClass(DiceGameNav, [{
+    key: "addNavItemHoverClass",
+    value: function addNavItemHoverClass(event) {
+      event.target.classList.add(this.props.player.wowClass);
+    }
+  }, {
+    key: "removeNavItemHoverClass",
+    value: function removeNavItemHoverClass(event) {
+      event.target.classList.remove(this.props.player.wowClass);
+    }
+  }, {
+    key: "showDiceGame",
+    value: function showDiceGame() {
+      this.props.switchPage('dicegame');
+    }
+  }, {
+    key: "showLeaderboard",
+    value: function showLeaderboard() {
+      this.props.switchPage('leaderboard');
+    }
+  }, {
+    key: "toggleProfileEdit",
+    value: function toggleProfileEdit() {}
+  }, {
     key: "render",
     value: function render() {
-      return React.createElement("div", null, "The Lobby");
+      return React.createElement("nav", {
+        className: "dicegame-nav"
+      }, React.createElement("div", {
+        className: "dicegame-nav-item",
+        onMouseEnter: this.addNavItemHoverClass,
+        onMouseLeave: this.removeNavItemHoverClass,
+        onClick: this.showDiceGame
+      }, "DiceGame"), React.createElement("div", {
+        className: "dicegame-nav-item",
+        onMouseEnter: this.addNavItemHoverClass,
+        onMouseLeave: this.removeNavItemHoverClass,
+        onClick: this.showLeaderboard,
+        "data-toggle": "tooltip",
+        title: "Deeps meter"
+      }, "Recount"), React.createElement("div", {
+        className: "dicegame-nav-item dicegame-nav-username ".concat(this.props.player.wowClass),
+        onClick: this.toggleProfileEdit
+      }, this.props.player.name));
     }
   }]);
 
-  return Lobby;
+  return DiceGameNav;
 }(React.Component);
 
 /***/ }),
 
 /***/ 0:
-/*!*******************************************!*\
-  !*** multi ./src/main/js/app/dicegame.js ***!
-  \*******************************************/
+/*!****************************************************!*\
+  !*** multi ./src/main/js/app/dicegamecontainer.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ./src/main/js/app/dicegame.js */"./src/main/js/app/dicegame.js");
+module.exports = __webpack_require__(/*! ./src/main/js/app/dicegamecontainer.js */"./src/main/js/app/dicegamecontainer.js");
 
 
 /***/ })

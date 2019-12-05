@@ -32006,7 +32006,10 @@ function (_React$Component) {
     _classCallCheck(this, ForgotPassword);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ForgotPassword).call(this, props));
-    _this.resetPassword = _this.resetPassword.bind(_assertThisInitialized(_this));
+    _this.resetPassword = _this.resetPassword.bind(_assertThisInitialized(_this)); // TODO: link to icyveins?
+
+    _this.props.setInfoMsg("Wow really? Did you forget your rotation too?");
+
     return _this;
   }
 
@@ -32451,6 +32454,9 @@ function (_React$Component) {
     _this.wowClass = null;
     _this.signUp = _this.signUp.bind(_assertThisInitialized(_this));
     _this.selectClass = _this.selectClass.bind(_assertThisInitialized(_this));
+
+    _this.props.setInfoMsg("Password not sent securely. I'm too poor to afford an HTTPS certificate");
+
     return _this;
   }
 
@@ -32531,6 +32537,7 @@ function (_React$Component) {
         id: "password",
         placeholder: "Enter a password",
         className: "form-control",
+        autoComplete: "new-password",
         onFocus: this.props.clearAlerts
       })), React.createElement("p", null, React.createElement("label", {
         htmlFor: "password",
@@ -32544,7 +32551,9 @@ function (_React$Component) {
         onFocus: this.props.clearAlerts
       })), React.createElement("div", {
         className: "form-group"
-      }, React.createElement("div", null, "Choose a class:"), React.createElement("div", null, _loginutil_js__WEBPACK_IMPORTED_MODULE_0__["wowClasses"].map(function (wowClass, i) {
+      }, React.createElement("div", null, "Choose a class:"), React.createElement("div", {
+        className: "dg-wowclass-container"
+      }, _loginutil_js__WEBPACK_IMPORTED_MODULE_0__["wowClasses"].map(function (wowClass) {
         return React.createElement("span", {
           onClick: _this3.selectClass,
           className: "wow-class-icon rounded ".concat(wowClass, "-bg"),
