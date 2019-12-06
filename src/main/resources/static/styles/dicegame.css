@@ -59,18 +59,23 @@ th {
 	width: 20%;
 }
 
-.dg-game-td {
-	width: 60%;
-}
-
-.dg-player-in-game-name {
-	font-weight: bold;
+.dg-graveyard-td {
+	width: 20%;
+	vertical-align: top;
 }
 
 .lobby {
 	height: 650px;
 	overflow: auto;
 	padding: 0 15px 0 15px;
+}
+
+.dg-game-td {
+	width: 60%;
+}
+
+.dg-player-in-game-name {
+	font-weight: bold;
 }
 
 .light-up-btn {

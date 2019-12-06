@@ -87,11 +87,7 @@ class Lobby extends React.Component {
 			<td className="dg-lobby-td">
 				<div id="lobby" className="lobby">
 					{this.props.lobby.map((player, i) => {
-						return <div key={i} className="card wow-card-container text-center mb-3">
-							<div className={`card-body wow-card rounded ${player.wowClass}-bg`}>
-								<h5 className="card-text">{player.name}</h5>
-							</div>
-						</div>
+						return <Card key={i} player={player}/>;
 					})}
 				</div>
 			</td>
@@ -107,7 +103,33 @@ class Graveyard extends React.Component {
 
 	render() {
 		return (
-			<div>The Graveyard</div>
+			<td className="dg-graveyard-td">
+				<div id="graveyard" className="graveyard">
+					{this.props.graveyard.map((player, i) => {
+						return <Card key={i} player={player}/>;
+					})}
+				</div>
+			</td>
+		)
+	}
+}
+
+// lobby and graveyard cards
+class Card extends React.Component {
+
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		let player = this.props.player;
+		let i = this.props.key;
+		return (
+			<div key={i} className="card wow-card-container text-center mb-3">
+				<div className={`card-body wow-card rounded ${player.wowClass}-bg`}>
+					<h5 className="card-text">{player.name}</h5>
+				</div>
+			</div>
 		)
 	}
 }

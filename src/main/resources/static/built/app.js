@@ -39460,14 +39460,10 @@ function (_React$Component3) {
         id: "lobby",
         className: "lobby"
       }, this.props.lobby.map(function (player, i) {
-        return React.createElement("div", {
+        return React.createElement(Card, {
           key: i,
-          className: "card wow-card-container text-center mb-3"
-        }, React.createElement("div", {
-          className: "card-body wow-card rounded ".concat(player.wowClass, "-bg")
-        }, React.createElement("h5", {
-          className: "card-text"
-        }, player.name)));
+          player: player
+        });
       })));
     }
   }]);
@@ -39489,17 +39485,58 @@ function (_React$Component4) {
   _createClass(Graveyard, [{
     key: "render",
     value: function render() {
-      return React.createElement("div", null, "The Graveyard");
+      return React.createElement("td", {
+        className: "dg-graveyard-td"
+      }, React.createElement("div", {
+        id: "graveyard",
+        className: "graveyard"
+      }, this.props.graveyard.map(function (player, i) {
+        return React.createElement(Card, {
+          key: i,
+          player: player
+        });
+      })));
     }
   }]);
 
   return Graveyard;
+}(React.Component); // lobby and graveyard cards
+
+
+var Card =
+/*#__PURE__*/
+function (_React$Component5) {
+  _inherits(Card, _React$Component5);
+
+  function Card(props) {
+    _classCallCheck(this, Card);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Card).call(this, props));
+  }
+
+  _createClass(Card, [{
+    key: "render",
+    value: function render() {
+      var player = this.props.player;
+      var i = this.props.key;
+      return React.createElement("div", {
+        key: i,
+        className: "card wow-card-container text-center mb-3"
+      }, React.createElement("div", {
+        className: "card-body wow-card rounded ".concat(player.wowClass, "-bg")
+      }, React.createElement("h5", {
+        className: "card-text"
+      }, player.name)));
+    }
+  }]);
+
+  return Card;
 }(React.Component);
 
 var Footer =
 /*#__PURE__*/
-function (_React$Component5) {
-  _inherits(Footer, _React$Component5);
+function (_React$Component6) {
+  _inherits(Footer, _React$Component6);
 
   function Footer() {
     _classCallCheck(this, Footer);
