@@ -171,7 +171,8 @@ th {
 .dg-lb-row {
 	position: absolute !important;
 	width: 100% !important;
-	height: 100% !important
+	height: 100% !important;
+	top: .25rem;
 }
 
 .dg-lb-cell-left {
