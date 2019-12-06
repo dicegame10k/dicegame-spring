@@ -48,8 +48,9 @@ class Game extends React.Component {
 		let lightUpBtn = gameInProgress ? '' :
 			<button onClick={this.props.lightUp} className="btn btn-danger light-up-btn">Light Up</button>;
 
-		let rollBtn = currentlyRollingPlayer.name !== myself.name ? '' :
-			<button onClick={this.props.roll} id="rollButton" className={`btn roll-btn ${myself.wowClass}-bg`}>Roll</button>;
+		let rollBtn = '';
+		if (currentlyRollingPlayer && currentlyRollingPlayer.name === myself.name)
+			rollBtn = <button onClick={this.props.roll} id="rollButton" className={`btn roll-btn ${myself.wowClass}-bg`}>Roll</button>;
 
 		let fireGif = !gameInProgress ? '' : <img id="fire" className="fire" src="/images/fire.gif"/>;
 
@@ -123,9 +124,8 @@ class Card extends React.Component {
 
 	render() {
 		let player = this.props.player;
-		let i = this.props.key;
 		return (
-			<div key={i} className="card wow-card-container text-center mb-3">
+			<div className="card wow-card-container text-center mb-3">
 				<div className={`card-body wow-card rounded ${player.wowClass}-bg`}>
 					<h5 className="card-text">{player.name}</h5>
 				</div>

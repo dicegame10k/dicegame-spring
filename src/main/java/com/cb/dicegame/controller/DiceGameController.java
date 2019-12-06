@@ -1,15 +1,15 @@
 package com.cb.dicegame.controller;
 
-import com.cb.dicegame.model.ChatMessage;
 import com.cb.dicegame.model.Player;
 import com.cb.dicegame.model.PlayerRepository;
 import com.cb.dicegame.model.WowClass;
 import com.cb.dicegame.service.DiceGameService;
+import com.cb.dicegame.util.DiceGameUtil;
 import com.cb.dicegame.util.Log;
+import com.cb.dicegame.util.SocketUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +24,14 @@ public class DiceGameController {
 
 	private DiceGameService diceGameService;
 	private PlayerRepository playerRepository;
+	private SocketUtil socketUtil;
 
 	@Autowired
-	public DiceGameController(DiceGameService diceGameService, PlayerRepository playerRepository) {
+	public DiceGameController(DiceGameService diceGameService,
+			PlayerRepository playerRepository, SocketUtil socketUtil) {
 		this.diceGameService = diceGameService;
 		this.playerRepository = playerRepository;
+		this.socketUtil = socketUtil;
 	}
 
 	@RequestMapping(value="/")
@@ -36,6 +39,7 @@ public class DiceGameController {
 		return "index"; // alias for src/main/resources/templates/ + x + .html
 	}
 
+	// the post mapping for the /login action is automatically handled by spring
 	@GetMapping(value="/login")
 	public String login() {
 		return "login"; // alias for src/main/resources/templates/ + x + .html
@@ -81,8 +85,8 @@ public class DiceGameController {
 
 	@GetMapping("/enterLobby")
 	@ResponseBody
-	public Player enterLobby(Principal principal) {
-		Player p = getPlayer(principal);
+	public Player enterLobby() {
+		Player p = getPlayer();
 		diceGameService.enterLobby(p);
 		return p;
 	}
@@ -99,14 +103,15 @@ public class DiceGameController {
 	 * Handles socket message sent to /app/chat
 	 */
 	@MessageMapping("/chat")
-	@SendTo("/topic/chat")
-	public ChatMessage chat(Principal principal, @RequestBody String msg) {
+	public void chat(Principal principal, @RequestBody String msg) {
 		Player p = getPlayer(principal);
-		return new ChatMessage(p, msg);
+		socketUtil.broadcastChat(p, msg);
 	}
 
 	/**
-	 * Handles socket message sent to /app/lightUp
+	 * Handles socket message sent to /app/lightUp.
+	 * Needs a principal because SecurityContextHolder.getContext().getAuthentication()
+	 * is null for some reason.
 	 */
 	@MessageMapping("/lightUp")
 	public void lightUp(Principal principal) {
@@ -126,8 +131,20 @@ public class DiceGameController {
 		diceGameService.roll(p, true);
 	}
 
-	private Player getPlayer(Principal principal) {
-		String username = principal.getName();
+	/**
+	 * This should be called from socket handler endpoints (the @MessageMapping methods)
+	 * Because SecurityContextHolder.getContext().getAuthentication() is null
+	 */
+	private Player getPlayer(Principal p) {
+		String username = DiceGameUtil.getPlayerName(p);
+		return playerRepository.findByName(username);
+	}
+
+	/**
+	 * This can be called from @GetMapping methods (because there is a security context)
+	 */
+	private Player getPlayer() {
+		String username = DiceGameUtil.getPlayerName();
 		return playerRepository.findByName(username);
 	}
 

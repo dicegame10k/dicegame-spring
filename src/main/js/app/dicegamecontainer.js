@@ -46,9 +46,13 @@ class DiceGameContainer extends React.Component {
         this.socket = Stomp.over(sjs); // the stompClient web socket
         this.socket.connect({}, () => {
         	// this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
-        	this.lobbyRegistration = this.socket.subscribe('/topic/lobby', this.updateLobby);
-        	this.gameStateRegistration = this.socket.subscribe('/topic/gameState', this.updateGameState);
-        	this.chatRegistration = this.socket.subscribe('/topic/chat', this.receiveChat);
+        	// topic is for broadcasted messages, user/queue is for individual messages
+        	this.lobbyTopicRegistration = this.socket.subscribe('/topic/lobby', this.updateLobby);
+        	this.lobbyQueueRegistration = this.socket.subscribe('/user/queue/lobby', this.updateLobby);
+        	this.gameStateTopicRegistration = this.socket.subscribe('/topic/gameState', this.updateGameState);
+        	this.gameStateQueueRegistration = this.socket.subscribe('/user/queue/gameState', this.updateGameState);
+        	this.chatTopicRegistration = this.socket.subscribe('/topic/chat', this.receiveChat);
+        	this.chatQueueRegistration = this.socket.subscribe('/user/queue/chat', this.receiveChat);
         	// setup the heartbeat
         	setInterval(this.heartbeat.bind(this), 30 * 1000);
 

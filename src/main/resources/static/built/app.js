@@ -39285,12 +39285,10 @@ function (_React$Component) {
         onMouseEnter: this.turnOffAutoscroll,
         onMouseLeave: this.turnOnAutoscroll
       }, this.props.chatMsgs.map(function (chat, i) {
-        return React.createElement("div", {
-          className: "message",
-          key: i
-        }, React.createElement("span", {
-          className: "".concat(chat.player.wowClass)
-        }, chat.player.name, ": "), React.createElement("span", null, chat.msg));
+        return React.createElement(ChatMessage, {
+          key: i,
+          chat: chat
+        });
       })), React.createElement("form", {
         onSubmit: this.sendChat
       }, React.createElement("div", {
@@ -39308,6 +39306,36 @@ function (_React$Component) {
   }]);
 
   return Chat;
+}(React.Component);
+
+var ChatMessage =
+/*#__PURE__*/
+function (_React$Component2) {
+  _inherits(ChatMessage, _React$Component2);
+
+  function ChatMessage(props) {
+    _classCallCheck(this, ChatMessage);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(ChatMessage).call(this, props));
+  }
+
+  _createClass(ChatMessage, [{
+    key: "render",
+    value: function render() {
+      var msg = this.props.chat.msg;
+      var wowClass = this.props.chat.player.wowClass;
+      var name = this.props.chat.player.name;
+      var prfx = "";
+      if (name !== 'system') prfx = name + ": ";
+      return React.createElement("div", {
+        className: "message"
+      }, React.createElement("span", {
+        className: "".concat(wowClass)
+      }, prfx), React.createElement("span", null, msg));
+    }
+  }]);
+
+  return ChatMessage;
 }(React.Component);
 
 /***/ }),
@@ -39408,7 +39436,8 @@ function (_React$Component2) {
         onClick: this.props.lightUp,
         className: "btn btn-danger light-up-btn"
       }, "Light Up");
-      var rollBtn = currentlyRollingPlayer.name !== myself.name ? '' : React.createElement("button", {
+      var rollBtn = '';
+      if (currentlyRollingPlayer && currentlyRollingPlayer.name === myself.name) rollBtn = React.createElement("button", {
         onClick: this.props.roll,
         id: "rollButton",
         className: "btn roll-btn ".concat(myself.wowClass, "-bg")
@@ -39518,9 +39547,7 @@ function (_React$Component5) {
     key: "render",
     value: function render() {
       var player = this.props.player;
-      var i = this.props.key;
       return React.createElement("div", {
-        key: i,
         className: "card wow-card-container text-center mb-3"
       }, React.createElement("div", {
         className: "card-body wow-card rounded ".concat(player.wowClass, "-bg")
@@ -39654,9 +39681,13 @@ function (_React$Component) {
 
       this.socket.connect({}, function () {
         // this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
-        _this2.lobbyRegistration = _this2.socket.subscribe('/topic/lobby', _this2.updateLobby);
-        _this2.gameStateRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
-        _this2.chatRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat); // setup the heartbeat
+        // topic is for broadcasted messages, queue is for individual messages
+        _this2.lobbyTopicRegistration = _this2.socket.subscribe('/topic/lobby', _this2.updateLobby);
+        _this2.lobbyQueueRegistration = _this2.socket.subscribe('/user/queue/lobby', _this2.updateLobby);
+        _this2.gameStateTopicRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
+        _this2.gameStateQueueRegistration = _this2.socket.subscribe('/user/queue/gameState', _this2.updateGameState);
+        _this2.chatTopicRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat);
+        _this2.chatQueueRegistration = _this2.socket.subscribe('/user/queue/chat', _this2.receiveChat); // setup the heartbeat
 
         setInterval(_this2.heartbeat.bind(_this2), 30 * 1000); // registrations done, now try to enter the lobby
 

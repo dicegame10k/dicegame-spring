@@ -1,10 +1,11 @@
 package com.cb.dicegame.service;
 
+import com.cb.dicegame.IDiceGameConstants;
 import com.cb.dicegame.model.DiceGame;
 import com.cb.dicegame.model.Player;
 import com.cb.dicegame.util.Log;
+import com.cb.dicegame.util.SocketUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,71 +13,76 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
-public class DiceGameService {
+public class DiceGameService implements IDiceGameConstants {
 
-	private final SimpMessagingTemplate socket;
-
+	private SocketUtil socketUtil;
 	private List<Player> lobby;
+
 	private boolean gameInProgress;
 	private DiceGame dg;
 
 	@Autowired
-	public DiceGameService(SimpMessagingTemplate socket, List<Player> lobby) {
-		this.socket = socket;
+	public DiceGameService(SocketUtil socketUtil, List<Player> lobby) {
+		this.socketUtil = socketUtil;
 		this.lobby = lobby;
 	}
 
-	// TODO: should be synchronized?
-	public void enterLobby(Player p) {
-		if (lobby.contains(p))
-			Log.info(String.format("Not adding '%s' to lobby, player already in lobby", p.getName()));
-		else {
-			Log.info(String.format("'%s' entered the lobby", p.getName()));
+	public synchronized void enterLobby(Player p) {
+		// player already in lobby or game
+		if (lobby.contains(p) || (dg != null && dg.isPlayerInGame(p))) {
+			socketUtil.sendLobby(p, lobby);
+			socketUtil.sendGameState(p, getGameState());
+		}  else {
 			lobby.add(p);
+			String chatMsg = String.format("%s entered the lobby", p.getName());
+			Log.info(chatMsg);
+			socketUtil.broadcastSystemChat(chatMsg);
+			socketUtil.broadcastLobby(lobby);
 		}
-
-		this.socket.convertAndSend("/topic/lobby", lobby);
 	}
 
-	// TODO synchronize on some shared obj
 	public synchronized void lightUp(Player p) {
 		if (gameInProgress) {
-			Log.warn(String.format("'%s' tried to light up when game is already in progress", p.getName()));
+			socketUtil.sendSystemChat(p, "Game already in progress");
+			return;
+		} else if (lobby.size() == 0) {
+			socketUtil.sendSystemChat(p, "Lobby is empty");
 			return;
 		}
 
 		gameInProgress = true;
 		dg = new DiceGame(p, lobby);
-		lobby = new ArrayList<Player>();
-		sendGameState();
+		lobby = new ArrayList<>();
+		socketUtil.broadcastGameState(getGameState());
+		socketUtil.broadcastLobby(lobby);
 	}
 
 	public synchronized void roll(Player p, boolean force) {
 		if (dg == null) {
-			Log.warn(String.format("'%s' tried to roll when a game was not in progress", p.getName()));
+			socketUtil.sendSystemChat(p, "Cannot roll. Game is not in progress");
+			return;
+		} else if (!dg.roll(p, force)) {
+			socketUtil.sendSystemChat(p, "It is not your turn to roll");
 			return;
 		}
 
-		dg.roll(p, force);
-		sendGameState();
+		socketUtil.broadcastGameState(getGameState());
 	}
 
-	private void sendGameState() {
-		HashMap<String, Object> gameState = new HashMap<String, Object>();
-		gameState.put("gameInProgress", gameInProgress);
+	private HashMap<String, Object> getGameState() {
+		HashMap<String, Object> gameState = new HashMap<>();
+		gameState.put(GAME_IN_PROGRESS, gameInProgress);
 
-		List<Player> dgPlayers = (dg != null) ? dg.getPlayers() : new ArrayList<Player>();
-		List<Player> graveyard = (dg != null) ? dg.getGraveyard() : new ArrayList<Player>();
+		List<Player> dgPlayers = (dg != null) ? dg.getPlayers() : new ArrayList<>();
+		List<Player> graveyard = (dg != null) ? dg.getGraveyard() : new ArrayList<>();
 		Player currentlyRollingPlayer = (dg != null) ? dg.getCurrentlyRollingPlayer() : null;
 		int currentRoll = (dg != null) ? dg.getCurrentRoll() : 100;
 
-		gameState.put("dgPlayers", dgPlayers);
-		gameState.put("graveyard", graveyard);
-		gameState.put("currentlyRollingPlayer", currentlyRollingPlayer);
-		gameState.put("currentRoll", currentRoll);
-
-		this.socket.convertAndSend("/topic/gameState", gameState);
-		this.socket.convertAndSend("/topic/lobby", lobby);
+		gameState.put(DG_PLAYERS, dgPlayers);
+		gameState.put(GRAVEYARD, graveyard);
+		gameState.put(CURRENTLY_ROLLING_PLAYER, currentlyRollingPlayer);
+		gameState.put(CURRENT_ROLL, currentRoll);
+		return gameState;
 	}
 
 }

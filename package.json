@@ -4,13 +4,11 @@
 	"description": "Welcome to DiceGame, 10k let's go!",
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:dicegame10k/dicegame"
+		"url": "git@github.com:dicegame10k/dicegame-spring"
 	},
 	"keywords": [
-		"rest",
-		"hateoas",
+		"dicegame",
 		"spring",
-		"data",
 		"react"
 	],
 	"author": "Deeb",

@@ -61,10 +61,7 @@ export class Chat extends React.Component {
 				<div id="allChatMessages" className="all-chat-messages border border-dark rounded"
 					onMouseEnter={this.turnOffAutoscroll} onMouseLeave={this.turnOnAutoscroll}>
 					{this.props.chatMsgs.map((chat, i) => {
-						return <div className="message" key={i}>
-							<span className={`${chat.player.wowClass}`}>{chat.player.name}: </span>
-							<span>{chat.msg}</span>
-						</div>;
+						return <ChatMessage key={i} chat={chat}/>
 					})}
 				</div>
 				<form onSubmit={this.sendChat}>
@@ -74,6 +71,30 @@ export class Chat extends React.Component {
 							className={`form-control btn dg-chat-btn ${this.props.player.wowClass}-bg`}>Send</button>
 					</div>
 				</form>
+			</div>
+		)
+	}
+
+}
+
+class ChatMessage extends React.Component {
+
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		let msg = this.props.chat.msg;
+		let wowClass = this.props.chat.player.wowClass;
+		let name = this.props.chat.player.name;
+		let prfx = "";
+		if (name !== 'system')
+			prfx = name + ": ";
+
+		return (
+			<div className="message">
+				<span className={`${wowClass}`}>{prfx}</span>
+				<span>{msg}</span>
 			</div>
 		)
 	}
