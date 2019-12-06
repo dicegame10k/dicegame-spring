@@ -1,3 +1,5 @@
+import {Chat} from './chat.js';
+
 const React = require('react');
 
 export class DiceGame extends React.Component {
@@ -20,6 +22,8 @@ export class DiceGame extends React.Component {
 						<Game gameState={this.props.gameState} player={this.props.player}
 							lightUp={this.props.lightUp} roll={this.props.roll}/>
 						<Graveyard graveyard={this.props.gameState.graveyard}/>
+						<Chat player={this.props.player} socket={this.props.socket} chatMsgs={this.props.chatMsgs}/>
+						<Footer/>
 					</tr>
 				</table>
 			</div>
@@ -105,5 +109,16 @@ class Graveyard extends React.Component {
 		return (
 			<div>The Graveyard</div>
 		)
+	}
+}
+
+class Footer extends React.Component {
+
+	render() {
+		return(
+			<footer className="footer text-muted">
+				© 2020 <a target="_blank" href="https://www.wowprogress.com/guild/us/emerald-dream/Chill+Beats">&lt;Chill Beats&gt;</a>
+			</footer>
+    	)
 	}
 }

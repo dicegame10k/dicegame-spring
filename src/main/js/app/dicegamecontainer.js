@@ -3,7 +3,6 @@
 import {DiceGameNav} from './nav.js'
 import {DiceGame} from './dicegame.js';
 import {Leaderboard} from './leaderboard.js';
-import {Chat} from './chat.js';
 
 import {wowClassFromEnum} from './dicegameutil.js';
 import {normalizeWowClasses} from './dicegameutil.js';
@@ -131,7 +130,7 @@ class DiceGameContainer extends React.Component {
 	render() {
 		let page = <DiceGame player={this.state.player} socket={this.socket}
 			lobby={this.state.lobby} gameState={this.state.gameState}
-			lightUp={this.lightUp} roll={this.roll}/>;
+			lightUp={this.lightUp} roll={this.roll} chatMsgs={this.state.chatMsgs}/>;
 		if (this.state.page === 'leaderboard')
 			page = <Leaderboard player={this.state.player}/>;
 
@@ -139,7 +138,6 @@ class DiceGameContainer extends React.Component {
 			<div>
 				<DiceGameNav player={this.state.player} socket={this.socket} switchPage={this.switchPage}/>
 				{page}
-				<Chat player={this.state.player} socket={this.socket} chatMsgs={this.state.chatMsgs}/>
 			</div>
 		)
 	}

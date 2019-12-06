@@ -39322,6 +39322,7 @@ function (_React$Component) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DiceGame", function() { return DiceGame; });
+/* harmony import */ var _chat_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./chat.js */ "./src/main/js/app/chat.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39339,6 +39340,8 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
 
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
@@ -39371,7 +39374,11 @@ function (_React$Component) {
         roll: this.props.roll
       }), React.createElement(Graveyard, {
         graveyard: this.props.gameState.graveyard
-      }))));
+      }), React.createElement(_chat_js__WEBPACK_IMPORTED_MODULE_0__["Chat"], {
+        player: this.props.player,
+        socket: this.props.socket,
+        chatMsgs: this.props.chatMsgs
+      }), React.createElement(Footer, null))));
     }
   }]);
 
@@ -39489,6 +39496,32 @@ function (_React$Component4) {
   return Graveyard;
 }(React.Component);
 
+var Footer =
+/*#__PURE__*/
+function (_React$Component5) {
+  _inherits(Footer, _React$Component5);
+
+  function Footer() {
+    _classCallCheck(this, Footer);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Footer).apply(this, arguments));
+  }
+
+  _createClass(Footer, [{
+    key: "render",
+    value: function render() {
+      return React.createElement("footer", {
+        className: "footer text-muted"
+      }, "\xA9 2020 ", React.createElement("a", {
+        target: "_blank",
+        href: "https://www.wowprogress.com/guild/us/emerald-dream/Chill+Beats"
+      }, "<Chill Beats>"));
+    }
+  }]);
+
+  return Footer;
+}(React.Component);
+
 /***/ }),
 
 /***/ "./src/main/js/app/dicegamecontainer.js":
@@ -39503,8 +39536,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./nav.js */ "./src/main/js/app/nav.js");
 /* harmony import */ var _dicegame_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dicegame.js */ "./src/main/js/app/dicegame.js");
 /* harmony import */ var _leaderboard_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./leaderboard.js */ "./src/main/js/app/leaderboard.js");
-/* harmony import */ var _chat_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./chat.js */ "./src/main/js/app/chat.js");
-/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
+/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
 
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -39524,7 +39556,6 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 
 
 
@@ -39594,7 +39625,7 @@ function (_React$Component) {
         }).then(function (playerInfo) {
           try {
             playerInfo = JSON.parse(playerInfo);
-            playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__["wowClassFromEnum"])(playerInfo.wowClass);
+            playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
           } catch (e) {
             alert("Session expired. Redirecting to login");
             console.error("Error with /loadPlayer endpoint", e);
@@ -39636,7 +39667,7 @@ function (_React$Component) {
 
       try {
         chatMsg = JSON.parse(response.body);
-        chatMsg.player.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__["wowClassFromEnum"])(chatMsg.player.wowClass);
+        chatMsg.player.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(chatMsg.player.wowClass);
       } catch (e) {
         console.error("Failed to parse chat message", e);
         return;
@@ -39652,7 +39683,7 @@ function (_React$Component) {
     key: "updateLobby",
     value: function updateLobby(lobbyResponse) {
       try {
-        var lobby = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__["normalizeWowClasses"])(JSON.parse(lobbyResponse.body));
+        var lobby = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(JSON.parse(lobbyResponse.body));
         this.setState({
           lobby: lobby
         });
@@ -39666,7 +39697,7 @@ function (_React$Component) {
     value: function updateGameState(gameStateResponse) {
       try {
         var gameState = JSON.parse(gameStateResponse.body);
-        Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_4__["normalizeWowClasses"])(gameState.dgPlayers);
+        Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.dgPlayers);
         this.setState({
           gameState: gameState
         });
@@ -39691,7 +39722,8 @@ function (_React$Component) {
         lobby: this.state.lobby,
         gameState: this.state.gameState,
         lightUp: this.lightUp,
-        roll: this.roll
+        roll: this.roll,
+        chatMsgs: this.state.chatMsgs
       });
       if (this.state.page === 'leaderboard') page = React.createElement(_leaderboard_js__WEBPACK_IMPORTED_MODULE_2__["Leaderboard"], {
         player: this.state.player
@@ -39700,11 +39732,7 @@ function (_React$Component) {
         player: this.state.player,
         socket: this.socket,
         switchPage: this.switchPage
-      }), page, React.createElement(_chat_js__WEBPACK_IMPORTED_MODULE_3__["Chat"], {
-        player: this.state.player,
-        socket: this.socket,
-        chatMsgs: this.state.chatMsgs
-      }));
+      }), page);
     }
   }]);
 
@@ -39790,6 +39818,7 @@ function (_React$Component) {
     _this.state = {
       players: []
     };
+    _this.playerToDkpWidth = [];
     return _this;
   }
 
@@ -39801,6 +39830,7 @@ function (_React$Component) {
       fetch('/leaderboard').then(function (response) {
         return response.text();
       }).then(function (players) {
+        //TODO: check response code for a 302 redirect to the login (everywhere not just here)
         try {
           players = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_0__["normalizeWowClasses"])(JSON.parse(players));
         } catch (e) {
@@ -39815,33 +39845,60 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      var _this3 = this;
+
+      window.requestAnimationFrame(function () {
+        for (var i = 0; i < _this3.playerToDkpWidth.length; i += 1) {
+          var p = _this3.playerToDkpWidth[i];
+          var progressBarElem = document.getElementById(p.player);
+          if (progressBarElem) progressBarElem.style.width = p.width;
+        }
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this4 = this;
+
       //TODO: table hover doesn't work
       //TODO: needs a max height/scrollbar
-      return React.createElement("div", {
-        className: "dg-leaderboard-container"
-      }, React.createElement("table", {
-        className: "dicegame-leaderboard table table-striped table-dark table-bordered table-hover table-sm"
-      }, React.createElement("thead", null, React.createElement("th", {
-        className: "dicegame-leaderboard-header"
-      }, "Username"), React.createElement("th", {
-        className: "dicegame-leaderboard-header"
+      this.playerToDkpWidth = [];
+      var players = this.state.players;
+      var maxDkp = 1;
+      if (players[0] && players[0].dkp > 0) maxDkp = players[0].dkp;
+      return React.createElement("div", null, React.createElement("div", {
+        className: "dg-leaderboard table-dark table-sm"
       }, React.createElement("div", {
-        className: "dg-dkp-header",
+        className: "dg-lb-header"
+      }, React.createElement("span", {
+        className: "dg-lb-cell-left"
+      }, "Username"), React.createElement("span", {
+        className: "dg-lb-cell-right dg-dkp-header",
         "data-toggle": "tooltip",
         title: "DiceGame Kill Points: You get 1 DKP for each person you beat in a game"
-      }, "DKP"))), React.createElement("tbody", {
-        id: "leaderboardBody"
-      }, this.state.players.map(function (player, i) {
-        return React.createElement("tr", {
+      }, "DKP")), React.createElement("div", null, players.map(function (player, i) {
+        var width = player.dkp / maxDkp * 100 + '%';
+
+        _this4.playerToDkpWidth.push({
+          player: player.name + '-lb',
+          width: width
+        });
+
+        return React.createElement("div", {
           key: i,
-          className: "".concat(player.wowClass, "-bg dg-leaderboard-text")
-        }, React.createElement("td", {
-          className: "dicegame-leaderboard-cell"
-        }, player.name), React.createElement("td", {
-          className: "dicegame-leaderboard-cell"
-        }, player.dkp));
+          className: "dg-lb-row-container"
+        }, React.createElement("div", {
+          className: "".concat(player.wowClass, "-bg progress-bar dg-lb-progress-bar"),
+          id: "".concat(player.name, "-lb")
+        }), React.createElement("div", {
+          className: "dg-lb-row"
+        }, React.createElement("span", {
+          className: "dg-lb-cell-left"
+        }, player.name), React.createElement("span", {
+          className: "dg-lb-cell-right"
+        }, player.dkp)));
       }))));
     }
   }]);

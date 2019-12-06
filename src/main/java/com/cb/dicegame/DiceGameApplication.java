@@ -45,6 +45,10 @@ public class DiceGameApplication {
 				.forEach((name) -> {
 					Player p = new Player(name, "p", map.get(name), name.length());
 					pr.save(p);
+					Player p2 = new Player(name+"2", "p", map.get(name), name.length() - 1);
+					pr.save(p2);
+					Player p3 = new Player(name+"3", "p", map.get(name), name.length() *2);
+					pr.save(p3);
 				});
 
 			pr.findAll(Sort.by(Sort.Direction.DESC, "dkp")).forEach(System.out::println);
