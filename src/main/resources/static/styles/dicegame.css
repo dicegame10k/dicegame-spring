@@ -136,13 +136,13 @@ th {
   margin: 1px 10px; 1px 10px;
 }
 
-.dg-leaderboard {
+.dg-recount {
 	width: 95% !important;
 	margin: 10px auto;
 	border-radius: 25px 25px 0 0;
 }
 
-.dg-lb-header {
+.dg-rc-header {
 	font-weight: bold;
 	padding: 7px 0 7px 0;
 }
@@ -151,7 +151,7 @@ th {
 	cursor: help;
 }
 
-.dg-lb-row-container {
+.dg-rc-row-container {
 	position: relative !important;
 	padding: 1px 0 1px 0;
 	display: flex;
@@ -162,24 +162,24 @@ th {
 	-webkit-text-stroke: 1px black;
 }
 
-.dg-lb-progress-bar {
+.dg-rc-progress-bar {
 	border-radius: 0 5px 5px 0;
 	width: 0%;
 	transition: width 1s !important;
 }
 
-.dg-lb-row {
+.dg-rc-row {
 	position: absolute !important;
 	width: 100% !important;
 	height: 100% !important;
 	top: .25rem;
 }
 
-.dg-lb-cell-left {
+.dg-rc-cell-left {
 	margin-left: 20%;
 }
 
-.dg-lb-cell-right {
+.dg-rc-cell-right {
 	float: right;
 	margin-right: 20%;
 }

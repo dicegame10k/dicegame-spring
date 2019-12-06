@@ -51,7 +51,7 @@ class Game extends React.Component {
 		let rollBtn = currentlyRollingPlayer.name !== myself.name ? '' :
 			<button onClick={this.props.roll} id="rollButton" className={`btn roll-btn ${myself.wowClass}-bg`}>Roll</button>;
 
-		let fireGif = !gameInProgress ? '' : <img id="fire" className="fire" src="/resources/static/images/fire.gif"/>;
+		let fireGif = !gameInProgress ? '' : <img id="fire" className="fire" src="/images/fire.gif"/>;
 
 		let dgPlayerCards = !gameInProgress ? '' :
 			dgPlayers.map((player, i) => {

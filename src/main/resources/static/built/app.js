@@ -39416,7 +39416,7 @@ function (_React$Component2) {
       var fireGif = !gameInProgress ? '' : React.createElement("img", {
         id: "fire",
         className: "fire",
-        src: "/resources/static/images/fire.gif"
+        src: "/images/fire.gif"
       });
       var dgPlayerCards = !gameInProgress ? '' : dgPlayers.map(function (player, i) {
         return React.createElement("div", {
@@ -39535,7 +39535,7 @@ function (_React$Component5) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./nav.js */ "./src/main/js/app/nav.js");
 /* harmony import */ var _dicegame_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dicegame.js */ "./src/main/js/app/dicegame.js");
-/* harmony import */ var _leaderboard_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./leaderboard.js */ "./src/main/js/app/leaderboard.js");
+/* harmony import */ var _recount_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./recount.js */ "./src/main/js/app/recount.js");
 /* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
 
 
@@ -39596,6 +39596,7 @@ function (_React$Component) {
         currentRoll: 100
       }
     };
+    _this.heartbeat = _this.heartbeat.bind(_assertThisInitialized(_this));
     _this.receiveChat = _this.receiveChat.bind(_assertThisInitialized(_this));
     _this.updateLobby = _this.updateLobby.bind(_assertThisInitialized(_this));
     _this.updateGameState = _this.updateGameState.bind(_assertThisInitialized(_this));
@@ -39618,7 +39619,9 @@ function (_React$Component) {
         // this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
         _this2.lobbyRegistration = _this2.socket.subscribe('/topic/lobby', _this2.updateLobby);
         _this2.gameStateRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
-        _this2.chatRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat); // registrations done, now try to enter the lobby
+        _this2.chatRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat); // setup the heartbeat
+
+        setInterval(_this2.heartbeat.bind(_this2), 30 * 1000); // registrations done, now try to enter the lobby
 
         fetch('/enterLobby').then(function (response) {
           return response.text();
@@ -39648,6 +39651,17 @@ function (_React$Component) {
       }, function (e) {
         console.error("Failed to setup connections to server", e);
       });
+    } // checks if the session has expired and redirects the user back to the login page
+
+  }, {
+    key: "heartbeat",
+    value: function heartbeat() {
+      fetch('/heartbeat').then(function (response) {
+        if (response.redirected) {
+          console.log("DiceGame heartbeat was redirected to " + response.url);
+          window.location.href = response.url;
+        }
+      }, function (e) {});
     }
   }, {
     key: "lightUp",
@@ -39725,7 +39739,7 @@ function (_React$Component) {
         roll: this.roll,
         chatMsgs: this.state.chatMsgs
       });
-      if (this.state.page === 'leaderboard') page = React.createElement(_leaderboard_js__WEBPACK_IMPORTED_MODULE_2__["Leaderboard"], {
+      if (this.state.page === 'recount') page = React.createElement(_recount_js__WEBPACK_IMPORTED_MODULE_2__["Recount"], {
         player: this.state.player
       });
       return React.createElement("div", null, React.createElement(_nav_js__WEBPACK_IMPORTED_MODULE_0__["DiceGameNav"], {
@@ -39767,144 +39781,6 @@ function normalizeWowClasses(listOfPlayers) {
   return listOfPlayers;
 }
 var dicegameAscii = ["    ____  _           ______                   ", "   / __ \\(_)_______  / ____/___ _____ ___  ___ ", "  / / / / / ___/ _ \\/ / __/ __ `/ __ `__ \\/ _ \\", " / /_/ / / /__/  __/ /_/ / /_/ / / / / / /  __/", "/_____/_/\\___/\\___/\\____/\\__,_/_/ /_/ /_/\\___/"];
-
-/***/ }),
-
-/***/ "./src/main/js/app/leaderboard.js":
-/*!****************************************!*\
-  !*** ./src/main/js/app/leaderboard.js ***!
-  \****************************************/
-/*! exports provided: Leaderboard */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Leaderboard", function() { return Leaderboard; });
-/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-
-
-
-var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var Leaderboard =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(Leaderboard, _React$Component);
-
-  function Leaderboard(props) {
-    var _this;
-
-    _classCallCheck(this, Leaderboard);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Leaderboard).call(this, props));
-    _this.state = {
-      players: []
-    };
-    _this.playerToDkpWidth = [];
-    return _this;
-  }
-
-  _createClass(Leaderboard, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      fetch('/leaderboard').then(function (response) {
-        return response.text();
-      }).then(function (players) {
-        //TODO: check response code for a 302 redirect to the login (everywhere not just here)
-        try {
-          players = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_0__["normalizeWowClasses"])(JSON.parse(players));
-        } catch (e) {
-          players = [];
-          alert("Failed to load leaderboard");
-          console.error("Failed to load leaderboard", e);
-        }
-
-        _this2.setState({
-          players: players
-        });
-      });
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate() {
-      var _this3 = this;
-
-      window.requestAnimationFrame(function () {
-        for (var i = 0; i < _this3.playerToDkpWidth.length; i += 1) {
-          var p = _this3.playerToDkpWidth[i];
-          var progressBarElem = document.getElementById(p.player);
-          if (progressBarElem) progressBarElem.style.width = p.width;
-        }
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this4 = this;
-
-      //TODO: table hover doesn't work
-      //TODO: needs a max height/scrollbar
-      this.playerToDkpWidth = [];
-      var players = this.state.players;
-      var maxDkp = 1;
-      if (players[0] && players[0].dkp > 0) maxDkp = players[0].dkp;
-      return React.createElement("div", null, React.createElement("div", {
-        className: "dg-leaderboard table-dark table-sm"
-      }, React.createElement("div", {
-        className: "dg-lb-header"
-      }, React.createElement("span", {
-        className: "dg-lb-cell-left"
-      }, "Username"), React.createElement("span", {
-        className: "dg-lb-cell-right dg-dkp-header",
-        "data-toggle": "tooltip",
-        title: "DiceGame Kill Points: You get 1 DKP for each person you beat in a game"
-      }, "DKP")), React.createElement("div", null, players.map(function (player, i) {
-        var width = player.dkp / maxDkp * 100 + '%';
-
-        _this4.playerToDkpWidth.push({
-          player: player.name + '-lb',
-          width: width
-        });
-
-        return React.createElement("div", {
-          key: i,
-          className: "dg-lb-row-container"
-        }, React.createElement("div", {
-          className: "".concat(player.wowClass, "-bg progress-bar dg-lb-progress-bar"),
-          id: "".concat(player.name, "-lb")
-        }), React.createElement("div", {
-          className: "dg-lb-row"
-        }, React.createElement("span", {
-          className: "dg-lb-cell-left"
-        }, player.name), React.createElement("span", {
-          className: "dg-lb-cell-right"
-        }, player.dkp)));
-      }))));
-    }
-  }]);
-
-  return Leaderboard;
-}(React.Component);
 
 /***/ }),
 
@@ -39952,7 +39828,7 @@ function (_React$Component) {
     _this.addNavItemHoverClass = _this.addNavItemHoverClass.bind(_assertThisInitialized(_this));
     _this.removeNavItemHoverClass = _this.removeNavItemHoverClass.bind(_assertThisInitialized(_this));
     _this.showDiceGame = _this.showDiceGame.bind(_assertThisInitialized(_this));
-    _this.showLeaderboard = _this.showLeaderboard.bind(_assertThisInitialized(_this));
+    _this.showRecount = _this.showRecount.bind(_assertThisInitialized(_this));
     _this.toggleProfileEdit = _this.toggleProfileEdit.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -39973,9 +39849,9 @@ function (_React$Component) {
       this.props.switchPage('dicegame');
     }
   }, {
-    key: "showLeaderboard",
-    value: function showLeaderboard() {
-      this.props.switchPage('leaderboard');
+    key: "showRecount",
+    value: function showRecount() {
+      this.props.switchPage('recount');
     }
   }, {
     key: "toggleProfileEdit",
@@ -39994,7 +39870,7 @@ function (_React$Component) {
         className: "dicegame-nav-item",
         onMouseEnter: this.addNavItemHoverClass,
         onMouseLeave: this.removeNavItemHoverClass,
-        onClick: this.showLeaderboard,
+        onClick: this.showRecount,
         "data-toggle": "tooltip",
         title: "Deeps meter"
       }, "Recount"), React.createElement("div", {
@@ -40005,6 +39881,142 @@ function (_React$Component) {
   }]);
 
   return DiceGameNav;
+}(React.Component);
+
+/***/ }),
+
+/***/ "./src/main/js/app/recount.js":
+/*!************************************!*\
+  !*** ./src/main/js/app/recount.js ***!
+  \************************************/
+/*! exports provided: Recount */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Recount", function() { return Recount; });
+/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var Recount =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Recount, _React$Component);
+
+  function Recount(props) {
+    var _this;
+
+    _classCallCheck(this, Recount);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Recount).call(this, props));
+    _this.state = {
+      players: []
+    };
+    _this.playerToDkpWidth = [];
+    return _this;
+  }
+
+  _createClass(Recount, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      fetch('/recount').then(function (response) {
+        return response.text();
+      }).then(function (players) {
+        //TODO: check response code for a 302 redirect to the login (everywhere not just here)
+        try {
+          players = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_0__["normalizeWowClasses"])(JSON.parse(players));
+        } catch (e) {
+          players = [];
+          alert("Failed to load recount");
+          console.error("Failed to load recount", e);
+        }
+
+        _this2.setState({
+          players: players
+        });
+      });
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      var _this3 = this;
+
+      window.requestAnimationFrame(function () {
+        for (var i = 0; i < _this3.playerToDkpWidth.length; i += 1) {
+          var p = _this3.playerToDkpWidth[i];
+          var progressBarElem = document.getElementById(p.player);
+          if (progressBarElem) progressBarElem.style.width = p.width;
+        }
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this4 = this;
+
+      this.playerToDkpWidth = [];
+      var players = this.state.players;
+      var maxDkp = 1;
+      if (players[0] && players[0].dkp > 0) maxDkp = players[0].dkp;
+      return React.createElement("div", null, React.createElement("div", {
+        className: "dg-recount table-dark table-sm"
+      }, React.createElement("div", {
+        className: "dg-rc-header"
+      }, React.createElement("span", {
+        className: "dg-rc-cell-left"
+      }, "Username"), React.createElement("span", {
+        className: "dg-rc-cell-right dg-dkp-header",
+        "data-toggle": "tooltip",
+        title: "DiceGame Kill Points: You get 1 DKP for each person you beat in a game"
+      }, "DKP")), React.createElement("div", null, players.map(function (player, i) {
+        var width = player.dkp / maxDkp * 100 + '%';
+
+        _this4.playerToDkpWidth.push({
+          player: player.name + '-rc',
+          width: width
+        });
+
+        return React.createElement("div", {
+          key: i,
+          className: "dg-rc-row-container"
+        }, React.createElement("div", {
+          className: "".concat(player.wowClass, "-bg progress-bar dg-rc-progress-bar"),
+          id: "".concat(player.name, "-rc")
+        }), React.createElement("div", {
+          className: "dg-rc-row"
+        }, React.createElement("span", {
+          className: "dg-rc-cell-left"
+        }, player.name), React.createElement("span", {
+          className: "dg-rc-cell-right"
+        }, player.dkp)));
+      }))));
+    }
+  }]);
+
+  return Recount;
 }(React.Component);
 
 /***/ }),

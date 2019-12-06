@@ -2,7 +2,7 @@
 
 import {DiceGameNav} from './nav.js'
 import {DiceGame} from './dicegame.js';
-import {Leaderboard} from './leaderboard.js';
+import {Recount} from './recount.js';
 
 import {wowClassFromEnum} from './dicegameutil.js';
 import {normalizeWowClasses} from './dicegameutil.js';
@@ -32,6 +32,7 @@ class DiceGameContainer extends React.Component {
 			},
 		};
 
+		this.heartbeat = this.heartbeat.bind(this);
 		this.receiveChat = this.receiveChat.bind(this);
 		this.updateLobby = this.updateLobby.bind(this);
 		this.updateGameState = this.updateGameState.bind(this);
@@ -48,6 +49,9 @@ class DiceGameContainer extends React.Component {
         	this.lobbyRegistration = this.socket.subscribe('/topic/lobby', this.updateLobby);
         	this.gameStateRegistration = this.socket.subscribe('/topic/gameState', this.updateGameState);
         	this.chatRegistration = this.socket.subscribe('/topic/chat', this.receiveChat);
+        	// setup the heartbeat
+        	setInterval(this.heartbeat.bind(this), 30 * 1000);
+
         	// registrations done, now try to enter the lobby
         	fetch('/enterLobby')
 			.then((response) => response.text())
@@ -76,6 +80,17 @@ class DiceGameContainer extends React.Component {
         }, (e) => {
 			console.error("Failed to setup connections to server", e);
 		});
+	}
+
+	// checks if the session has expired and redirects the user back to the login page
+	heartbeat() {
+		fetch('/heartbeat')
+		.then((response) => {
+			if (response.redirected) {
+				console.log("DiceGame heartbeat was redirected to " + response.url);
+				window.location.href = response.url;
+			}
+		}, (e) => {});
 	}
 
 	lightUp() {
@@ -131,8 +146,8 @@ class DiceGameContainer extends React.Component {
 		let page = <DiceGame player={this.state.player} socket={this.socket}
 			lobby={this.state.lobby} gameState={this.state.gameState}
 			lightUp={this.lightUp} roll={this.roll} chatMsgs={this.state.chatMsgs}/>;
-		if (this.state.page === 'leaderboard')
-			page = <Leaderboard player={this.state.player}/>;
+		if (this.state.page === 'recount')
+			page = <Recount player={this.state.player}/>;
 
 		return (
 			<div>

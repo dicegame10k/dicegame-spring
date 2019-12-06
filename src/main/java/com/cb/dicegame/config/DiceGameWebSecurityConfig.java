@@ -31,7 +31,7 @@ public class DiceGameWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.antMatchers("/built/**", "/styles/**").permitAll()
+				.antMatchers("/built/**", "/styles/**", "/images/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/signUp").permitAll()
 				.antMatchers(HttpMethod.POST, "/resetPassword").permitAll()
 				.anyRequest().authenticated()
@@ -41,7 +41,7 @@ public class DiceGameWebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.defaultSuccessUrl("/", true)
 				.permitAll()
 				.and()
-			.csrf().disable() //TODO: remove this
+			.csrf().disable() //TODO: remove this eventually
 			.logout()
 				.logoutSuccessUrl("/");
 	}

@@ -32040,7 +32040,7 @@ function (_React$Component) {
           return;
         }
 
-        document.getElementById('reset').disabled = true;
+        document.getElementById('reset').style.display = 'none';
 
         _this2.props.setInfoMsg("Successfully reset " + username + "'s password");
       })["catch"](function (error) {
@@ -32493,7 +32493,7 @@ function (_React$Component) {
           return;
         }
 
-        document.getElementById('signUp').disabled = true;
+        document.getElementById('signUp').style.display = 'none';
 
         _this2.props.setInfoMsg("Successfully created player '" + username + "'");
       })["catch"](function (error) {

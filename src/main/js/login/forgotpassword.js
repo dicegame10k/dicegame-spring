@@ -32,7 +32,7 @@ export class ForgotPassword extends React.Component {
 				return;
 			}
 
-			document.getElementById('reset').disabled = true;
+			document.getElementById('reset').style.display = 'none';
 			this.props.setInfoMsg("Successfully reset " + username + "'s password");
 		}).catch((error) => {
 			console.error(error);

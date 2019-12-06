@@ -2,6 +2,7 @@ node_modules/
 package-lock.json
 HELP.md
 target/
+/static/built/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**

@@ -41,7 +41,7 @@ export class SignUp extends React.Component {
 				return;
 			}
 
-			document.getElementById('signUp').disabled = true;
+			document.getElementById('signUp').style.display = 'none';
 			this.props.setInfoMsg("Successfully created player '" + username + "'");
 		}).catch((error) => {
 			console.error(error);

@@ -7,7 +7,7 @@ export class DiceGameNav extends React.Component {
 		this.addNavItemHoverClass = this.addNavItemHoverClass.bind(this);
 		this.removeNavItemHoverClass = this.removeNavItemHoverClass.bind(this);
 		this.showDiceGame = this.showDiceGame.bind(this);
-		this.showLeaderboard = this.showLeaderboard.bind(this);
+		this.showRecount = this.showRecount.bind(this);
 		this.toggleProfileEdit = this.toggleProfileEdit.bind(this);
 	}
 
@@ -23,8 +23,8 @@ export class DiceGameNav extends React.Component {
 		this.props.switchPage('dicegame');
 	}
 
-	showLeaderboard() {
-		this.props.switchPage('leaderboard');
+	showRecount() {
+		this.props.switchPage('recount');
 	}
 
 	toggleProfileEdit() {
@@ -37,7 +37,7 @@ export class DiceGameNav extends React.Component {
 				<div className="dicegame-nav-item" onMouseEnter={this.addNavItemHoverClass}
 					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showDiceGame}>DiceGame</div>
 				<div className="dicegame-nav-item" onMouseEnter={this.addNavItemHoverClass}
-					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showLeaderboard}
+					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showRecount}
 					data-toggle="tooltip" title="Deeps meter">Recount</div>
 				<div className={`dicegame-nav-item dicegame-nav-username ${this.props.player.wowClass}`}
 					onClick={this.toggleProfileEdit}>{this.props.player.name}</div>

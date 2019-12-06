@@ -73,14 +73,10 @@ public class DiceGameController {
 		return "success";
 	}
 
-	/**
-	 * Handles socket message sent to /app/chat
-	 */
-	@MessageMapping("/chat")
-	@SendTo("/topic/chat")
-	public ChatMessage chat(Principal principal, @RequestBody String msg) {
-		Player p = getPlayer(principal);
-		return new ChatMessage(p, msg);
+	@GetMapping("/heartbeat")
+	@ResponseBody
+	public String heartbeat() {
+		return "still alive";
 	}
 
 	@GetMapping("/enterLobby")
@@ -91,12 +87,22 @@ public class DiceGameController {
 		return p;
 	}
 
-	@GetMapping("/leaderboard")
+	@GetMapping("/recount")
 	@ResponseBody
-	public List<Player> leaderboard() {
+	public List<Player> recount() {
 		Sort.Order one = Sort.Order.desc("dkp");
 		Sort.Order two = Sort.Order.asc("name");
 		return playerRepository.findAll(Sort.by(one, two));
+	}
+
+	/**
+	 * Handles socket message sent to /app/chat
+	 */
+	@MessageMapping("/chat")
+	@SendTo("/topic/chat")
+	public ChatMessage chat(Principal principal, @RequestBody String msg) {
+		Player p = getPlayer(principal);
+		return new ChatMessage(p, msg);
 	}
 
 	/**
