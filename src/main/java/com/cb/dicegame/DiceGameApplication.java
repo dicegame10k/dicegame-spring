@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 
 @SpringBootApplication
 public class DiceGameApplication {
@@ -43,11 +44,12 @@ public class DiceGameApplication {
 			Arrays.asList("Deeb,Kron,Chapu,Rhotwo,Terwine,Tyenne,Saacul,Dantodan,Z,Vierth,John,Karidia,Grockley,Trendeeb,Fiend,Bublekid,Braedin"
 				.split(","))
 				.forEach((name) -> {
-					Player p = new Player(name, "p", map.get(name), name.length());
+					Random r = new Random();
+					Player p = new Player(name, "p", map.get(name), r.nextInt(50));
 					pr.save(p);
-					Player p2 = new Player(name+"2", "p", map.get(name), name.length() - 1);
+					Player p2 = new Player(name+"2", "p", map.get(name), r.nextInt(50));
 					pr.save(p2);
-					Player p3 = new Player(name+"3", "p", map.get(name), name.length() *2);
+					Player p3 = new Player(name+"3", "p", map.get(name), r.nextInt(50));
 					pr.save(p3);
 				});
 

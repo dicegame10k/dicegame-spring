@@ -131,6 +131,13 @@ public class DiceGameController {
 		diceGameService.roll(p, true);
 	}
 
+	@MessageMapping("/stuck")
+	public void stuck(Principal principal) {
+		Player p = getPlayer(principal);
+		diceGameService.resetGame();
+		socketUtil.broadcastSystemChat(String.format("%s reset the game", p.getName()));
+	}
+
 	/**
 	 * This should be called from socket handler endpoints (the @MessageMapping methods)
 	 * Because SecurityContextHolder.getContext().getAuthentication() is null

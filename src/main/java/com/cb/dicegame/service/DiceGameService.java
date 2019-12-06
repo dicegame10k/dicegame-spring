@@ -3,6 +3,7 @@ package com.cb.dicegame.service;
 import com.cb.dicegame.IDiceGameConstants;
 import com.cb.dicegame.model.DiceGame;
 import com.cb.dicegame.model.Player;
+import com.cb.dicegame.util.DiceGameUtil;
 import com.cb.dicegame.util.Log;
 import com.cb.dicegame.util.SocketUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,30 +30,33 @@ public class DiceGameService implements IDiceGameConstants {
 
 	public synchronized void enterLobby(Player p) {
 		// player already in lobby or game
-		if (lobby.contains(p) || (dg != null && dg.isPlayerInGame(p))) {
-			socketUtil.sendLobby(p, lobby);
-			socketUtil.sendGameState(p, getGameState());
-		}  else {
+		if (lobby.contains(p) || (dg != null && dg.isPlayerInGame(p)))
+			sendAppState(p);
+		else {
 			lobby.add(p);
 			String chatMsg = String.format("%s entered the lobby", p.getName());
 			Log.info(chatMsg);
 			socketUtil.broadcastSystemChat(chatMsg);
 			socketUtil.broadcastLobby(lobby);
+			socketUtil.sendGameState(p, getGameState());
 		}
 	}
 
 	public synchronized void lightUp(Player p) {
 		if (gameInProgress) {
 			socketUtil.sendSystemChat(p, "Game already in progress");
+			sendAppState(p);
 			return;
 		} else if (lobby.size() == 0) {
 			socketUtil.sendSystemChat(p, "Lobby is empty");
+			sendAppState(p);
 			return;
 		}
 
 		gameInProgress = true;
-		dg = new DiceGame(p, lobby);
+		dg = new DiceGame(p, lobby, socketUtil);
 		lobby = new ArrayList<>();
+		socketUtil.broadcastSystemChat(String.format("DiceGame started by %s", p.getName()));
 		socketUtil.broadcastGameState(getGameState());
 		socketUtil.broadcastLobby(lobby);
 	}
@@ -60,13 +64,37 @@ public class DiceGameService implements IDiceGameConstants {
 	public synchronized void roll(Player p, boolean force) {
 		if (dg == null) {
 			socketUtil.sendSystemChat(p, "Cannot roll. Game is not in progress");
+			sendAppState(p);
 			return;
 		} else if (!dg.roll(p, force)) {
 			socketUtil.sendSystemChat(p, "It is not your turn to roll");
+			sendAppState(p);
 			return;
 		}
 
+		// roll was successful, sleep 1 second so the client can build suspense
+		//DiceGameUtil.sleep(1000);
+		socketUtil.broadcastSystemChat(String.format("%s rolled %d", p.getName(), dg.getCurrentRoll()));
 		socketUtil.broadcastGameState(getGameState());
+
+		if (dg.isGameOver()) {
+			// TODO persist DG stats
+			// move the players back into the lobby and reset the game
+			DiceGameUtil.sleep(5000);
+			resetGame();
+		}
+	}
+
+	public synchronized void resetGame() {
+		if (dg != null) {
+			lobby.addAll(dg.getGraveyard());
+			lobby.addAll(dg.getPlayers());
+			dg = null;
+		}
+
+		gameInProgress = false;
+		socketUtil.broadcastGameState(getGameState());
+		socketUtil.broadcastLobby(lobby);
 	}
 
 	private HashMap<String, Object> getGameState() {
@@ -83,6 +111,14 @@ public class DiceGameService implements IDiceGameConstants {
 		gameState.put(CURRENTLY_ROLLING_PLAYER, currentlyRollingPlayer);
 		gameState.put(CURRENT_ROLL, currentRoll);
 		return gameState;
+	}
+
+	/**
+	 * Sends an individual player the state of the entire app
+	 */
+	private void sendAppState(Player p) {
+		socketUtil.sendLobby(p, lobby);
+		socketUtil.sendGameState(p, getGameState());
 	}
 
 }

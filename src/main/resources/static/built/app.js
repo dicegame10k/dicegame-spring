@@ -39666,6 +39666,7 @@ function (_React$Component) {
     _this.updateGameState = _this.updateGameState.bind(_assertThisInitialized(_this));
     _this.switchPage = _this.switchPage.bind(_assertThisInitialized(_this));
     _this.lightUp = _this.lightUp.bind(_assertThisInitialized(_this));
+    _this.stuck = _this.stuck.bind(_assertThisInitialized(_this));
     _this.roll = _this.roll.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -39675,50 +39676,43 @@ function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var sjs = SockJS('/10k'); // url endpoint that initiates the socket
+      setTimeout(function () {
+        var sjs = SockJS('/10k'); // url endpoint that initiates the socket
 
-      this.socket = Stomp.over(sjs); // the stompClient web socket
+        _this2.socket = Stomp.over(sjs); // the stompClient web socket
 
-      this.socket.connect({}, function () {
-        // this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
-        // topic is for broadcasted messages, queue is for individual messages
-        _this2.lobbyTopicRegistration = _this2.socket.subscribe('/topic/lobby', _this2.updateLobby);
-        _this2.lobbyQueueRegistration = _this2.socket.subscribe('/user/queue/lobby', _this2.updateLobby);
-        _this2.gameStateTopicRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
-        _this2.gameStateQueueRegistration = _this2.socket.subscribe('/user/queue/gameState', _this2.updateGameState);
-        _this2.chatTopicRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat);
-        _this2.chatQueueRegistration = _this2.socket.subscribe('/user/queue/chat', _this2.receiveChat); // setup the heartbeat
+        _this2.socket.connect({}, function () {
+          // this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
+          // topic is for broadcasted messages, user/queue is for individual messages
+          _this2.lobbyTopicRegistration = _this2.socket.subscribe('/topic/lobby', _this2.updateLobby);
+          _this2.lobbyQueueRegistration = _this2.socket.subscribe('/user/queue/lobby', _this2.updateLobby);
+          _this2.gameStateTopicRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
+          _this2.gameStateQueueRegistration = _this2.socket.subscribe('/user/queue/gameState', _this2.updateGameState);
+          _this2.chatTopicRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat);
+          _this2.chatQueueRegistration = _this2.socket.subscribe('/user/queue/chat', _this2.receiveChat); // setup the heartbeat
 
-        setInterval(_this2.heartbeat.bind(_this2), 30 * 1000); // registrations done, now try to enter the lobby
+          setInterval(_this2.heartbeat.bind(_this2), 10 * 1000); // registrations done, now try to enter the lobby
 
-        fetch('/enterLobby').then(function (response) {
-          return response.text();
-        }).then(function (playerInfo) {
-          try {
-            playerInfo = JSON.parse(playerInfo);
-            playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
-          } catch (e) {
-            alert("Session expired. Redirecting to login");
-            console.error("Error with /loadPlayer endpoint", e);
-            window.location.href = '/logout';
-          } // TODO: the spaces are getting stripped out
-          //				let chatMsgs = this.state.chatMsgs;
-          //				for (let i = 0; i < dicegameAscii.length; i += 1) {
-          //					let chatMsg = {};
-          //					 TODO: do i need to clone playerInfo?
-          //					chatMsg.player = playerInfo;
-          //					chatMsg.msg = dicegameAscii[i];
-          //					chatMsgs.push(chatMsg);
-          //				}
+          fetch('/enterLobby').then(function (response) {
+            return response.text();
+          }).then(function (playerInfo) {
+            try {
+              playerInfo = JSON.parse(playerInfo);
+              playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
+            } catch (e) {
+              alert("Session expired. Redirecting to login");
+              console.error("Error with /loadPlayer endpoint", e);
+              window.location.href = '/logout';
+            }
 
-
-          _this2.setState({
-            player: playerInfo
+            _this2.setState({
+              player: playerInfo
+            });
           });
+        }, function (e) {
+          console.error("Failed to setup connections to server", e);
         });
-      }, function (e) {
-        console.error("Failed to setup connections to server", e);
-      });
+      }, 1);
     } // checks if the session has expired and redirects the user back to the login page
 
   }, {
@@ -39739,7 +39733,18 @@ function (_React$Component) {
   }, {
     key: "roll",
     value: function roll() {
-      this.socket.send('/app/roll');
+      this.socket.send('/app/roll'); // make the roll button disappear immediately after a roll
+
+      var gameState = this.state.gameState;
+      gameState.currentlyRollingPlayer = 'some_bottom_deeps_scrub_pug';
+      this.setState({
+        gameState: gameState
+      });
+    }
+  }, {
+    key: "stuck",
+    value: function stuck() {
+      this.socket.send('/app/stuck');
     } // Receives response from /app/chat
 
   }, {
@@ -39780,6 +39785,7 @@ function (_React$Component) {
       try {
         var gameState = JSON.parse(gameStateResponse.body);
         Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.dgPlayers);
+        Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.graveyard);
         this.setState({
           gameState: gameState
         });

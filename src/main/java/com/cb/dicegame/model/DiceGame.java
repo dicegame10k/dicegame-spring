@@ -1,6 +1,7 @@
 package com.cb.dicegame.model;
 
 import com.cb.dicegame.util.Log;
+import com.cb.dicegame.util.SocketUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,17 +16,20 @@ public class DiceGame {
 	private int currentRoll;
 
 	// internal
+	private SocketUtil socketUtil;
 	private DiceGameStats stats;
 	private Random random;
 	private int dkpWon;
+	private boolean isGameOver;
 
-	public DiceGame(Player startingPlayer, List<Player> lobby) {
+	public DiceGame(Player startingPlayer, List<Player> lobby, SocketUtil socketUtil) {
 		this.players = lobby;
 		this.graveyard = new ArrayList<>();
 		this.currentlyRollingPlayer = startingPlayer;
 		this.currentRoll = 100;
 		random = new Random();
 
+		this.socketUtil = socketUtil;
 		stats = new DiceGameStats(this);
 	}
 
@@ -35,17 +39,13 @@ public class DiceGame {
 			return false;
 		}
 
+		stats.incrementRoll();
 		currentRoll = random.nextInt(currentRoll) + 1;
-		if (currentRoll == 1) {
-			if (isGameOver()) {
-				// TODO handle it
-			} else {
-				dkpWon += 1;
-				currentlyRollingPlayer = getNextRollingPlayer();
-			}
-		}
+		if (currentRoll == 1)
+			handleRollOne();
+		else
+			currentlyRollingPlayer = getNextRollingPlayer();
 
-		//TODO: sleep 1 second then broadcast chat message
 		return true;
 	}
 
@@ -69,13 +69,35 @@ public class DiceGame {
 		return this.players.contains(p) || this.graveyard.contains(p);
 	}
 
+	public boolean isGameOver() {
+		return isGameOver;
+	}
+
 	private Player getNextRollingPlayer() {
+		if (players.size() == 0)
+			return null;
+
 		int nextIndex = (players.indexOf(currentlyRollingPlayer) + 1) % players.size();
 		return players.get(nextIndex);
 	}
 
-	private boolean isGameOver() {
-		return players.size() < 3;
+	private void handleRollOne() {
+		players.remove(currentlyRollingPlayer);
+		graveyard.add(currentlyRollingPlayer);
+		stats.recordDkpWon(currentlyRollingPlayer, dkpWon);
+		dkpWon += 1;
+		if (checkGameOver()) {
+			isGameOver = true;
+			Player winningPlayer = getNextRollingPlayer();
+			if (winningPlayer != null)
+				stats.recordDkpWon(winningPlayer, dkpWon);
+
+			currentlyRollingPlayer = null;
+		} else
+			currentRoll = 100;
 	}
 
+	private boolean checkGameOver() {
+		return currentRoll == 1 && players.size() < 3;
+	}
 }

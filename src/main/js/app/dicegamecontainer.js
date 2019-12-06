@@ -38,6 +38,7 @@ class DiceGameContainer extends React.Component {
 		this.updateGameState = this.updateGameState.bind(this);
 		this.switchPage = this.switchPage.bind(this);
 		this.lightUp = this.lightUp.bind(this);
+		this.stuck = this.stuck.bind(this);
 		this.roll = this.roll.bind(this);
 	}
 
@@ -54,7 +55,7 @@ class DiceGameContainer extends React.Component {
         	this.chatTopicRegistration = this.socket.subscribe('/topic/chat', this.receiveChat);
         	this.chatQueueRegistration = this.socket.subscribe('/user/queue/chat', this.receiveChat);
         	// setup the heartbeat
-        	setInterval(this.heartbeat.bind(this), 30 * 1000);
+        	setInterval(this.heartbeat.bind(this), 10 * 1000);
 
         	// registrations done, now try to enter the lobby
         	fetch('/enterLobby')
@@ -68,16 +69,6 @@ class DiceGameContainer extends React.Component {
 					console.error("Error with /loadPlayer endpoint", e);
 					window.location.href = '/logout';
 				}
-
-				// TODO: the spaces are getting stripped out
-//				let chatMsgs = this.state.chatMsgs;
-//				for (let i = 0; i < dicegameAscii.length; i += 1) {
-//					let chatMsg = {};
-//					 TODO: do i need to clone playerInfo?
-//					chatMsg.player = playerInfo;
-//					chatMsg.msg = dicegameAscii[i];
-//					chatMsgs.push(chatMsg);
-//				}
 
 				this.setState({ player: playerInfo });
 			});
@@ -103,6 +94,14 @@ class DiceGameContainer extends React.Component {
 
 	roll() {
 		this.socket.send('/app/roll');
+		// make the roll button disappear immediately after a roll
+		let gameState = this.state.gameState;
+		gameState.currentlyRollingPlayer = 'some_bottom_deeps_scrub_pug';
+		this.setState({ gameState: gameState });
+	}
+
+	stuck() {
+		this.socket.send('/app/stuck');
 	}
 
 	// Receives response from /app/chat
@@ -135,6 +134,7 @@ class DiceGameContainer extends React.Component {
 		try {
 			let gameState = JSON.parse(gameStateResponse.body);
 			normalizeWowClasses(gameState.dgPlayers);
+			normalizeWowClasses(gameState.graveyard);
 			this.setState({ gameState: gameState });
 		} catch (e) {
 			alert("Failed to parse game state. Contact failbeats dev");

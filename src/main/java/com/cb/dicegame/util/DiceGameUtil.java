@@ -14,6 +14,18 @@ public class DiceGameUtil {
 		return PASSWORD_ENCODER;
 	}
 
+	public static void sleep(int ms) {
+		try {
+			Thread.sleep(ms);
+		} catch (Exception e) {
+			Log.error("DiceGameUtil encountered an error while sleeping");
+			Log.error(e.getMessage());
+		}
+	}
+
+	/**
+	 * Returns the username of the user making the request
+	 */
 	public static String getPlayerName(Principal principal) {
 		return principal.getName();
 	}
