@@ -49491,9 +49491,6 @@ function (_React$Component2) {
   }, {
     key: "render",
     value: function render() {
-      var logoutStyle = {
-        color: "red"
-      };
       var popover = React.createElement(react_bootstrap_Popover__WEBPACK_IMPORTED_MODULE_1__["default"], null, React.createElement(react_bootstrap_Popover__WEBPACK_IMPORTED_MODULE_1__["default"].Content, {
         className: "table-dark table-hover text-white"
       }, React.createElement("table", null, React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", {
@@ -49501,8 +49498,7 @@ function (_React$Component2) {
         className: "dicegame-nav-item"
       }, "Change class")), React.createElement("tr", null, React.createElement("td", {
         onClick: this.logout,
-        className: "dicegame-nav-item",
-        style: logoutStyle
+        className: "dicegame-nav-item death-knight"
       }, "Logout"))))));
       return React.createElement(react_bootstrap_OverlayTrigger__WEBPACK_IMPORTED_MODULE_0__["default"], {
         trigger: "click",

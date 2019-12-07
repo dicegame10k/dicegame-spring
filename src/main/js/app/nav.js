@@ -82,7 +82,6 @@ class PlayerProfile extends React.Component {
 	}
 
 	render() {
-		let logoutStyle = {color: "red"};
 		let popover =
 			<Popover>
 				<Popover.Content className="table-dark table-hover text-white">
@@ -92,7 +91,7 @@ class PlayerProfile extends React.Component {
 								<td onClick={this.openChangeWowClassModal} className="dicegame-nav-item">Change class</td>
 							</tr>
 							<tr>
-								<td onClick={this.logout} className="dicegame-nav-item" style={logoutStyle}>Logout</td>
+								<td onClick={this.logout} className="dicegame-nav-item death-knight">Logout</td>
 							</tr>
 						</tbody>
 					</table>
