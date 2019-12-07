@@ -36,14 +36,16 @@ public class DiceGameLogoutSuccessHandler implements LogoutSuccessHandler {
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth)
 			throws IOException, ServletException {
-		String username = auth.getName();
-		if (StringUtil.notNil(username)) {
-			String logoutMsg = String.format("%s logged out", username);
-			Log.info(logoutMsg);
-			socketUtil.broadcastSystemChat(logoutMsg);
+		if (auth != null) {
+			String username = auth.getName();
+			if (StringUtil.notNil(username)) {
+				String logoutMsg = String.format("%s logged out", username);
+				Log.info(logoutMsg);
+				socketUtil.broadcastSystemChat(logoutMsg);
 
-			Player p = playerRepository.findByName(username);
-			diceGameService.removePlayer(p);
+				Player p = playerRepository.findByName(username);
+				diceGameService.removePlayer(p);
+			}
 		}
 
 		// redirect back to the homepage... which will then get redirected back to the login
