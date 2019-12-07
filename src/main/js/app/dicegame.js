@@ -1,3 +1,6 @@
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+
 import {Chat} from './chat.js';
 
 const React = require('react');
@@ -20,14 +23,14 @@ export class DiceGame extends React.Component {
 						</tr>
 						<tr>
 							<td className="dg-lobby-td">
-								<Lobby lobby={this.props.lobby}/>
+								<Lobby lobby={this.props.lobby} kick={this.props.kick}/>
 							</td>
 							<td className="dg-game-td">
-								<Game gameState={this.props.gameState} player={this.props.player}
-									lightUp={this.props.lightUp} roll={this.props.roll}/>
+								<Game gameState={this.props.gameState} player={this.props.player} lightUp={this.props.lightUp}
+									roll={this.props.roll} forceRoll={this.props.forceRoll} kick={this.props.kick}/>
 							</td>
 							<td className="dg-graveyard-td">
-								<Graveyard graveyard={this.props.gameState.graveyard}/>
+								<Graveyard graveyard={this.props.gameState.graveyard} kick={this.props.kick}/>
 							</td>
 						</tr>
 					</tbody>
@@ -134,7 +137,8 @@ class Game extends React.Component {
 		let dgPlayerCards = '';
 		if (gameInProgress) {
 			dgPlayerCards = dgPlayers.map((player, i) => {
-				return <GameCard key={i} player={player} currentlyRollingPlayer={currentlyRollingPlayer}/>;
+				return <GameCard key={i} player={player} currentlyRollingPlayer={currentlyRollingPlayer} kick={this.props.kick}
+					forceRoll={this.props.forceRoll}/>;
 			});
 		}
 
@@ -164,7 +168,7 @@ class Lobby extends React.Component {
 		return (
 			<div id="lobby" className="lobby">
 				{this.props.lobby.map((player, i) => {
-					return <Card key={i} player={player}/>;
+					return <Card key={i} player={player} kick={this.props.kick}/>;
 				})}
 			</div>
 		)
@@ -181,7 +185,7 @@ class Graveyard extends React.Component {
 		return (
 			<div id="graveyard" className="graveyard">
 				{this.props.graveyard.map((player, i) => {
-					return <Card key={i} player={player}/>;
+					return <Card key={i} player={player} kick={this.props.kick}/>;
 				})}
 			</div>
 		)
@@ -192,6 +196,11 @@ class GameCard extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.handleKick = this.handleKick.bind(this);
+	}
+
+	handleKick() {
+		this.props.kick(this.props.player.name);
 	}
 
 	render() {
@@ -203,10 +212,30 @@ class GameCard extends React.Component {
 		if (currentlyRollingPlayer && currentlyRollingPlayer.name === player.name)
 			playerRollingClassName = "player-rolling";
 
+		let forceRollPopoverElem = '';
+		if (playerRollingClassName)
+			forceRollPopoverElem = <tr><td onClick={this.props.forceRoll} className="dicegame-nav-item">Force roll</td></tr>;
+
+		let popover =
+			<Popover id={player.name}>
+				<Popover.Content className="wow-card-popover table-dark table-hover text-white">
+					<table>
+						<tbody>
+							{forceRollPopoverElem}
+							<tr>
+								<td onClick={this.handleKick} className="dicegame-nav-item">Kick</td>
+							</tr>
+						</tbody>
+					</table>
+				</Popover.Content>
+			</Popover>;
+
 		return (
-			<div className={`wow-card-container text-center player-in-game rounded ${player.wowClass}-bg ${playerRollingClassName}`}>
-				<span className="dg-player-in-game-name">{player.name}</span>
-			</div>
+			<OverlayTrigger trigger="click" placement="bottom" overlay={popover} delay="0">
+				<div className={`wow-card-container text-center player-in-game rounded ${player.wowClass}-bg ${playerRollingClassName}`}>
+					<span className="dg-player-in-game-name">{player.name}</span>
+				</div>
+			</OverlayTrigger>
 		)
 	}
 
@@ -217,16 +246,36 @@ class Card extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.handleKick = this.handleKick.bind(this);
+	}
+
+	handleKick() {
+		this.props.kick(this.props.player.name);
 	}
 
 	render() {
 		let player = this.props.player;
+		let popover =
+			<Popover id={player.name}>
+				<Popover.Content className="wow-card-popover table-dark table-hover text-white">
+					<table>
+						<tbody>
+							<tr>
+								<td onClick={this.handleKick} className="dicegame-nav-item">Kick</td>
+							</tr>
+						</tbody>
+					</table>
+				</Popover.Content>
+			</Popover>;
+
 		return (
-			<div className="card wow-card-container text-center mb-3">
-				<div className={`card-body wow-card rounded ${player.wowClass}-bg`}>
-					<h5 className="card-text">{player.name}</h5>
+			<OverlayTrigger trigger="click" placement="bottom" overlay={popover} delay="0">
+				<div className="card wow-card-container text-center mb-3">
+					<div className={`card-body rounded ${player.wowClass}-bg`}>
+						<h5 className="card-text">{player.name}</h5>
+					</div>
 				</div>
-			</div>
+			</OverlayTrigger>
 		)
 	}
 }

@@ -58,7 +58,7 @@ class DiceGameContainer extends React.Component {
 		const sjs = SockJS('/10k'); // url endpoint that initiates the socket
         this.socket = Stomp.over(sjs); // the stompClient web socket
         this.socket.connect({}, () => {
-        	// this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
+        	// this.socket.debug = function(str) {}; TODO: uncomment to turn off console debugging messages
         	// topic is for broadcasted messages, user/queue is for individual messages
         	this.lobbyTopicRegistration = this.socket.subscribe('/topic/lobby', this.updateLobby);
         	this.lobbyQueueRegistration = this.socket.subscribe('/user/queue/lobby', this.updateLobby);
@@ -131,11 +131,11 @@ class DiceGameContainer extends React.Component {
 		if (!playerToKick)
 			return;
 
-		playerToKick = normalizeUsername(playerToKick);
 		this.kick(playerToKick);
 	}
 
 	kick(username) {
+		username = normalizeUsername(username);
 		this.socket.send('/app/kick', {}, username);
 	}
 
@@ -183,8 +183,9 @@ class DiceGameContainer extends React.Component {
 
 	render() {
 		let page = <DiceGame player={this.state.player} socket={this.socket}
-			lobby={this.state.lobby} gameState={this.state.gameState}
-			lightUp={this.lightUp} roll={this.roll} chatMsgs={this.state.chatMsgs} chatCommandMap={this.chatCommandMap}/>;
+			lobby={this.state.lobby} gameState={this.state.gameState} lightUp={this.lightUp} roll={this.roll}
+			forceRoll={this.forceRoll} kick={this.kick} chatMsgs={this.state.chatMsgs}
+			chatCommandMap={this.chatCommandMap}/>;
 		if (this.state.page === 'recount')
 			page = <Recount player={this.state.player}/>;
 

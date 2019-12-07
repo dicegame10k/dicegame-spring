@@ -32455,7 +32455,7 @@ function (_React$Component) {
     _this.signUp = _this.signUp.bind(_assertThisInitialized(_this));
     _this.selectClass = _this.selectClass.bind(_assertThisInitialized(_this));
 
-    _this.props.setInfoMsg("Password not sent securely. I'm too poor to afford an HTTPS certificate");
+    _this.props.setInfoMsg("Careful... I'm too poor to afford an HTTPS certificate");
 
     return _this;
   }

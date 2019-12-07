@@ -24,10 +24,11 @@
 	max-width: 16rem;
 	margin: auto;
 	border: 0px !important;
+	cursor: pointer;
 }
 
-.wow-card {
-
+.wow-card-popover {
+	padding: 0 !important;
 }
 
 .player-rolling {

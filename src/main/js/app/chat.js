@@ -29,7 +29,8 @@ export class Chat extends React.Component {
 	turnOnAutoscroll() {
 		this.chatWindowScrollIntvlId = setInterval(() => {
 			var chatBoxElem = document.getElementById('allChatMessages');
-			chatBoxElem.scrollTop = chatBoxElem.scrollHeight;
+			if (chatBoxElem)
+				chatBoxElem.scrollTop = chatBoxElem.scrollHeight;
 		}, 100);
 	}
 
