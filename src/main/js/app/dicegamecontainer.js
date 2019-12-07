@@ -4,6 +4,7 @@ import {DiceGameNav} from './nav.js'
 import {DiceGame} from './dicegame.js';
 import {Recount} from './recount.js';
 
+import {normalizeUsername} from './dicegameutil.js';
 import {wowClassFromEnum} from './dicegameutil.js';
 import {normalizeWowClasses} from './dicegameutil.js';
 import {dicegameAscii} from './dicegameutil.js';
@@ -37,9 +38,19 @@ class DiceGameContainer extends React.Component {
 		this.updateLobby = this.updateLobby.bind(this);
 		this.updateGameState = this.updateGameState.bind(this);
 		this.switchPage = this.switchPage.bind(this);
+
 		this.lightUp = this.lightUp.bind(this);
 		this.stuck = this.stuck.bind(this);
 		this.roll = this.roll.bind(this);
+		this.forceRoll = this.forceRoll.bind(this);
+		this.slashKick = this.slashKick.bind(this);
+		this.kick = this.kick.bind(this);
+		this.chatCommandMap = {
+			'/stuck': this.stuck,
+			'/roll': this.roll,
+			'/force_roll': this.forceRoll,
+			'/kick': this.slashKick,
+		};
 	}
 
 	componentDidMount() {
@@ -100,8 +111,25 @@ class DiceGameContainer extends React.Component {
 		this.setState({ gameState: gameState });
 	}
 
+	forceRoll() {
+		this.socket.send('/app/forceRoll');
+	}
+
 	stuck() {
 		this.socket.send('/app/stuck');
+	}
+
+	slashKick(chatMsg) {
+		let playerToKick = chatMsg.split(' ')[1];
+		if (!playerToKick)
+			return;
+
+		playerToKick = normalizeUsername(playerToKick);
+		this.kick(playerToKick);
+	}
+
+	kick(username) {
+		this.socket.send('/app/kick', {}, username);
 	}
 
 	// Receives response from /app/chat
@@ -149,7 +177,7 @@ class DiceGameContainer extends React.Component {
 	render() {
 		let page = <DiceGame player={this.state.player} socket={this.socket}
 			lobby={this.state.lobby} gameState={this.state.gameState}
-			lightUp={this.lightUp} roll={this.roll} chatMsgs={this.state.chatMsgs}/>;
+			lightUp={this.lightUp} roll={this.roll} chatMsgs={this.state.chatMsgs} chatCommandMap={this.chatCommandMap}/>;
 		if (this.state.page === 'recount')
 			page = <Recount player={this.state.player}/>;
 

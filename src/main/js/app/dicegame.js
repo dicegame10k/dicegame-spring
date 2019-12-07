@@ -22,7 +22,8 @@ export class DiceGame extends React.Component {
 						<Game gameState={this.props.gameState} player={this.props.player}
 							lightUp={this.props.lightUp} roll={this.props.roll}/>
 						<Graveyard graveyard={this.props.gameState.graveyard}/>
-						<Chat player={this.props.player} socket={this.props.socket} chatMsgs={this.props.chatMsgs}/>
+						<Chat player={this.props.player} socket={this.props.socket} chatMsgs={this.props.chatMsgs}
+							chatCommandMap={this.props.chatCommandMap}/>
 						<Footer/>
 					</tr>
 				</table>

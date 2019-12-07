@@ -1,3 +1,7 @@
+export function normalizeUsername(username) {
+	return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
+}
+
 export function wowClassFromEnum(enumStr) {
 	return enumStr.toLowerCase().replace('_', '-');
 }

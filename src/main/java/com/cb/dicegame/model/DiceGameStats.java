@@ -24,4 +24,8 @@ public class DiceGameStats {
 		dkpWonMap.put(p, dkpWon);
 	}
 
+	public void setWinningPlayer(Player p) {
+		winningPlayer = p;
+	}
+
 }

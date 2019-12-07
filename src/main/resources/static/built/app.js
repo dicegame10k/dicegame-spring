@@ -39218,6 +39218,8 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Chat).call(this, props));
     _this.sendChat = _this.sendChat.bind(_assertThisInitialized(_this));
+    _this.handleAdminCommand = _this.handleAdminCommand.bind(_assertThisInitialized(_this));
+    _this.clearChatInput = _this.clearChatInput.bind(_assertThisInitialized(_this));
     _this.toggleAutoscroll = _this.toggleAutoscroll.bind(_assertThisInitialized(_this));
     _this.turnOnAutoscroll = _this.turnOnAutoscroll.bind(_assertThisInitialized(_this));
     _this.turnOffAutoscroll = _this.turnOffAutoscroll.bind(_assertThisInitialized(_this));
@@ -39258,10 +39260,39 @@ function (_React$Component) {
       event.preventDefault();
       var data = new FormData(event.target);
       var msg = data.get('msg');
-      if (!msg) return; // TODO: handle admin commands
+      if (!msg) return;
+
+      if (this.handleAdminCommand(msg)) {
+        this.clearChatInput();
+        return;
+      }
 
       this.props.socket.send('/app/chat', {}, msg);
+      this.clearChatInput();
+    }
+  }, {
+    key: "clearChatInput",
+    value: function clearChatInput() {
       document.getElementById('msg').value = '';
+    }
+  }, {
+    key: "handleAdminCommand",
+    value: function handleAdminCommand(msg) {
+      var firstWord = msg.toLowerCase().split(' ')[0];
+      var chatCmndFn = this.props.chatCommandMap[firstWord];
+
+      if (typeof chatCmndFn === 'function') {
+        try {
+          chatCmndFn(msg);
+        } catch (e) {
+          console.error("Admin chat command did not work", msg);
+          console.error(e);
+        }
+
+        return true;
+      }
+
+      return false;
     }
   }, {
     key: "render",
@@ -39405,7 +39436,8 @@ function (_React$Component) {
       }), React.createElement(_chat_js__WEBPACK_IMPORTED_MODULE_0__["Chat"], {
         player: this.props.player,
         socket: this.props.socket,
-        chatMsgs: this.props.chatMsgs
+        chatMsgs: this.props.chatMsgs,
+        chatCommandMap: this.props.chatCommandMap
       }), React.createElement(Footer, null))));
     }
   }]);
@@ -39732,6 +39764,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
@@ -39772,6 +39805,15 @@ function (_React$Component) {
     _this.lightUp = _this.lightUp.bind(_assertThisInitialized(_this));
     _this.stuck = _this.stuck.bind(_assertThisInitialized(_this));
     _this.roll = _this.roll.bind(_assertThisInitialized(_this));
+    _this.forceRoll = _this.forceRoll.bind(_assertThisInitialized(_this));
+    _this.slashKick = _this.slashKick.bind(_assertThisInitialized(_this));
+    _this.kick = _this.kick.bind(_assertThisInitialized(_this));
+    _this.chatCommandMap = {
+      '/stuck': _this.stuck,
+      '/roll': _this.roll,
+      '/force_roll': _this.forceRoll,
+      '/kick': _this.slashKick
+    };
     return _this;
   }
 
@@ -39844,9 +39886,27 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "forceRoll",
+    value: function forceRoll() {
+      this.socket.send('/app/forceRoll');
+    }
+  }, {
     key: "stuck",
     value: function stuck() {
       this.socket.send('/app/stuck');
+    }
+  }, {
+    key: "slashKick",
+    value: function slashKick(chatMsg) {
+      var playerToKick = chatMsg.split(' ')[1];
+      if (!playerToKick) return;
+      playerToKick = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeUsername"])(playerToKick);
+      this.kick(playerToKick);
+    }
+  }, {
+    key: "kick",
+    value: function kick(username) {
+      this.socket.send('/app/kick', {}, username);
     } // Receives response from /app/chat
 
   }, {
@@ -39913,7 +39973,8 @@ function (_React$Component) {
         gameState: this.state.gameState,
         lightUp: this.lightUp,
         roll: this.roll,
-        chatMsgs: this.state.chatMsgs
+        chatMsgs: this.state.chatMsgs,
+        chatCommandMap: this.chatCommandMap
       });
       if (this.state.page === 'recount') page = React.createElement(_recount_js__WEBPACK_IMPORTED_MODULE_2__["Recount"], {
         player: this.state.player
@@ -39937,14 +39998,18 @@ ReactDOM.render(React.createElement(DiceGameContainer, null), document.getElemen
 /*!*****************************************!*\
   !*** ./src/main/js/app/dicegameutil.js ***!
   \*****************************************/
-/*! exports provided: wowClassFromEnum, normalizeWowClasses, dicegameAscii */
+/*! exports provided: normalizeUsername, wowClassFromEnum, normalizeWowClasses, dicegameAscii */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeUsername", function() { return normalizeUsername; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wowClassFromEnum", function() { return wowClassFromEnum; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeWowClasses", function() { return normalizeWowClasses; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dicegameAscii", function() { return dicegameAscii; });
+function normalizeUsername(username) {
+  return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
+}
 function wowClassFromEnum(enumStr) {
   return enumStr.toLowerCase().replace('_', '-');
 }

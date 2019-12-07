@@ -131,6 +131,12 @@ public class DiceGameController {
 		diceGameService.roll(p, true);
 	}
 
+	@MessageMapping("/kick")
+	public void kick(Principal principal, @RequestBody String username) {
+		Player p = getPlayer(principal);
+		// TODO
+	}
+
 	@MessageMapping("/stuck")
 	public void stuck(Principal principal) {
 		Player p = getPlayer(principal);

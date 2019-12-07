@@ -5,6 +5,8 @@ export class Chat extends React.Component {
 	constructor(props) {
 		super(props);
 		this.sendChat = this.sendChat.bind(this);
+		this.handleAdminCommand = this.handleAdminCommand.bind(this);
+		this.clearChatInput = this.clearChatInput.bind(this);
 		this.toggleAutoscroll = this.toggleAutoscroll.bind(this);
 		this.turnOnAutoscroll = this.turnOnAutoscroll.bind(this);
 		this.turnOffAutoscroll = this.turnOffAutoscroll.bind(this);
@@ -42,9 +44,34 @@ export class Chat extends React.Component {
 		if (!msg)
 			return;
 
-		// TODO: handle admin commands
+		if (this.handleAdminCommand(msg)) {
+			this.clearChatInput();
+			return;
+		}
+
 		this.props.socket.send('/app/chat', {}, msg);
+		this.clearChatInput();
+	}
+
+	clearChatInput() {
 		document.getElementById('msg').value = '';
+	}
+
+	handleAdminCommand(msg) {
+		let firstWord = msg.toLowerCase().split(' ')[0];
+		let chatCmndFn = this.props.chatCommandMap[firstWord];
+		if (typeof chatCmndFn === 'function') {
+			try {
+				chatCmndFn(msg);
+			} catch (e) {
+				console.error("Admin chat command did not work", msg);
+				console.error(e);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	render() {
