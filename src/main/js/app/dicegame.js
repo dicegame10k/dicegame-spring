@@ -12,21 +12,30 @@ export class DiceGame extends React.Component {
 		return (
 			<div>
 				<table className="dg-playing-field">
-					<tr>
-						<th><h3 className="dg-field-header">Lobby</h3></th>
-						<th></th>
-						<th><h3 className="dg-field-header">Graveyard</h3></th>
-					</tr>
-					<tr>
-						<Lobby lobby={this.props.lobby}/>
-						<Game gameState={this.props.gameState} player={this.props.player}
-							lightUp={this.props.lightUp} roll={this.props.roll}/>
-						<Graveyard graveyard={this.props.gameState.graveyard}/>
-						<Chat player={this.props.player} socket={this.props.socket} chatMsgs={this.props.chatMsgs}
-							chatCommandMap={this.props.chatCommandMap}/>
-						<Footer/>
-					</tr>
+					<tbody>
+						<tr>
+							<th><h3 className="dg-field-header">Lobby</h3></th>
+							<th></th>
+							<th><h3 className="dg-field-header">Graveyard</h3></th>
+						</tr>
+						<tr>
+							<td className="dg-lobby-td">
+								<Lobby lobby={this.props.lobby}/>
+							</td>
+							<td className="dg-game-td">
+								<Game gameState={this.props.gameState} player={this.props.player}
+									lightUp={this.props.lightUp} roll={this.props.roll}/>
+							</td>
+							<td className="dg-graveyard-td">
+								<Graveyard graveyard={this.props.gameState.graveyard}/>
+							</td>
+						</tr>
+					</tbody>
 				</table>
+
+				<Chat player={this.props.player} socket={this.props.socket} chatMsgs={this.props.chatMsgs}
+					chatCommandMap={this.props.chatCommandMap}/>
+				<Footer/>
 			</div>
 		)
 	}
@@ -134,13 +143,13 @@ class Game extends React.Component {
 			currRollElem = <div id="currRoll" className="currentRoll">{currentRoll}</div>;
 
 		return (
-			<td className="dg-game-td">
+			<div>
 				{lightUpBtn}
 				{fireGif}
 				{dgPlayerCards}
 				{currRollElem}
 				{rollBtn}
-			</td>
+			</div>
 		)
 	}
 }
@@ -153,13 +162,11 @@ class Lobby extends React.Component {
 
 	render() {
 		return (
-			<td className="dg-lobby-td">
-				<div id="lobby" className="lobby">
-					{this.props.lobby.map((player, i) => {
-						return <Card key={i} player={player}/>;
-					})}
-				</div>
-			</td>
+			<div id="lobby" className="lobby">
+				{this.props.lobby.map((player, i) => {
+					return <Card key={i} player={player}/>;
+				})}
+			</div>
 		)
 	}
 }
@@ -172,13 +179,11 @@ class Graveyard extends React.Component {
 
 	render() {
 		return (
-			<td className="dg-graveyard-td">
-				<div id="graveyard" className="graveyard">
-					{this.props.graveyard.map((player, i) => {
-						return <Card key={i} player={player}/>;
-					})}
-				</div>
-			</td>
+			<div id="graveyard" className="graveyard">
+				{this.props.graveyard.map((player, i) => {
+					return <Card key={i} player={player}/>;
+				})}
+			</div>
 		)
 	}
 }

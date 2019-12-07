@@ -56,7 +56,7 @@ public class DiceGameService implements IDiceGameConstants {
 		gameInProgress = true;
 		dg = new DiceGame(p, lobby);
 		lobby = new ArrayList<>();
-		String gameStartMsg = String.format("DiceGame started by %s", p.getName());
+		String gameStartMsg = String.format("%s started DiceGame", p.getName());
 		Log.info(gameStartMsg);
 		socketUtil.broadcastSystemChat(gameStartMsg);
 		socketUtil.broadcastGameState(getGameState());

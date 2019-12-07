@@ -39420,25 +39420,31 @@ function (_React$Component) {
     value: function render() {
       return React.createElement("div", null, React.createElement("table", {
         className: "dg-playing-field"
-      }, React.createElement("tr", null, React.createElement("th", null, React.createElement("h3", {
+      }, React.createElement("tbody", null, React.createElement("tr", null, React.createElement("th", null, React.createElement("h3", {
         className: "dg-field-header"
       }, "Lobby")), React.createElement("th", null), React.createElement("th", null, React.createElement("h3", {
         className: "dg-field-header"
-      }, "Graveyard"))), React.createElement("tr", null, React.createElement(Lobby, {
+      }, "Graveyard"))), React.createElement("tr", null, React.createElement("td", {
+        className: "dg-lobby-td"
+      }, React.createElement(Lobby, {
         lobby: this.props.lobby
-      }), React.createElement(Game, {
+      })), React.createElement("td", {
+        className: "dg-game-td"
+      }, React.createElement(Game, {
         gameState: this.props.gameState,
         player: this.props.player,
         lightUp: this.props.lightUp,
         roll: this.props.roll
-      }), React.createElement(Graveyard, {
+      })), React.createElement("td", {
+        className: "dg-graveyard-td"
+      }, React.createElement(Graveyard, {
         graveyard: this.props.gameState.graveyard
-      }), React.createElement(_chat_js__WEBPACK_IMPORTED_MODULE_0__["Chat"], {
+      }))))), React.createElement(_chat_js__WEBPACK_IMPORTED_MODULE_0__["Chat"], {
         player: this.props.player,
         socket: this.props.socket,
         chatMsgs: this.props.chatMsgs,
         chatCommandMap: this.props.chatCommandMap
-      }), React.createElement(Footer, null))));
+      }), React.createElement(Footer, null));
     }
   }]);
 
@@ -39566,9 +39572,7 @@ function (_React$Component2) {
         id: "currRoll",
         className: "currentRoll"
       }, currentRoll);
-      return React.createElement("td", {
-        className: "dg-game-td"
-      }, lightUpBtn, fireGif, dgPlayerCards, currRollElem, rollBtn);
+      return React.createElement("div", null, lightUpBtn, fireGif, dgPlayerCards, currRollElem, rollBtn);
     }
   }]);
 
@@ -39589,9 +39593,7 @@ function (_React$Component3) {
   _createClass(Lobby, [{
     key: "render",
     value: function render() {
-      return React.createElement("td", {
-        className: "dg-lobby-td"
-      }, React.createElement("div", {
+      return React.createElement("div", {
         id: "lobby",
         className: "lobby"
       }, this.props.lobby.map(function (player, i) {
@@ -39599,7 +39601,7 @@ function (_React$Component3) {
           key: i,
           player: player
         });
-      })));
+      }));
     }
   }]);
 
@@ -39620,9 +39622,7 @@ function (_React$Component4) {
   _createClass(Graveyard, [{
     key: "render",
     value: function render() {
-      return React.createElement("td", {
-        className: "dg-graveyard-td"
-      }, React.createElement("div", {
+      return React.createElement("div", {
         id: "graveyard",
         className: "graveyard"
       }, this.props.graveyard.map(function (player, i) {
@@ -39630,7 +39630,7 @@ function (_React$Component4) {
           key: i,
           player: player
         });
-      })));
+      }));
     }
   }]);
 
