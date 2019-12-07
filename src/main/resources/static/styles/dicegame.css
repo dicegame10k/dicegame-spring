@@ -60,6 +60,15 @@ th {
     border-left: 4px solid transparent;
 }
 
+.dg-change-class-modal {
+	width: 80% !important;
+	padding: 30px 50px;
+	position: fixed;
+	border-radius: 10px;
+	top: 20%;
+	left: 10%;
+}
+
 .dg-playing-field {
 	width: 100%;
 }

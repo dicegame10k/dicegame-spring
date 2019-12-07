@@ -78,6 +78,21 @@ public class DiceGameController {
 		return "success";
 	}
 
+	@PostMapping("/changeWowClass")
+	@ResponseBody
+	public Player changeWowClass(HttpServletRequest request) {
+		Player p = getPlayer();
+		if (p == null)
+			return null;
+
+		String newClassStr = request.getParameterMap().get("newWowClass")[0];
+		WowClass newWowClass = WowClass.fromString(newClassStr);
+		diceGameService.updatePlayerInfo(p, newWowClass);
+		p.setWowClass(newWowClass);
+		playerRepository.save(p);
+		return p;
+	}
+
 	@GetMapping("/heartbeat")
 	@ResponseBody
 	public String heartbeat() {

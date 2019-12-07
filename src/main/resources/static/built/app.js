@@ -48459,6 +48459,8 @@ function (_React$Component) {
     _this.updateGameState = _this.updateGameState.bind(_assertThisInitialized(_this));
     _this.switchPage = _this.switchPage.bind(_assertThisInitialized(_this));
     _this.logout = _this.logout.bind(_assertThisInitialized(_this));
+    _this.changeWowClass = _this.changeWowClass.bind(_assertThisInitialized(_this));
+    _this.updatePlayerInfo = _this.updatePlayerInfo.bind(_assertThisInitialized(_this));
     _this.lightUp = _this.lightUp.bind(_assertThisInitialized(_this));
     _this.stuck = _this.stuck.bind(_assertThisInitialized(_this));
     _this.roll = _this.roll.bind(_assertThisInitialized(_this));
@@ -48499,21 +48501,44 @@ function (_React$Component) {
         fetch('/enterLobby').then(function (response) {
           return response.text();
         }).then(function (playerInfo) {
-          try {
-            playerInfo = JSON.parse(playerInfo);
-            playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
-          } catch (e) {
-            alert("Session expired. Redirecting to login");
-            console.error("Error with /loadPlayer endpoint", e);
-            window.location.href = '/logout';
-          }
-
-          _this2.setState({
-            player: playerInfo
-          });
+          _this2.updatePlayerInfo(playerInfo);
+        }, function (e) {
+          console.error(e);
         });
       }, function (e) {
         console.error("Failed to setup connections to server", e);
+      });
+    }
+  }, {
+    key: "changeWowClass",
+    value: function changeWowClass(formData) {
+      var _this3 = this;
+
+      fetch('/changeWowClass', {
+        method: 'POST',
+        body: formData
+      }).then(function (response) {
+        return response.text();
+      }).then(function (playerInfo) {
+        _this3.updatePlayerInfo(playerInfo);
+      }, function (e) {
+        console.error(e);
+      });
+    }
+  }, {
+    key: "updatePlayerInfo",
+    value: function updatePlayerInfo(playerInfo) {
+      try {
+        playerInfo = JSON.parse(playerInfo);
+        playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
+      } catch (e) {
+        alert("Failed to parse player info");
+        console.error("Error parsing player info", e);
+        window.location.href = '/logout';
+      }
+
+      this.setState({
+        player: playerInfo
       });
     } // checks if the session has expired and redirects the user back to the login page
 
@@ -48525,7 +48550,9 @@ function (_React$Component) {
           console.log("DiceGame heartbeat was redirected to " + response.url);
           window.location.href = response.url;
         }
-      }, function (e) {});
+      }, function (e) {
+        console.error(e);
+      });
     }
   }, {
     key: "logout",
@@ -48647,8 +48674,8 @@ function (_React$Component) {
       });
       return React.createElement("div", null, React.createElement(_nav_js__WEBPACK_IMPORTED_MODULE_0__["DiceGameNav"], {
         player: this.state.player,
-        socket: this.socket,
-        switchPage: this.switchPage
+        switchPage: this.switchPage,
+        changeWowClass: this.changeWowClass
       }), page);
     }
   }]);
@@ -49279,15 +49306,17 @@ function (_React$Component7) {
 /*!*****************************************!*\
   !*** ./src/main/js/app/dicegameutil.js ***!
   \*****************************************/
-/*! exports provided: normalizeUsername, wowClassFromEnum, normalizeWowClasses, dicegameAscii */
+/*! exports provided: wowClasses, normalizeUsername, wowClassFromEnum, normalizeWowClasses, dicegameAscii */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wowClasses", function() { return wowClasses; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeUsername", function() { return normalizeUsername; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wowClassFromEnum", function() { return wowClassFromEnum; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeWowClasses", function() { return normalizeWowClasses; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dicegameAscii", function() { return dicegameAscii; });
+var wowClasses = ["death-knight", "demon-hunter", "druid", "hunter", "mage", "monk", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"];
 function normalizeUsername(username) {
   return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
 }
@@ -49320,6 +49349,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_bootstrap_Popover__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-bootstrap/Popover */ "./node_modules/react-bootstrap/esm/Popover.js");
 /* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-modal */ "./node_modules/react-modal/lib/index.js");
 /* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_modal__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49342,9 +49372,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var React = __webpack_require__(/*! react */ "./node_modules/react/index.js"); //ReactModal.setAppElement('#react');
 
+var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
+react_modal__WEBPACK_IMPORTED_MODULE_2___default.a.setAppElement('#react');
 var DiceGameNav =
 /*#__PURE__*/
 function (_React$Component) {
@@ -49400,8 +49431,9 @@ function (_React$Component) {
       var changeClassModal = '';
       if (this.state.showChangeClassModal) changeClassModal = React.createElement(ChangeClassModal, {
         player: this.props.player,
+        changeWowClass: this.props.changeWowClass,
         toggleWowClassModal: this.toggleWowClassModal,
-        showModal: this.showChangeClassModal
+        showModal: this.state.showChangeClassModal
       });
       return React.createElement("nav", {
         className: "dicegame-nav"
@@ -49439,6 +49471,7 @@ function (_React$Component2) {
 
     _this2 = _possibleConstructorReturn(this, _getPrototypeOf(PlayerProfile).call(this, props));
     _this2.logout = _this2.logout.bind(_assertThisInitialized(_this2));
+    _this2.openChangeWowClassModal = _this2.openChangeWowClassModal.bind(_assertThisInitialized(_this2));
     return _this2;
   }
 
@@ -49448,19 +49481,23 @@ function (_React$Component2) {
       window.location.href = '/logout';
     }
   }, {
+    key: "openChangeWowClassModal",
+    value: function openChangeWowClassModal() {
+      this.props.toggleWowClassModal(true); // close the profile popover
+
+      var profileElem = document.getElementById('playerProfile');
+      if (profileElem) profileElem.click();
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
-
       var logoutStyle = {
         color: "red"
       };
       var popover = React.createElement(react_bootstrap_Popover__WEBPACK_IMPORTED_MODULE_1__["default"], null, React.createElement(react_bootstrap_Popover__WEBPACK_IMPORTED_MODULE_1__["default"].Content, {
         className: "table-dark table-hover text-white"
       }, React.createElement("table", null, React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", {
-        onClick: function onClick() {
-          _this3.props.toggleWowClassModal(true);
-        },
+        onClick: this.openChangeWowClassModal,
         className: "dicegame-nav-item"
       }, "Change class")), React.createElement("tr", null, React.createElement("td", {
         onClick: this.logout,
@@ -49472,7 +49509,8 @@ function (_React$Component2) {
         placement: "bottom",
         overlay: popover
       }, React.createElement("div", {
-        className: "dicegame-nav-item dicegame-nav-username"
+        className: "dicegame-nav-item dicegame-nav-username",
+        id: "playerProfile"
       }, React.createElement("div", {
         className: "".concat(this.props.player.wowClass),
         "data-tip": true,
@@ -49492,17 +49530,75 @@ function (_React$Component3) {
   _inherits(ChangeClassModal, _React$Component3);
 
   function ChangeClassModal(props) {
+    var _this3;
+
     _classCallCheck(this, ChangeClassModal);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(ChangeClassModal).call(this, props));
+    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(ChangeClassModal).call(this, props));
+    _this3.newWowClass = null;
+    _this3.change = _this3.change.bind(_assertThisInitialized(_this3));
+    _this3.closeModal = _this3.closeModal.bind(_assertThisInitialized(_this3));
+    _this3.selectClass = _this3.selectClass.bind(_assertThisInitialized(_this3));
+    return _this3;
   }
 
   _createClass(ChangeClassModal, [{
+    key: "change",
+    value: function change(event) {
+      event.preventDefault();
+      var data = new FormData(event.target);
+      data.set('newWowClass', this.newWowClass);
+      this.props.changeWowClass(data);
+      this.closeModal();
+    }
+  }, {
+    key: "closeModal",
+    value: function closeModal() {
+      this.props.toggleWowClassModal(false);
+    }
+  }, {
+    key: "selectClass",
+    value: function selectClass(event) {
+      var prevSelectedClass = document.getElementsByClassName('wow-class-icon-selected')[0];
+      if (prevSelectedClass) prevSelectedClass.classList.remove('wow-class-icon-selected');
+      this.newWowClass = event.target.id;
+      event.target.classList.add("wow-class-icon-selected");
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this4 = this;
+
+      var currClass = this.props.player.wowClass;
       return React.createElement(react_modal__WEBPACK_IMPORTED_MODULE_2___default.a, {
-        isOpen: this.props.showModal
-      }, React.createElement("div", null, "In the modal"));
+        isOpen: this.props.showModal,
+        className: "dg-noop-class-for-some-reason-it-is-necessary"
+      }, React.createElement("div", {
+        className: "dg-change-class-modal table-dark"
+      }, React.createElement("form", {
+        onSubmit: this.change
+      }, React.createElement("input", {
+        type: "hidden"
+      }), React.createElement("div", {
+        className: "form-group"
+      }, React.createElement("div", null, "Choose a new class:"), React.createElement("div", {
+        className: "dg-wowclass-container"
+      }, _dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClasses"].map(function (wowClass) {
+        var selectedClass = '';
+        if (wowClass === currClass) selectedClass = "wow-class-icon-selected";
+        return React.createElement("span", {
+          onClick: _this4.selectClass,
+          className: "".concat(selectedClass, " wow-class-icon rounded ").concat(wowClass, "-bg"),
+          id: wowClass,
+          key: wowClass
+        });
+      }))), React.createElement("button", {
+        type: "submit",
+        className: "btn btn-info dg-btn-space"
+      }, "Save"), React.createElement("button", {
+        className: "btn btn-light",
+        onClick: this.closeModal
+      }, "Cancel"))));
     }
   }]);
 

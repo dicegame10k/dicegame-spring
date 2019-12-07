@@ -1,3 +1,6 @@
+export const wowClasses = ["death-knight", "demon-hunter", "druid", "hunter", "mage",
+	"monk", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"];
+
 export function normalizeUsername(username) {
 	return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
 }

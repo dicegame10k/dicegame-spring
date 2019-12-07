@@ -3,6 +3,7 @@ package com.cb.dicegame.service;
 import com.cb.dicegame.IDiceGameConstants;
 import com.cb.dicegame.model.DiceGame;
 import com.cb.dicegame.model.Player;
+import com.cb.dicegame.model.WowClass;
 import com.cb.dicegame.util.DiceGameUtil;
 import com.cb.dicegame.util.Log;
 import com.cb.dicegame.util.SocketUtil;
@@ -59,8 +60,7 @@ public class DiceGameService implements IDiceGameConstants {
 		String gameStartMsg = String.format("%s started DiceGame", p.getName());
 		Log.info(gameStartMsg);
 		socketUtil.broadcastSystemChat(gameStartMsg);
-		socketUtil.broadcastGameState(getGameState());
-		socketUtil.broadcastLobby(lobby);
+		broadcastAppState();
 	}
 
 	public synchronized void roll(Player p, boolean force) {
@@ -108,8 +108,7 @@ public class DiceGameService implements IDiceGameConstants {
 		}
 
 		gameInProgress = false;
-		socketUtil.broadcastGameState(getGameState());
-		socketUtil.broadcastLobby(lobby);
+		broadcastAppState();
 	}
 
 	// called when player logs out or gets kicked
@@ -128,8 +127,26 @@ public class DiceGameService implements IDiceGameConstants {
 
 		// tell the user to logout
 		socketUtil.sendLogout(p);
-		socketUtil.broadcastLobby(lobby);
-		socketUtil.broadcastGameState(getGameState());
+		broadcastAppState();
+	}
+
+	public synchronized void updatePlayerInfo(Player p, WowClass newWowClass) {
+		int lobbyPos = lobby.indexOf(p);
+		if (lobbyPos > -1)
+			lobby.get(lobbyPos).setWowClass(newWowClass);
+
+		if (dg != null) {
+			int gamePos = dg.getPlayers().indexOf(p);
+			if (gamePos > -1)
+				dg.getPlayers().get(gamePos).setWowClass(newWowClass);
+
+			int graveyardPos = dg.getGraveyard().indexOf(p);
+			if (graveyardPos > -1)
+				dg.getGraveyard().get(graveyardPos).setWowClass(newWowClass);
+		}
+
+		Log.info(String.format("%s changed class to %s", p.getName(), newWowClass));
+		broadcastAppState();
 	}
 
 	public boolean isPlayerInLobbyOrGame(Player p) {
@@ -150,6 +167,11 @@ public class DiceGameService implements IDiceGameConstants {
 		gameState.put(CURRENTLY_ROLLING_PLAYER, currentlyRollingPlayer);
 		gameState.put(CURRENT_ROLL, currentRoll);
 		return gameState;
+	}
+
+	public void broadcastAppState() {
+		socketUtil.broadcastLobby(lobby);
+		socketUtil.broadcastGameState(getGameState());
 	}
 
 	/**

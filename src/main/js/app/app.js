@@ -39,6 +39,8 @@ class DiceGameContainer extends React.Component {
 		this.updateGameState = this.updateGameState.bind(this);
 		this.switchPage = this.switchPage.bind(this);
 		this.logout = this.logout.bind(this);
+		this.changeWowClass = this.changeWowClass.bind(this);
+		this.updatePlayerInfo = this.updatePlayerInfo.bind(this);
 
 		this.lightUp = this.lightUp.bind(this);
 		this.stuck = this.stuck.bind(this);
@@ -74,20 +76,34 @@ class DiceGameContainer extends React.Component {
         	fetch('/enterLobby')
 			.then((response) => response.text())
 			.then((playerInfo) => {
-				try {
-					playerInfo = JSON.parse(playerInfo);
-					playerInfo.wowClass = wowClassFromEnum(playerInfo.wowClass);
-				} catch (e) {
-					alert("Session expired. Redirecting to login");
-					console.error("Error with /loadPlayer endpoint", e);
-					window.location.href = '/logout';
-				}
-
-				this.setState({ player: playerInfo });
-			});
+				this.updatePlayerInfo(playerInfo);
+			}, (e) => { console.error(e); });
         }, (e) => {
 			console.error("Failed to setup connections to server", e);
 		});
+	}
+
+	changeWowClass(formData) {
+		fetch('/changeWowClass', {
+			method: 'POST',
+			body: formData,
+		}).then((response) => response.text())
+		.then((playerInfo) => {
+			this.updatePlayerInfo(playerInfo);
+		}, (e) => { console.error(e); });
+	}
+
+	updatePlayerInfo(playerInfo) {
+		try {
+			playerInfo = JSON.parse(playerInfo);
+			playerInfo.wowClass = wowClassFromEnum(playerInfo.wowClass);
+		} catch (e) {
+			alert("Failed to parse player info");
+			console.error("Error parsing player info", e);
+			window.location.href = '/logout';
+		}
+
+		this.setState({ player: playerInfo });
 	}
 
 	// checks if the session has expired and redirects the user back to the login page
@@ -98,7 +114,7 @@ class DiceGameContainer extends React.Component {
 				console.log("DiceGame heartbeat was redirected to " + response.url);
 				window.location.href = response.url;
 			}
-		}, (e) => {});
+		}, (e) => { console.error(e); });
 	}
 
 	logout() {
@@ -191,7 +207,7 @@ class DiceGameContainer extends React.Component {
 
 		return (
 			<div>
-				<DiceGameNav player={this.state.player} socket={this.socket} switchPage={this.switchPage}/>
+				<DiceGameNav player={this.state.player} switchPage={this.switchPage} changeWowClass={this.changeWowClass}/>
 				{page}
 			</div>
 		)

@@ -2,6 +2,8 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import ReactModal from 'react-modal';
 
+import {wowClasses} from './dicegameutil.js';
+
 const React = require('react');
 
 ReactModal.setAppElement('#react');
@@ -41,8 +43,8 @@ export class DiceGameNav extends React.Component {
 	render() {
 		let changeClassModal = '';
 		if (this.state.showChangeClassModal)
-			changeClassModal = <ChangeClassModal player={this.props.player}
-				toggleWowClassModal={this.toggleWowClassModal} showModal={this.showChangeClassModal}/>;
+			changeClassModal = <ChangeClassModal player={this.props.player} changeWowClass={this.props.changeWowClass}
+				toggleWowClassModal={this.toggleWowClassModal} showModal={this.state.showChangeClassModal}/>;
 
 		return (
 			<nav className="dicegame-nav">
@@ -64,10 +66,19 @@ class PlayerProfile extends React.Component {
 	constructor(props) {
 		super(props);
 		this.logout = this.logout.bind(this);
+		this.openChangeWowClassModal = this.openChangeWowClassModal.bind(this);
 	}
 
 	logout() {
 		window.location.href = '/logout';
+	}
+
+	openChangeWowClassModal() {
+		this.props.toggleWowClassModal(true);
+		// close the profile popover
+		let profileElem = document.getElementById('playerProfile');
+		if (profileElem)
+			profileElem.click();
 	}
 
 	render() {
@@ -78,7 +89,7 @@ class PlayerProfile extends React.Component {
 					<table>
 						<tbody>
 							<tr>
-								<td onClick={() => {this.props.toggleWowClassModal(true)}} className="dicegame-nav-item">Change class</td>
+								<td onClick={this.openChangeWowClassModal} className="dicegame-nav-item">Change class</td>
 							</tr>
 							<tr>
 								<td onClick={this.logout} className="dicegame-nav-item" style={logoutStyle}>Logout</td>
@@ -90,7 +101,7 @@ class PlayerProfile extends React.Component {
 
 		return (
 			<OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
-				<div className="dicegame-nav-item dicegame-nav-username">
+				<div className="dicegame-nav-item dicegame-nav-username" id="playerProfile">
 					<div className={`${this.props.player.wowClass}`}
 							data-tip data-for="playerProfile">
 						{this.props.player.name + "  "}
@@ -107,12 +118,56 @@ class ChangeClassModal extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.newWowClass = null;
+		this.change = this.change.bind(this);
+		this.closeModal = this.closeModal.bind(this);
+		this.selectClass = this.selectClass.bind(this);
+	}
+
+	change(event) {
+		event.preventDefault();
+		const data = new FormData(event.target);
+		data.set('newWowClass', this.newWowClass);
+		this.props.changeWowClass(data);
+		this.closeModal();
+	}
+
+	closeModal() {
+		this.props.toggleWowClassModal(false);
+	}
+
+	selectClass(event) {
+		let prevSelectedClass = document.getElementsByClassName('wow-class-icon-selected')[0];
+		if (prevSelectedClass)
+			prevSelectedClass.classList.remove('wow-class-icon-selected');
+
+		this.newWowClass = event.target.id;
+		event.target.classList.add("wow-class-icon-selected");
 	}
 
 	render() {
+		let currClass = this.props.player.wowClass;
 		return (
-			<ReactModal isOpen={this.props.showModal}>
-				<div>In the modal</div>
+			<ReactModal isOpen={this.props.showModal} className="dg-noop-class-for-some-reason-it-is-necessary">
+				<div className="dg-change-class-modal table-dark">
+					<form onSubmit={this.change}>
+						<input type="hidden"/>
+						<div className="form-group">
+							<div>Choose a new class:</div>
+							<div className="dg-wowclass-container">
+								{wowClasses.map((wowClass) => {
+									let selectedClass = '';
+									if (wowClass === currClass)
+										selectedClass = "wow-class-icon-selected";
+
+									return <span onClick={this.selectClass} className={`${selectedClass} wow-class-icon rounded ${wowClass}-bg`} id={wowClass} key={wowClass}/>;
+								})}
+							</div>
+						</div>
+						<button type="submit" className="btn btn-info dg-btn-space">Save</button>
+						<button className="btn btn-light" onClick={this.closeModal}>Cancel</button>
+					</form>
+				</div>
 			</ReactModal>
 		)
 	}
