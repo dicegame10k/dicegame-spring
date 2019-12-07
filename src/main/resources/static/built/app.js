@@ -39419,12 +39419,78 @@ function (_React$Component2) {
   _inherits(Game, _React$Component2);
 
   function Game(props) {
+    var _this;
+
     _classCallCheck(this, Game);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Game).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Game).call(this, props));
+    _this.positionEverything = _this.positionEverything.bind(_assertThisInitialized(_this));
+    _this.positionFire = _this.positionFire.bind(_assertThisInitialized(_this));
+    _this.calculateOffsetStyle = _this.calculateOffsetStyle.bind(_assertThisInitialized(_this));
+    return _this;
   }
 
   _createClass(Game, [{
+    key: "positionEverything",
+    value: function positionEverything() {
+      var _this2 = this;
+
+      if (!this.props.gameState.gameInProgress) return;
+      window.requestAnimationFrame(function () {
+        var playerCards = document.getElementsByClassName('player-in-game');
+        if (playerCards.length === 0) return; // calculate offset of the roll number, button, and fire
+
+        var currRollElem = document.getElementById('currRoll');
+        if (currRollElem) currRollElem.style = _this2.calculateOffsetStyle(currRollElem);
+        var rollButtonElem = document.getElementById('rollButton');
+        if (rollButtonElem) rollButtonElem.style = _this2.calculateOffsetStyle(rollButtonElem, currRollElem.offsetHeight / 2);
+
+        _this2.positionFire(); // calculate offset of the cards
+
+
+        var offsetStyle = _this2.calculateOffsetStyle(playerCards[0]);
+
+        for (var i = 0; i < playerCards.length; i++) {
+          var offsetAngle = 360 / playerCards.length;
+          var rotateAngle = offsetAngle * i;
+          playerCards[i].style = offsetStyle + "transform : rotate(" + rotateAngle + "deg) translate(0, -200px) rotate(-" + rotateAngle + "deg)";
+        }
+      });
+    }
+  }, {
+    key: "positionFire",
+    value: function positionFire() {
+      var fireGifElem = document.getElementById('fire');
+      if (fireGifElem) fireGifElem.style = this.calculateOffsetStyle(fireGifElem);
+    }
+  }, {
+    key: "calculateOffsetStyle",
+    value: function calculateOffsetStyle(element, additionalOffsetTop) {
+      var offsetLeft = document.body.offsetWidth / 2 - element.offsetWidth / 2;
+      var offsetTop = document.body.offsetHeight / 2 - element.offsetHeight / 2;
+      if (typeof additionalOffsetTop == "number") offsetTop += additionalOffsetTop;
+      var offsetStyle = "left: " + offsetLeft + "px; top: " + offsetTop + "px; ";
+      return offsetStyle;
+    }
+    /**
+     * Position the cards the around the fire
+     */
+
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.positionEverything();
+    }
+    /**
+     * Position the cards the around the fire
+     */
+
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      this.positionEverything();
+    }
+  }, {
     key: "render",
     value: function render() {
       var myself = this.props.player;
@@ -39432,31 +39498,39 @@ function (_React$Component2) {
       var dgPlayers = this.props.gameState.dgPlayers;
       var currentlyRollingPlayer = this.props.gameState.currentlyRollingPlayer;
       var currentRoll = this.props.gameState.currentRoll;
-      var lightUpBtn = gameInProgress ? '' : React.createElement("button", {
+      var lightUpBtn = '';
+      if (!gameInProgress) lightUpBtn = React.createElement("button", {
         onClick: this.props.lightUp,
         className: "btn btn-danger light-up-btn"
       }, "Light Up");
       var rollBtn = '';
-      if (currentlyRollingPlayer && currentlyRollingPlayer.name === myself.name) rollBtn = React.createElement("button", {
+      if (gameInProgress && currentlyRollingPlayer && currentlyRollingPlayer.name === myself.name) rollBtn = React.createElement("button", {
         onClick: this.props.roll,
         id: "rollButton",
         className: "btn roll-btn ".concat(myself.wowClass, "-bg")
-      }, "Roll");
-      var fireGif = !gameInProgress ? '' : React.createElement("img", {
+      }, "Roll"); // this needs an onLoad because the image needs to be fetched from the server and then repositioned when it is loaded
+
+      var fireGif = '';
+      if (gameInProgress) fireGif = React.createElement("img", {
         id: "fire",
         className: "fire",
-        src: "/images/fire.gif"
+        src: "/images/fire.gif",
+        onLoad: this.positionFire
       });
-      var dgPlayerCards = !gameInProgress ? '' : dgPlayers.map(function (player, i) {
-        return React.createElement("div", {
-          key: i,
-          id: "".concat(player.name),
-          className: "wow-card-container text-center player-in-game rounded ".concat(player.wowClass, "-bg")
-        }, React.createElement("span", {
-          className: "dg-player-in-game-name"
-        }, player.name));
-      });
-      var currRollElem = !gameInProgress ? '' : React.createElement("div", {
+      var dgPlayerCards = '';
+
+      if (gameInProgress) {
+        dgPlayerCards = dgPlayers.map(function (player, i) {
+          return React.createElement(GameCard, {
+            key: i,
+            player: player,
+            currentlyRollingPlayer: currentlyRollingPlayer
+          });
+        });
+      }
+
+      var currRollElem = '';
+      if (gameInProgress) currRollElem = React.createElement("div", {
         id: "currRoll",
         className: "currentRoll"
       }, currentRoll);
@@ -39529,13 +39603,43 @@ function (_React$Component4) {
   }]);
 
   return Graveyard;
+}(React.Component);
+
+var GameCard =
+/*#__PURE__*/
+function (_React$Component5) {
+  _inherits(GameCard, _React$Component5);
+
+  function GameCard(props) {
+    _classCallCheck(this, GameCard);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(GameCard).call(this, props));
+  }
+
+  _createClass(GameCard, [{
+    key: "render",
+    value: function render() {
+      var player = this.props.player;
+      var currentlyRollingPlayer = this.props.currentlyRollingPlayer; // highlight the card if it's their turn to roll
+
+      var playerRollingClassName = '';
+      if (currentlyRollingPlayer && currentlyRollingPlayer.name === player.name) playerRollingClassName = "player-rolling";
+      return React.createElement("div", {
+        className: "wow-card-container text-center player-in-game rounded ".concat(player.wowClass, "-bg ").concat(playerRollingClassName)
+      }, React.createElement("span", {
+        className: "dg-player-in-game-name"
+      }, player.name));
+    }
+  }]);
+
+  return GameCard;
 }(React.Component); // lobby and graveyard cards
 
 
 var Card =
 /*#__PURE__*/
-function (_React$Component5) {
-  _inherits(Card, _React$Component5);
+function (_React$Component6) {
+  _inherits(Card, _React$Component6);
 
   function Card(props) {
     _classCallCheck(this, Card);
@@ -39562,8 +39666,8 @@ function (_React$Component5) {
 
 var Footer =
 /*#__PURE__*/
-function (_React$Component6) {
-  _inherits(Footer, _React$Component6);
+function (_React$Component7) {
+  _inherits(Footer, _React$Component7);
 
   function Footer() {
     _classCallCheck(this, Footer);
@@ -39676,43 +39780,41 @@ function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      setTimeout(function () {
-        var sjs = SockJS('/10k'); // url endpoint that initiates the socket
+      var sjs = SockJS('/10k'); // url endpoint that initiates the socket
 
-        _this2.socket = Stomp.over(sjs); // the stompClient web socket
+      this.socket = Stomp.over(sjs); // the stompClient web socket
 
-        _this2.socket.connect({}, function () {
-          // this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
-          // topic is for broadcasted messages, user/queue is for individual messages
-          _this2.lobbyTopicRegistration = _this2.socket.subscribe('/topic/lobby', _this2.updateLobby);
-          _this2.lobbyQueueRegistration = _this2.socket.subscribe('/user/queue/lobby', _this2.updateLobby);
-          _this2.gameStateTopicRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
-          _this2.gameStateQueueRegistration = _this2.socket.subscribe('/user/queue/gameState', _this2.updateGameState);
-          _this2.chatTopicRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat);
-          _this2.chatQueueRegistration = _this2.socket.subscribe('/user/queue/chat', _this2.receiveChat); // setup the heartbeat
+      this.socket.connect({}, function () {
+        // this.socket.debug = function(str) {}; uncomment to turn off console debugging messages
+        // topic is for broadcasted messages, user/queue is for individual messages
+        _this2.lobbyTopicRegistration = _this2.socket.subscribe('/topic/lobby', _this2.updateLobby);
+        _this2.lobbyQueueRegistration = _this2.socket.subscribe('/user/queue/lobby', _this2.updateLobby);
+        _this2.gameStateTopicRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
+        _this2.gameStateQueueRegistration = _this2.socket.subscribe('/user/queue/gameState', _this2.updateGameState);
+        _this2.chatTopicRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat);
+        _this2.chatQueueRegistration = _this2.socket.subscribe('/user/queue/chat', _this2.receiveChat); // setup the heartbeat
 
-          setInterval(_this2.heartbeat.bind(_this2), 10 * 1000); // registrations done, now try to enter the lobby
+        setInterval(_this2.heartbeat.bind(_this2), 10 * 1000); // registrations done, now try to enter the lobby
 
-          fetch('/enterLobby').then(function (response) {
-            return response.text();
-          }).then(function (playerInfo) {
-            try {
-              playerInfo = JSON.parse(playerInfo);
-              playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
-            } catch (e) {
-              alert("Session expired. Redirecting to login");
-              console.error("Error with /loadPlayer endpoint", e);
-              window.location.href = '/logout';
-            }
+        fetch('/enterLobby').then(function (response) {
+          return response.text();
+        }).then(function (playerInfo) {
+          try {
+            playerInfo = JSON.parse(playerInfo);
+            playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
+          } catch (e) {
+            alert("Session expired. Redirecting to login");
+            console.error("Error with /loadPlayer endpoint", e);
+            window.location.href = '/logout';
+          }
 
-            _this2.setState({
-              player: playerInfo
-            });
+          _this2.setState({
+            player: playerInfo
           });
-        }, function (e) {
-          console.error("Failed to setup connections to server", e);
         });
-      }, 1);
+      }, function (e) {
+        console.error("Failed to setup connections to server", e);
+      });
     } // checks if the session has expired and redirects the user back to the login page
 
   }, {

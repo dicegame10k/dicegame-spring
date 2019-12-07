@@ -1,7 +1,6 @@
 package com.cb.dicegame.model;
 
 import com.cb.dicegame.util.Log;
-import com.cb.dicegame.util.SocketUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,24 +15,32 @@ public class DiceGame {
 	private int currentRoll;
 
 	// internal
-	private SocketUtil socketUtil;
 	private DiceGameStats stats;
 	private Random random;
 	private int dkpWon;
 	private boolean isGameOver;
+	private boolean isPrevRollOne;
+	private Player winningPlayer;
 
-	public DiceGame(Player startingPlayer, List<Player> lobby, SocketUtil socketUtil) {
+	public DiceGame(Player startingPlayer, List<Player> lobby) {
+		// place the starting player at the front of the list
+		lobby.remove(startingPlayer);
+		lobby.add(0, startingPlayer);
 		this.players = lobby;
 		this.graveyard = new ArrayList<>();
 		this.currentlyRollingPlayer = startingPlayer;
 		this.currentRoll = 100;
 		random = new Random();
 
-		this.socketUtil = socketUtil;
 		stats = new DiceGameStats(this);
 	}
 
 	public boolean roll(Player p, boolean force) {
+		if (isGameOver) {
+			Log.info(String.format("%s tried to roll but the game was already over", p.getName()));
+			return false;
+		}
+
 		if (!p.equals(currentlyRollingPlayer) && !force) {
 			Log.info(String.format("'%s' tried to roll out of turn", p.getName()));
 			return false;
@@ -41,9 +48,11 @@ public class DiceGame {
 
 		stats.incrementRoll();
 		currentRoll = random.nextInt(currentRoll) + 1;
+		isPrevRollOne = currentRoll == 1;
 		if (currentRoll == 1)
 			handleRollOne();
-		else
+
+		if (!isGameOver)
 			currentlyRollingPlayer = getNextRollingPlayer();
 
 		return true;
@@ -65,12 +74,20 @@ public class DiceGame {
 		return currentRoll;
 	}
 
+	public boolean isPrevRollOne() {
+		return isPrevRollOne;
+	}
+
 	public boolean isPlayerInGame(Player p) {
 		return this.players.contains(p) || this.graveyard.contains(p);
 	}
 
 	public boolean isGameOver() {
 		return isGameOver;
+	}
+
+	public Player getWinningPlayer() {
+		return winningPlayer;
 	}
 
 	private Player getNextRollingPlayer() {
@@ -88,9 +105,12 @@ public class DiceGame {
 		dkpWon += 1;
 		if (checkGameOver()) {
 			isGameOver = true;
-			Player winningPlayer = getNextRollingPlayer();
-			if (winningPlayer != null)
+			winningPlayer = getNextRollingPlayer();
+			// null winningPlayer means one person was playing alone
+			if (winningPlayer != null) {
 				stats.recordDkpWon(winningPlayer, dkpWon);
+				stats.setWinningPlayer(winningPlayer);
+			}
 
 			currentlyRollingPlayer = null;
 		} else
@@ -98,6 +118,7 @@ public class DiceGame {
 	}
 
 	private boolean checkGameOver() {
-		return currentRoll == 1 && players.size() < 3;
+		return currentRoll == 1 && players.size() < 2;
 	}
+
 }

@@ -54,15 +54,18 @@ public class DiceGameService implements IDiceGameConstants {
 		}
 
 		gameInProgress = true;
-		dg = new DiceGame(p, lobby, socketUtil);
+		dg = new DiceGame(p, lobby);
 		lobby = new ArrayList<>();
-		socketUtil.broadcastSystemChat(String.format("DiceGame started by %s", p.getName()));
+		String gameStartMsg = String.format("DiceGame started by %s", p.getName());
+		Log.info(gameStartMsg);
+		socketUtil.broadcastSystemChat(gameStartMsg);
 		socketUtil.broadcastGameState(getGameState());
 		socketUtil.broadcastLobby(lobby);
 	}
 
 	public synchronized void roll(Player p, boolean force) {
 		if (dg == null) {
+			Log.info(String.format("%s tried to roll when no game was in progress", p.getName()));
 			socketUtil.sendSystemChat(p, "Cannot roll. Game is not in progress");
 			sendAppState(p);
 			return;
@@ -74,12 +77,24 @@ public class DiceGameService implements IDiceGameConstants {
 
 		// roll was successful, sleep 1 second so the client can build suspense
 		//DiceGameUtil.sleep(1000);
-		socketUtil.broadcastSystemChat(String.format("%s rolled %d", p.getName(), dg.getCurrentRoll()));
+		int lastRoll = dg.isPrevRollOne() ? 1 : dg.getCurrentRoll();
+		String rollMsg = String.format("%s rolled %d", p.getName(), lastRoll);
+		if (lastRoll == 1)
+			rollMsg += " (RIP)";
+
+		Log.info(rollMsg);
+		socketUtil.broadcastSystemChat(rollMsg);
 		socketUtil.broadcastGameState(getGameState());
 
 		if (dg.isGameOver()) {
 			// TODO persist DG stats
-			// move the players back into the lobby and reset the game
+			// no winning player means they were playing alone
+			String winMsg = (dg.getWinningPlayer() != null) ? String.format("%s wins!", dg.getWinningPlayer().getName())
+				: String.format("%s loses. You were playing alone, what did you expect?", p.getName());
+			Log.info(winMsg);
+			socketUtil.broadcastSystemChat(winMsg);
+
+			// sleep for a few seconds to let the winner bask in their glory
 			DiceGameUtil.sleep(5000);
 			resetGame();
 		}
