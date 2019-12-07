@@ -39802,6 +39802,7 @@ function (_React$Component) {
     _this.updateLobby = _this.updateLobby.bind(_assertThisInitialized(_this));
     _this.updateGameState = _this.updateGameState.bind(_assertThisInitialized(_this));
     _this.switchPage = _this.switchPage.bind(_assertThisInitialized(_this));
+    _this.logout = _this.logout.bind(_assertThisInitialized(_this));
     _this.lightUp = _this.lightUp.bind(_assertThisInitialized(_this));
     _this.stuck = _this.stuck.bind(_assertThisInitialized(_this));
     _this.roll = _this.roll.bind(_assertThisInitialized(_this));
@@ -39834,7 +39835,8 @@ function (_React$Component) {
         _this2.gameStateTopicRegistration = _this2.socket.subscribe('/topic/gameState', _this2.updateGameState);
         _this2.gameStateQueueRegistration = _this2.socket.subscribe('/user/queue/gameState', _this2.updateGameState);
         _this2.chatTopicRegistration = _this2.socket.subscribe('/topic/chat', _this2.receiveChat);
-        _this2.chatQueueRegistration = _this2.socket.subscribe('/user/queue/chat', _this2.receiveChat); // setup the heartbeat
+        _this2.chatQueueRegistration = _this2.socket.subscribe('/user/queue/chat', _this2.receiveChat);
+        _this2.logoutRegistration = _this2.socket.subscribe('/user/queue/logout', _this2.logout); // setup the heartbeat
 
         setInterval(_this2.heartbeat.bind(_this2), 10 * 1000); // registrations done, now try to enter the lobby
 
@@ -39868,6 +39870,12 @@ function (_React$Component) {
           window.location.href = response.url;
         }
       }, function (e) {});
+    }
+  }, {
+    key: "logout",
+    value: function logout() {
+      console.log("Server told us to logout");
+      window.location.href = '/logout';
     }
   }, {
     key: "lightUp",

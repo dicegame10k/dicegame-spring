@@ -7,6 +7,7 @@ import com.cb.dicegame.service.DiceGameService;
 import com.cb.dicegame.util.DiceGameUtil;
 import com.cb.dicegame.util.Log;
 import com.cb.dicegame.util.SocketUtil;
+import com.cb.dicegame.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -133,8 +134,28 @@ public class DiceGameController {
 
 	@MessageMapping("/kick")
 	public void kick(Principal principal, @RequestBody String username) {
-		Player p = getPlayer(principal);
-		// TODO
+		Player playerWhoKicked = getPlayer(principal);
+		if (StringUtil.areEqual(playerWhoKicked.getName(), username)) {
+			socketUtil.sendSystemChat(playerWhoKicked, "You can't kick yourself failkid");
+			return;
+		}
+
+		Player p = playerRepository.findByName(username);
+		if (p == null) {
+			socketUtil.sendSystemChat(playerWhoKicked, String.format("%s is not a player", username));
+			return;
+		}
+
+		if (!diceGameService.isPlayerInLobbyOrGame(p)) {
+			socketUtil.sendSystemChat(playerWhoKicked, String.format("%s is not in the game", username));
+			return;
+		}
+
+		String kickMsg = String.format("%s kicked by %s", username, playerWhoKicked.getName());
+		Log.info(kickMsg);
+		socketUtil.broadcastSystemChat(kickMsg);
+
+		diceGameService.removePlayer(p);
 	}
 
 	@MessageMapping("/stuck")

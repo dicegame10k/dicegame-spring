@@ -90,6 +90,16 @@ public class DiceGame {
 		return winningPlayer;
 	}
 
+	public void removePlayer(Player p) {
+		graveyard.remove(p);
+		players.remove(p);
+		if (players.size() < 2) {
+			isGameOver = true;
+			currentlyRollingPlayer = null;
+		} else if (p.equals(currentlyRollingPlayer))
+			currentlyRollingPlayer = getNextRollingPlayer();
+	}
+
 	private Player getNextRollingPlayer() {
 		if (players.size() == 0)
 			return null;

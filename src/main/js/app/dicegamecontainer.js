@@ -38,6 +38,7 @@ class DiceGameContainer extends React.Component {
 		this.updateLobby = this.updateLobby.bind(this);
 		this.updateGameState = this.updateGameState.bind(this);
 		this.switchPage = this.switchPage.bind(this);
+		this.logout = this.logout.bind(this);
 
 		this.lightUp = this.lightUp.bind(this);
 		this.stuck = this.stuck.bind(this);
@@ -65,6 +66,7 @@ class DiceGameContainer extends React.Component {
         	this.gameStateQueueRegistration = this.socket.subscribe('/user/queue/gameState', this.updateGameState);
         	this.chatTopicRegistration = this.socket.subscribe('/topic/chat', this.receiveChat);
         	this.chatQueueRegistration = this.socket.subscribe('/user/queue/chat', this.receiveChat);
+        	this.logoutRegistration = this.socket.subscribe('/user/queue/logout', this.logout);
         	// setup the heartbeat
         	setInterval(this.heartbeat.bind(this), 10 * 1000);
 
@@ -97,6 +99,11 @@ class DiceGameContainer extends React.Component {
 				window.location.href = response.url;
 			}
 		}, (e) => {});
+	}
+
+	logout() {
+		console.log("Server told us to logout");
+		window.location.href = '/logout';
 	}
 
 	lightUp() {

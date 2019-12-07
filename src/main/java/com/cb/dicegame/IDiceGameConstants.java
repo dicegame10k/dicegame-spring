@@ -10,6 +10,7 @@ public interface IDiceGameConstants {
 	String GAMESTATE_QUEUE = "/queue/gameState";
 	String CHAT_TOPIC = "/topic/chat";
 	String CHAT_QUEUE = "/queue/chat";
+	String LOGOUT_QUEUE = "/queue/logout";
 
 	// JSON keys
 	String GAME_IN_PROGRESS = "gameInProgress";

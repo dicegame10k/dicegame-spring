@@ -49,4 +49,8 @@ public class SocketUtil implements IDiceGameConstants {
 		this.socket.convertAndSend(GAMESTATE_TOPIC, gameState);
 	}
 
+	public void sendLogout(Player p) {
+		this.socket.convertAndSendToUser(p.getName(), LOGOUT_QUEUE, "");
+	}
+
 }

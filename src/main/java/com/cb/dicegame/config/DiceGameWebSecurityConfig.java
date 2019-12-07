@@ -14,10 +14,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class DiceGameWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private DiceGameUserDetailsService userDetailsService;
+	private DiceGameLogoutSuccessHandler diceGameLogoutSuccessHandler;
 
 	@Autowired
-	public DiceGameWebSecurityConfig(DiceGameUserDetailsService userDetailsService) {
+	public DiceGameWebSecurityConfig(DiceGameUserDetailsService userDetailsService,
+			DiceGameLogoutSuccessHandler diceGameLogoutSuccessHandler) {
 		this.userDetailsService = userDetailsService;
+		this.diceGameLogoutSuccessHandler = diceGameLogoutSuccessHandler;
 	}
 
 	@Override
@@ -43,7 +46,7 @@ public class DiceGameWebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.csrf().disable() //TODO: remove this eventually
 			.logout()
-				.logoutSuccessUrl("/");
+				.logoutSuccessHandler(diceGameLogoutSuccessHandler);
 	}
 
 }

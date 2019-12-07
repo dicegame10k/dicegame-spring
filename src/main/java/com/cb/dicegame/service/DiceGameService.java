@@ -30,7 +30,7 @@ public class DiceGameService implements IDiceGameConstants {
 
 	public synchronized void enterLobby(Player p) {
 		// player already in lobby or game
-		if (lobby.contains(p) || (dg != null && dg.isPlayerInGame(p)))
+		if (isPlayerInLobbyOrGame(p))
 			sendAppState(p);
 		else {
 			lobby.add(p);
@@ -110,6 +110,30 @@ public class DiceGameService implements IDiceGameConstants {
 		gameInProgress = false;
 		socketUtil.broadcastGameState(getGameState());
 		socketUtil.broadcastLobby(lobby);
+	}
+
+	// called when player logs out or gets kicked
+	public synchronized void removePlayer(Player p) {
+		lobby.remove(p);
+
+		if (dg != null) {
+			dg.removePlayer(p);
+			if (dg.isGameOver()) {
+				String resetMsg = String.format("%s left and the game is over. Nobody wins", p.getName());
+				Log.info(resetMsg);
+				socketUtil.broadcastSystemChat(resetMsg);
+				resetGame();
+			}
+		}
+
+		// tell the user to logout
+		socketUtil.sendLogout(p);
+		socketUtil.broadcastLobby(lobby);
+		socketUtil.broadcastGameState(getGameState());
+	}
+
+	public boolean isPlayerInLobbyOrGame(Player p) {
+		return lobby.contains(p) || (dg != null && dg.isPlayerInGame(p));
 	}
 
 	private HashMap<String, Object> getGameState() {
