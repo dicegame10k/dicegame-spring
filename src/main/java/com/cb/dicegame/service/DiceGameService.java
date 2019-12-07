@@ -69,10 +69,16 @@ public class DiceGameService implements IDiceGameConstants {
 			socketUtil.sendSystemChat(p, "Cannot roll. Game is not in progress");
 			sendAppState(p);
 			return;
-		} else if (!dg.roll(p, force)) {
-			socketUtil.sendSystemChat(p, "It is not your turn to roll");
-			sendAppState(p);
-			return;
+		} else {
+			// force roll as the person who is supposed to be rolling (unless game is over)
+			if (force && dg.getCurrentlyRollingPlayer() != null)
+				p = dg.getCurrentlyRollingPlayer();
+
+			if (!dg.roll(p, force)) {
+				socketUtil.sendSystemChat(p, "It is not your turn to roll");
+				sendAppState(p);
+				return;
+			}
 		}
 
 		// roll was successful, sleep 1 second so the client can build suspense
