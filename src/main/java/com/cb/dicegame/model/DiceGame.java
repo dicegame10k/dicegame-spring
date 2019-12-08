@@ -1,8 +1,12 @@
 package com.cb.dicegame.model;
 
+import com.cb.dicegame.db.DiceGameRecordRepository;
+import com.cb.dicegame.db.Player;
+import com.cb.dicegame.db.PlayerRepository;
 import com.cb.dicegame.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -88,6 +92,11 @@ public class DiceGame {
 
 	public Player getWinningPlayer() {
 		return winningPlayer;
+	}
+
+	public HashMap<Player, Integer> saveStats(PlayerRepository playerRepository,
+											  DiceGameRecordRepository diceGameRecordRepository) {
+		return stats.save(playerRepository, diceGameRecordRepository);
 	}
 
 	public void removePlayer(Player p) {

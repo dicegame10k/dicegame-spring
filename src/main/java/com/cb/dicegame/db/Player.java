@@ -1,5 +1,6 @@
-package com.cb.dicegame.model;
+package com.cb.dicegame.db;
 
+import com.cb.dicegame.model.WowClass;
 import com.cb.dicegame.util.DiceGameUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -1,9 +1,10 @@
 package com.cb.dicegame.service;
 
 import com.cb.dicegame.IDiceGameConstants;
-import com.cb.dicegame.model.DiceGame;
-import com.cb.dicegame.model.Player;
-import com.cb.dicegame.model.WowClass;
+import com.cb.dicegame.db.DiceGameRecordRepository;
+import com.cb.dicegame.db.Player;
+import com.cb.dicegame.db.PlayerRepository;
+import com.cb.dicegame.model.*;
 import com.cb.dicegame.util.DiceGameUtil;
 import com.cb.dicegame.util.Log;
 import com.cb.dicegame.util.SocketUtil;
@@ -13,20 +14,26 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DiceGameService implements IDiceGameConstants {
 
 	private SocketUtil socketUtil;
 	private List<Player> lobby;
+	private PlayerRepository playerRepository;
+	private DiceGameRecordRepository diceGameRecordRepository;
 
 	private boolean gameInProgress;
 	private DiceGame dg;
 
 	@Autowired
-	public DiceGameService(SocketUtil socketUtil, List<Player> lobby) {
+	public DiceGameService(SocketUtil socketUtil, List<Player> lobby, PlayerRepository playerRepository,
+			DiceGameRecordRepository diceGameRecordRepository) {
 		this.socketUtil = socketUtil;
 		this.lobby = lobby;
+		this.playerRepository = playerRepository;
+		this.diceGameRecordRepository = diceGameRecordRepository;
 	}
 
 	public synchronized void enterLobby(Player p) {
@@ -100,6 +107,10 @@ public class DiceGameService implements IDiceGameConstants {
 				: String.format("%s loses. You were playing alone, what did you expect?", p.getName());
 			Log.info(winMsg);
 			socketUtil.broadcastSystemChat(winMsg);
+
+			HashMap<Player, Integer> dkpWonMap = dg.saveStats(playerRepository, diceGameRecordRepository);
+			for (Map.Entry<Player, Integer> entry : dkpWonMap.entrySet())
+				socketUtil.broadcastSystemChat(String.format("%s won %d DKP", entry.getKey().getName(), entry.getValue()));
 
 			// sleep for a few seconds to let the winner bask in their glory
 			DiceGameUtil.sleep(5000);

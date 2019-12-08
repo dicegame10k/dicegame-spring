@@ -1,7 +1,7 @@
 package com.cb.dicegame.config;
 
-import com.cb.dicegame.model.Player;
-import com.cb.dicegame.model.PlayerRepository;
+import com.cb.dicegame.db.Player;
+import com.cb.dicegame.db.PlayerRepository;
 import com.cb.dicegame.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;

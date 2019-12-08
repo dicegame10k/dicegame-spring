@@ -2,7 +2,7 @@ package com.cb.dicegame.util;
 
 import com.cb.dicegame.IDiceGameConstants;
 import com.cb.dicegame.model.ChatMessage;
-import com.cb.dicegame.model.Player;
+import com.cb.dicegame.db.Player;
 import com.cb.dicegame.model.WowClass;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package com.cb.dicegame.controller;
 
-import com.cb.dicegame.model.Player;
-import com.cb.dicegame.model.PlayerRepository;
+import com.cb.dicegame.db.Player;
+import com.cb.dicegame.db.PlayerRepository;
 import com.cb.dicegame.model.WowClass;
 import com.cb.dicegame.service.DiceGameService;
 import com.cb.dicegame.util.DiceGameUtil;

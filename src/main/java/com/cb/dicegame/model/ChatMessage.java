@@ -1,5 +1,7 @@
 package com.cb.dicegame.model;
 
+import com.cb.dicegame.db.Player;
+
 public class ChatMessage {
 
 	private Player player;

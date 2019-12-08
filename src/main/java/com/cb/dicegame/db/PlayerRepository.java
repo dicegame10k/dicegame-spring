@@ -1,4 +1,4 @@
-package com.cb.dicegame.model;
+package com.cb.dicegame.db;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.Repository;
