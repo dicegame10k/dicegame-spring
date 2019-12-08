@@ -196,10 +196,25 @@ class GameCard extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.clickGameCard = this.clickGameCard.bind(this);
+		this.handleForceRoll = this.handleForceRoll.bind(this);
 		this.handleKick = this.handleKick.bind(this);
 	}
 
+	// clicks the game card so the popover closes
+	clickGameCard() {
+		let playerGameCardElem = document.getElementById(this.props.player.name + '-game-card');
+		if (playerGameCardElem)
+			playerGameCardElem.click();
+	}
+
+	handleForceRoll() {
+		this.clickGameCard();
+		this.props.forceRoll();
+	}
+
 	handleKick() {
+		this.clickGameCard();
 		this.props.kick(this.props.player.name);
 	}
 
@@ -214,7 +229,7 @@ class GameCard extends React.Component {
 
 		let forceRollPopoverElem = '';
 		if (playerRollingClassName)
-			forceRollPopoverElem = <tr><td onClick={this.props.forceRoll} className="dicegame-nav-item">Force roll</td></tr>;
+			forceRollPopoverElem = <tr><td onClick={this.handleForceRoll} className="dicegame-nav-item">Force roll</td></tr>;
 
 		let popover =
 			<Popover id={player.name}>
@@ -232,7 +247,8 @@ class GameCard extends React.Component {
 
 		return (
 			<OverlayTrigger trigger="click" placement="bottom" overlay={popover} delay="0">
-				<div className={`wow-card-container text-center player-in-game rounded ${player.wowClass}-bg ${playerRollingClassName}`}>
+				<div className={`wow-card-container text-center player-in-game rounded ${player.wowClass}-bg ${playerRollingClassName}`}
+					id={`${player.name}-game-card`}>
 					<span className="dg-player-in-game-name">{player.name}</span>
 				</div>
 			</OverlayTrigger>
@@ -246,10 +262,19 @@ class Card extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.clickCard = this.clickCard.bind(this);
 		this.handleKick = this.handleKick.bind(this);
 	}
 
+	clickCard() {
+		// clicks the game card so the popover closes
+		let playerCardElem = document.getElementById(this.props.player.name + '-card');
+		if (playerCardElem)
+			playerCardElem.click();
+	}
+
 	handleKick() {
+		this.clickCard();
 		this.props.kick(this.props.player.name);
 	}
 
@@ -270,7 +295,7 @@ class Card extends React.Component {
 
 		return (
 			<OverlayTrigger trigger="click" placement="bottom" overlay={popover} delay="0">
-				<div className="card wow-card-container text-center mb-3">
+				<div className="card wow-card-container text-center mb-3" id={`${player.name}-card`}>
 					<div className={`card-body rounded ${player.wowClass}-bg`}>
 						<h5 className="card-text">{player.name}</h5>
 					</div>

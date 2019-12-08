@@ -81,8 +81,10 @@ public class DiceGameService implements IDiceGameConstants {
 			}
 		}
 
-		// roll was successful, sleep 1 second so the client can build suspense
-		//DiceGameUtil.sleep(1000);
+		// roll was successful, broadcast the state and then sleep 1.1 seconds so the client can build suspense
+		socketUtil.broadcastGameState(getGameState(true));
+		DiceGameUtil.sleep(1100);
+
 		int lastRoll = dg.isPrevRollOne() ? 1 : dg.getCurrentRoll();
 		String rollMsg = String.format("%s rolled %d", p.getName(), lastRoll);
 		if (lastRoll == 1)
@@ -90,7 +92,6 @@ public class DiceGameService implements IDiceGameConstants {
 
 		Log.info(rollMsg);
 		socketUtil.broadcastSystemChat(rollMsg);
-		socketUtil.broadcastGameState(getGameState());
 
 		if (dg.isGameOver()) {
 			// TODO persist DG stats
@@ -160,6 +161,10 @@ public class DiceGameService implements IDiceGameConstants {
 	}
 
 	private HashMap<String, Object> getGameState() {
+		return getGameState(false);
+	}
+
+	private HashMap<String, Object> getGameState(boolean isARoll) {
 		HashMap<String, Object> gameState = new HashMap<>();
 		gameState.put(GAME_IN_PROGRESS, gameInProgress);
 
@@ -171,6 +176,7 @@ public class DiceGameService implements IDiceGameConstants {
 		gameState.put(DG_PLAYERS, dgPlayers);
 		gameState.put(GRAVEYARD, graveyard);
 		gameState.put(CURRENTLY_ROLLING_PLAYER, currentlyRollingPlayer);
+		gameState.put(IS_A_ROLL, isARoll);
 		gameState.put(CURRENT_ROLL, currentRoll);
 		return gameState;
 	}

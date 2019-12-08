@@ -17,6 +17,7 @@ public interface IDiceGameConstants {
 	String DG_PLAYERS = "dgPlayers";
 	String GRAVEYARD = "graveyard";
 	String CURRENTLY_ROLLING_PLAYER = "currentlyRollingPlayer";
+	String IS_A_ROLL = "isARoll";
 	String CURRENT_ROLL = "currentRoll";
 
 }

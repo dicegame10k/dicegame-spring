@@ -186,7 +186,23 @@ class DiceGameContainer extends React.Component {
 			let gameState = JSON.parse(gameStateResponse.body);
 			normalizeWowClasses(gameState.dgPlayers);
 			normalizeWowClasses(gameState.graveyard);
-			this.setState({ gameState: gameState });
+
+			if (gameState.isARoll) {
+				let prevRoll = this.state.gameState.currentRoll;
+				let i = 0;
+				let suspenseIntvlId = setInterval(() => {
+					if (i++ == 20) {
+						clearInterval(suspenseIntvlId);
+						this.setState({ gameState: gameState });
+					} else {
+                        let tempGameState = this.state.gameState;
+                        tempGameState.currentRoll = Math.floor(Math.random() * prevRoll) + 1;
+                        this.setState({ gameState: tempGameState });
+					}
+				}, 50);
+			} else
+				this.setState({ gameState: gameState });
+
 		} catch (e) {
 			alert("Failed to parse game state. Contact failbeats dev");
             console.error("Failed to parse game state", e);

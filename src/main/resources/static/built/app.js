@@ -48635,11 +48635,33 @@ function (_React$Component) {
   }, {
     key: "updateGameState",
     value: function updateGameState(gameStateResponse) {
+      var _this4 = this;
+
       try {
         var gameState = JSON.parse(gameStateResponse.body);
         Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.dgPlayers);
         Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.graveyard);
-        this.setState({
+
+        if (gameState.isARoll) {
+          var prevRoll = this.state.gameState.currentRoll;
+          var i = 0;
+          var suspenseIntvlId = setInterval(function () {
+            if (i++ == 20) {
+              clearInterval(suspenseIntvlId);
+
+              _this4.setState({
+                gameState: gameState
+              });
+            } else {
+              var tempGameState = _this4.state.gameState;
+              tempGameState.currentRoll = Math.floor(Math.random() * prevRoll) + 1;
+
+              _this4.setState({
+                gameState: tempGameState
+              });
+            }
+          }, 50);
+        } else this.setState({
           gameState: gameState
         });
       } catch (e) {
@@ -49177,13 +49199,29 @@ function (_React$Component5) {
     _classCallCheck(this, GameCard);
 
     _this6 = _possibleConstructorReturn(this, _getPrototypeOf(GameCard).call(this, props));
+    _this6.clickGameCard = _this6.clickGameCard.bind(_assertThisInitialized(_this6));
+    _this6.handleForceRoll = _this6.handleForceRoll.bind(_assertThisInitialized(_this6));
     _this6.handleKick = _this6.handleKick.bind(_assertThisInitialized(_this6));
     return _this6;
-  }
+  } // clicks the game card so the popover closes
+
 
   _createClass(GameCard, [{
+    key: "clickGameCard",
+    value: function clickGameCard() {
+      var playerGameCardElem = document.getElementById(this.props.player.name + '-game-card');
+      if (playerGameCardElem) playerGameCardElem.click();
+    }
+  }, {
+    key: "handleForceRoll",
+    value: function handleForceRoll() {
+      this.clickGameCard();
+      this.props.forceRoll();
+    }
+  }, {
     key: "handleKick",
     value: function handleKick() {
+      this.clickGameCard();
       this.props.kick(this.props.player.name);
     }
   }, {
@@ -49196,7 +49234,7 @@ function (_React$Component5) {
       if (currentlyRollingPlayer && currentlyRollingPlayer.name === player.name) playerRollingClassName = "player-rolling";
       var forceRollPopoverElem = '';
       if (playerRollingClassName) forceRollPopoverElem = React.createElement("tr", null, React.createElement("td", {
-        onClick: this.props.forceRoll,
+        onClick: this.handleForceRoll,
         className: "dicegame-nav-item"
       }, "Force roll"));
       var popover = React.createElement(react_bootstrap_Popover__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -49213,7 +49251,8 @@ function (_React$Component5) {
         overlay: popover,
         delay: "0"
       }, React.createElement("div", {
-        className: "wow-card-container text-center player-in-game rounded ".concat(player.wowClass, "-bg ").concat(playerRollingClassName)
+        className: "wow-card-container text-center player-in-game rounded ".concat(player.wowClass, "-bg ").concat(playerRollingClassName),
+        id: "".concat(player.name, "-game-card")
       }, React.createElement("span", {
         className: "dg-player-in-game-name"
       }, player.name)));
@@ -49235,13 +49274,22 @@ function (_React$Component6) {
     _classCallCheck(this, Card);
 
     _this7 = _possibleConstructorReturn(this, _getPrototypeOf(Card).call(this, props));
+    _this7.clickCard = _this7.clickCard.bind(_assertThisInitialized(_this7));
     _this7.handleKick = _this7.handleKick.bind(_assertThisInitialized(_this7));
     return _this7;
   }
 
   _createClass(Card, [{
+    key: "clickCard",
+    value: function clickCard() {
+      // clicks the game card so the popover closes
+      var playerCardElem = document.getElementById(this.props.player.name + '-card');
+      if (playerCardElem) playerCardElem.click();
+    }
+  }, {
     key: "handleKick",
     value: function handleKick() {
+      this.clickCard();
       this.props.kick(this.props.player.name);
     }
   }, {
@@ -49262,7 +49310,8 @@ function (_React$Component6) {
         overlay: popover,
         delay: "0"
       }, React.createElement("div", {
-        className: "card wow-card-container text-center mb-3"
+        className: "card wow-card-container text-center mb-3",
+        id: "".concat(player.name, "-card")
       }, React.createElement("div", {
         className: "card-body rounded ".concat(player.wowClass, "-bg")
       }, React.createElement("h5", {
