@@ -92,12 +92,15 @@ public class DiceGame {
 
 	public void removePlayer(Player p) {
 		graveyard.remove(p);
+		int playerPos = players.indexOf(p);
 		players.remove(p);
 		if (players.size() < 2) {
 			isGameOver = true;
 			currentlyRollingPlayer = null;
-		} else if (p.equals(currentlyRollingPlayer))
-			currentlyRollingPlayer = getNextRollingPlayer();
+		} else if (p.equals(currentlyRollingPlayer)) {
+			int nextIndex = playerPos % players.size();
+			currentlyRollingPlayer = players.get(nextIndex);
+		}
 	}
 
 	private Player getNextRollingPlayer() {
