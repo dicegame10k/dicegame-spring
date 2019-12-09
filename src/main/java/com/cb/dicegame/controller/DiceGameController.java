@@ -121,11 +121,6 @@ public class DiceGameController {
 		return recountService.recount();
 	}
 
-	@GetMapping(value="/games")
-	public String games() {
-		return "games"; // alias for src/main/resources/templates/ + x + .html
-	}
-
 	@GetMapping(value="/allGameHistory")
 	@ResponseBody
 	public List<DiceGameRecord> gameHistory(@RequestParam String column, @RequestParam String order) {

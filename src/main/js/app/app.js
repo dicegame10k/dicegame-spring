@@ -3,6 +3,7 @@
 import {DiceGameNav} from './nav.js'
 import {DiceGame} from './dicegame.js';
 import {Recount} from './recount.js';
+import {GameHistory} from './history.js';
 
 import {normalizeUsername} from '../util.js';
 import {wowClassFromEnum} from '../util.js';
@@ -220,6 +221,8 @@ class DiceGameContainer extends React.Component {
 			chatCommandMap={this.chatCommandMap}/>;
 		if (this.state.page === 'recount')
 			page = <Recount player={this.state.player}/>;
+		else if (this.state.page === 'history')
+			page = <GameHistory/>;
 
 		return (
 			<div>

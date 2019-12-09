@@ -4,9 +4,8 @@ import {wowClassFromEnum} from '../util.js';
 import {normalizeWowClasses} from '../util.js';
 
 const React = require('react');
-const ReactDOM = require('react-dom');
 
-class GameHistory extends React.Component {
+export class GameHistory extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -135,7 +134,7 @@ class GameHistory extends React.Component {
 		let filterElem = this.getFilterMessageElem();
 
 		return (
-			<div className="dg-gh container">
+			<div className="dg-gh">
 				{filterElem}
 				<table className="dg-recount table-dark table-sm table-striped table-hover">
 					<thead>
@@ -187,8 +186,3 @@ class GameHistory extends React.Component {
 		)
 	}
 }
-
-ReactDOM.render(
-	<GameHistory/>,
-	document.getElementById('react')
-)

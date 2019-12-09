@@ -18,6 +18,7 @@ export class DiceGameNav extends React.Component {
 		this.removeNavItemHoverClass = this.removeNavItemHoverClass.bind(this);
 		this.showDiceGame = this.showDiceGame.bind(this);
 		this.showRecount = this.showRecount.bind(this);
+		this.showHistory = this.showHistory.bind(this);
 	}
 
 	toggleWowClassModal(shouldShow) {
@@ -40,6 +41,10 @@ export class DiceGameNav extends React.Component {
 		this.props.switchPage('recount');
 	}
 
+	showHistory() {
+		this.props.switchPage('history');
+	}
+
 	render() {
 		let changeClassModal = '';
 		if (this.state.showChangeClassModal)
@@ -54,7 +59,7 @@ export class DiceGameNav extends React.Component {
 					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showRecount}
 					data-toggle="tooltip" title="Deeps meter">Recount</div>
 				<div className="dicegame-nav-item" onMouseEnter={this.addNavItemHoverClass}
-					onMouseLeave={this.removeNavItemHoverClass} onClick={() => window.open('/games')}>History</div>
+					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showHistory}>History</div>
 				<PlayerProfile player={this.props.player} toggleWowClassModal={this.toggleWowClassModal}/>
 				{changeClassModal}
 			</nav>

@@ -48392,7 +48392,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./nav.js */ "./src/main/js/app/nav.js");
 /* harmony import */ var _dicegame_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dicegame.js */ "./src/main/js/app/dicegame.js");
 /* harmony import */ var _recount_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./recount.js */ "./src/main/js/app/recount.js");
-/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
+/* harmony import */ var _history_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./history.js */ "./src/main/js/app/history.js");
+/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
 
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -48412,6 +48413,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -48530,7 +48532,7 @@ function (_React$Component) {
     value: function updatePlayerInfo(playerInfo) {
       try {
         playerInfo = JSON.parse(playerInfo);
-        playerInfo.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
+        playerInfo.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_4__["wowClassFromEnum"])(playerInfo.wowClass);
       } catch (e) {
         alert("Failed to parse player info");
         console.error("Error parsing player info", e);
@@ -48596,7 +48598,7 @@ function (_React$Component) {
   }, {
     key: "kick",
     value: function kick(username) {
-      username = Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["normalizeUsername"])(username);
+      username = Object(_util_js__WEBPACK_IMPORTED_MODULE_4__["normalizeUsername"])(username);
       this.socket.send('/app/kick', {}, username);
     } // Receives response from /app/chat
 
@@ -48607,7 +48609,7 @@ function (_React$Component) {
 
       try {
         chatMsg = JSON.parse(response.body);
-        chatMsg.player.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(chatMsg.player.wowClass);
+        chatMsg.player.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_4__["wowClassFromEnum"])(chatMsg.player.wowClass);
       } catch (e) {
         console.error("Failed to parse chat message", e);
         return;
@@ -48623,7 +48625,7 @@ function (_React$Component) {
     key: "updateLobby",
     value: function updateLobby(lobbyResponse) {
       try {
-        var lobby = Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(JSON.parse(lobbyResponse.body));
+        var lobby = Object(_util_js__WEBPACK_IMPORTED_MODULE_4__["normalizeWowClasses"])(JSON.parse(lobbyResponse.body));
         this.setState({
           lobby: lobby
         });
@@ -48639,8 +48641,8 @@ function (_React$Component) {
 
       try {
         var gameState = JSON.parse(gameStateResponse.body);
-        Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.dgPlayers);
-        Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.graveyard);
+        Object(_util_js__WEBPACK_IMPORTED_MODULE_4__["normalizeWowClasses"])(gameState.dgPlayers);
+        Object(_util_js__WEBPACK_IMPORTED_MODULE_4__["normalizeWowClasses"])(gameState.graveyard);
 
         if (gameState.isARoll) {
           var prevRoll = this.state.gameState.currentRoll;
@@ -48693,7 +48695,7 @@ function (_React$Component) {
       });
       if (this.state.page === 'recount') page = React.createElement(_recount_js__WEBPACK_IMPORTED_MODULE_2__["Recount"], {
         player: this.state.player
-      });
+      });else if (this.state.page === 'history') page = React.createElement(_history_js__WEBPACK_IMPORTED_MODULE_3__["GameHistory"], null);
       return React.createElement("div", null, React.createElement(_nav_js__WEBPACK_IMPORTED_MODULE_0__["DiceGameNav"], {
         player: this.state.player,
         switchPage: this.switchPage,
@@ -49351,6 +49353,253 @@ function (_React$Component7) {
 
 /***/ }),
 
+/***/ "./src/main/js/app/history.js":
+/*!************************************!*\
+  !*** ./src/main/js/app/history.js ***!
+  \************************************/
+/*! exports provided: GameHistory */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GameHistory", function() { return GameHistory; });
+/* harmony import */ var react_tooltip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-tooltip */ "./node_modules/react-tooltip/dist/index.js");
+/* harmony import */ var react_tooltip__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_tooltip__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var GameHistory =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(GameHistory, _React$Component);
+
+  function GameHistory(props) {
+    var _this;
+
+    _classCallCheck(this, GameHistory);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(GameHistory).call(this, props));
+    _this.state = {
+      games: [],
+      endpoint: '/allGameHistory',
+      playerFilter: '',
+      sort: {
+        column: 'gameTime',
+        order: 'desc'
+      }
+    };
+    _this.loadGames = _this.loadGames.bind(_assertThisInitialized(_this));
+    _this.updateSort = _this.updateSort.bind(_assertThisInitialized(_this));
+    _this.filterByWins = _this.filterByWins.bind(_assertThisInitialized(_this));
+    _this.filterByPlayerHistory = _this.filterByPlayerHistory.bind(_assertThisInitialized(_this));
+    _this.clearFilter = _this.clearFilter.bind(_assertThisInitialized(_this));
+    _this.getFilterMessageElem = _this.getFilterMessageElem.bind(_assertThisInitialized(_this));
+    _this.getURL = _this.getURL.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(GameHistory, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadGames(this.state.endpoint, this.state.playerFilter, this.state.sort);
+    }
+  }, {
+    key: "loadGames",
+    value: function loadGames(endpoint, playerFilter, sort) {
+      var _this2 = this;
+
+      var endpointURL = this.getURL(endpoint, playerFilter, sort);
+      fetch(endpointURL).then(function (response) {
+        return response.text();
+      }).then(function (games) {
+        try {
+          games = JSON.parse(games);
+
+          for (var i = 0; i < games.length; i += 1) {
+            var game = games[i];
+            game.winningPlayer.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_1__["wowClassFromEnum"])(game.winningPlayer.wowClass);
+            game.players = Object(_util_js__WEBPACK_IMPORTED_MODULE_1__["normalizeWowClasses"])(game.players);
+          }
+        } catch (e) {
+          console.log("Error parsing game history", e);
+          gameHistory = [];
+        }
+
+        _this2.setState({
+          games: games,
+          endpoint: endpoint,
+          playerFilter: playerFilter,
+          sort: sort
+        });
+      }, function (e) {
+        console.error(e);
+      });
+    }
+  }, {
+    key: "updateSort",
+    value: function updateSort(event) {
+      var currSortColumn = this.state.sort.column;
+      var currSortOrder = this.state.sort.order;
+      var newSortColumn = event.target.id;
+      if (!newSortColumn) newSortColumn = event.target.parentElement.id;
+      var newSortOrder = 'desc'; // sort order only switches if clicking on the same column
+
+      if (currSortColumn === newSortColumn) {
+        if (currSortOrder === 'desc') newSortOrder = 'asc';
+      }
+
+      var sort = {
+        column: newSortColumn,
+        order: newSortOrder
+      };
+      this.loadGames(this.state.endpoint, this.state.playerFilter, sort);
+    }
+  }, {
+    key: "filterByWins",
+    value: function filterByWins(event) {
+      var playerName = event.target.innerText;
+      this.loadGames('/winHistory', playerName, this.state.sort);
+    }
+  }, {
+    key: "filterByPlayerHistory",
+    value: function filterByPlayerHistory(event) {
+      var playerName = event.target.innerText; // strip out the comma
+
+      var commaIndex = playerName.indexOf(',');
+      if (commaIndex > -1) playerName = playerName.substring(0, commaIndex);
+      this.loadGames('/playerHistory', playerName, this.state.sort);
+    }
+  }, {
+    key: "clearFilter",
+    value: function clearFilter() {
+      this.loadGames('/allGameHistory', '', this.state.sort);
+    }
+  }, {
+    key: "getURL",
+    value: function getURL(endpoint, playerFilter, sort) {
+      var sortParams = 'column=' + sort.column + '&order=' + sort.order;
+      var endpointURL = endpoint;
+      if (endpoint == '/allGameHistory') endpointURL += '?' + sortParams;else endpointURL += '?player=' + playerFilter + '&' + sortParams;
+      return endpointURL;
+    }
+  }, {
+    key: "getFilterMessageElem",
+    value: function getFilterMessageElem() {
+      var games = this.state.games;
+      var endpoint = this.state.endpoint;
+      var player = this.state.playerFilter;
+      var filterElem = '';
+      if (endpoint === '/allGameHistory') filterElem = React.createElement("div", {
+        className: "dg-gh-num-games"
+      }, games.length, " games played");else {
+        var filterWord = endpoint === '/winHistory' ? 'won' : 'played';
+        filterElem = React.createElement("div", {
+          className: "dg-gh-num-games"
+        }, "Filtering on: Games ", filterWord, " by ", player, " (", games.length, " found)", React.createElement("button", {
+          className: "btn btn-link",
+          onClick: this.clearFilter
+        }, "Clear filter"));
+      }
+      return filterElem;
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
+
+      var sortColumn = this.state.sort.column;
+      var arrowClass = this.state.sort.order === 'desc' ? 'dg-down-arrow' : 'dg-up-arrow';
+      var filterElem = this.getFilterMessageElem();
+      return React.createElement("div", {
+        className: "dg-gh"
+      }, filterElem, React.createElement("table", {
+        className: "dg-recount table-dark table-sm table-striped table-hover"
+      }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", {
+        id: "gameTime",
+        className: "dg-gh-column dg-gh-pointer",
+        onClick: this.updateSort,
+        "data-tip": true,
+        "data-for": "sortTooltip"
+      }, "Game time", React.createElement("span", {
+        className: sortColumn == 'gameTime' ? "".concat(arrowClass) : ''
+      })), React.createElement("th", {
+        className: "dg-gh-column"
+      }, "Winner"), React.createElement("th", {
+        id: "numPlayers",
+        className: "dg-gh-column dg-gh-pointer",
+        onClick: this.updateSort,
+        "data-tip": true,
+        "data-for": "sortTooltip"
+      }, "Players", React.createElement("span", {
+        className: sortColumn == 'numPlayers' ? "".concat(arrowClass) : ''
+      })), React.createElement("th", {
+        id: "numRolls",
+        className: "dg-gh-column dg-gh-pointer",
+        onClick: this.updateSort,
+        "data-tip": true,
+        "data-for": "sortTooltip"
+      }, "Number of rolls", React.createElement("span", {
+        className: sortColumn == 'numRolls' ? "".concat(arrowClass) : ''
+      })), React.createElement(react_tooltip__WEBPACK_IMPORTED_MODULE_0___default.a, {
+        id: "sortTooltip",
+        effect: "solid",
+        place: "bottom"
+      }, React.createElement("span", null, "Click to sort")))), React.createElement("tbody", null, this.state.games.map(function (game, i) {
+        return React.createElement("tr", {
+          key: i
+        }, React.createElement("td", {
+          className: "dg-gh-column"
+        }, game.gameTimeStr), React.createElement("td", {
+          onClick: _this3.filterByWins,
+          className: "".concat(game.winningPlayer.wowClass, " dg-gh-column dg-gh-pointer"),
+          "data-tip": true,
+          "data-for": "winTooltip"
+        }, game.winningPlayer.name), React.createElement("td", {
+          className: "dg-gh-column"
+        }, game.players.map(function (player, j) {
+          var playerName = player.name;
+          if (j < game.players.length - 1) playerName += ", ";
+          return React.createElement("span", {
+            key: j,
+            className: "".concat(player.wowClass, " dg-gh-pointer"),
+            onClick: _this3.filterByPlayerHistory,
+            "data-tip": true,
+            "data-for": "playedTooltip"
+          }, playerName);
+        })), React.createElement("td", {
+          className: "dg-gh-column"
+        }, game.numRolls));
+      }))));
+    }
+  }]);
+
+  return GameHistory;
+}(React.Component);
+
+/***/ }),
+
 /***/ "./src/main/js/app/nav.js":
 /*!********************************!*\
   !*** ./src/main/js/app/nav.js ***!
@@ -49411,6 +49660,7 @@ function (_React$Component) {
     _this.removeNavItemHoverClass = _this.removeNavItemHoverClass.bind(_assertThisInitialized(_this));
     _this.showDiceGame = _this.showDiceGame.bind(_assertThisInitialized(_this));
     _this.showRecount = _this.showRecount.bind(_assertThisInitialized(_this));
+    _this.showHistory = _this.showHistory.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -49442,6 +49692,11 @@ function (_React$Component) {
       this.props.switchPage('recount');
     }
   }, {
+    key: "showHistory",
+    value: function showHistory() {
+      this.props.switchPage('history');
+    }
+  }, {
     key: "render",
     value: function render() {
       var changeClassModal = '';
@@ -49469,9 +49724,7 @@ function (_React$Component) {
         className: "dicegame-nav-item",
         onMouseEnter: this.addNavItemHoverClass,
         onMouseLeave: this.removeNavItemHoverClass,
-        onClick: function onClick() {
-          return window.open('/games');
-        }
+        onClick: this.showHistory
       }, "History"), React.createElement(PlayerProfile, {
         player: this.props.player,
         toggleWowClassModal: this.toggleWowClassModal
