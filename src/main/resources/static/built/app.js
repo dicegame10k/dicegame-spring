@@ -49573,9 +49573,7 @@ function (_React$Component) {
           className: "dg-gh-column"
         }, game.gameTimeStr), React.createElement("td", {
           onClick: _this3.filterByWins,
-          className: "".concat(game.winningPlayer.wowClass, " dg-gh-column dg-gh-pointer"),
-          "data-tip": true,
-          "data-for": "winTooltip"
+          className: "".concat(game.winningPlayer.wowClass, " dg-gh-column dg-gh-pointer")
         }, game.winningPlayer.name), React.createElement("td", {
           className: "dg-gh-column"
         }, game.players.map(function (player, j) {
@@ -49585,8 +49583,7 @@ function (_React$Component) {
             key: j,
             className: "".concat(player.wowClass, " dg-gh-pointer"),
             onClick: _this3.filterByPlayerHistory,
-            "data-tip": true,
-            "data-for": "playedTooltip"
+            title: "".concat(j, " DKP won")
           }, playerName);
         })), React.createElement("td", {
           className: "dg-gh-column"
@@ -49718,7 +49715,6 @@ function (_React$Component) {
         onMouseEnter: this.addNavItemHoverClass,
         onMouseLeave: this.removeNavItemHoverClass,
         onClick: this.showRecount,
-        "data-toggle": "tooltip",
         title: "Deeps meter"
       }, "Recount"), React.createElement("div", {
         className: "dicegame-nav-item",

@@ -161,8 +161,7 @@ export class GameHistory extends React.Component {
 						{this.state.games.map((game, i) => {
 							return <tr key={i}>
 								<td className="dg-gh-column">{game.gameTimeStr}</td>
-								<td onClick={this.filterByWins} className={`${game.winningPlayer.wowClass} dg-gh-column dg-gh-pointer`}
-									data-tip data-for="winTooltip">
+								<td onClick={this.filterByWins} className={`${game.winningPlayer.wowClass} dg-gh-column dg-gh-pointer`}>
 									{game.winningPlayer.name}
 								</td>
 								<td className="dg-gh-column">
@@ -172,7 +171,7 @@ export class GameHistory extends React.Component {
 											playerName += ", ";
 
 										return <span key={j} className={`${player.wowClass} dg-gh-pointer`} onClick={this.filterByPlayerHistory}
-											data-tip data-for="playedTooltip">
+											title={`${j} DKP won`}>
 											{playerName}
 										</span>
 									})}
