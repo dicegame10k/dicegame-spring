@@ -1,5 +1,5 @@
-import {verifyFormData} from './loginutil.js';
-import {normalizeUsername} from './loginutil.js';
+import {verifyFormData} from '../util.js';
+import {normalizeUsername} from '../util.js';
 
 const React = require('react');
 

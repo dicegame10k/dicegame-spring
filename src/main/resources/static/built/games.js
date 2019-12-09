@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -31961,16 +31961,15 @@ if (false) {} else {
 
 /***/ }),
 
-/***/ "./src/main/js/login/forgotpassword.js":
-/*!*********************************************!*\
-  !*** ./src/main/js/login/forgotpassword.js ***!
-  \*********************************************/
-/*! exports provided: ForgotPassword */
+/***/ "./src/main/js/history/games.js":
+/*!**************************************!*\
+  !*** ./src/main/js/history/games.js ***!
+  \**************************************/
+/*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ForgotPassword", function() { return ForgotPassword; });
 /* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -31982,155 +31981,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-
-
-
-var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var ForgotPassword =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ForgotPassword, _React$Component);
-
-  function ForgotPassword(props) {
-    var _this;
-
-    _classCallCheck(this, ForgotPassword);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ForgotPassword).call(this, props));
-    _this.resetPassword = _this.resetPassword.bind(_assertThisInitialized(_this)); // TODO: link to icyveins?
-
-    _this.props.setInfoMsg("Wow really? Did you forget your rotation too?");
-
-    return _this;
-  }
-
-  _createClass(ForgotPassword, [{
-    key: "resetPassword",
-    value: function resetPassword(event) {
-      var _this2 = this;
-
-      event.preventDefault();
-      var data = new FormData(event.target);
-      var formErrorMsg = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["verifyFormData"])(data);
-
-      if (formErrorMsg) {
-        this.props.setErrorMsg(formErrorMsg);
-        return;
-      }
-
-      var username = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["normalizeUsername"])(data.get("username"));
-      fetch('/resetPassword', {
-        method: 'POST',
-        body: data
-      }).then(function (response) {
-        return response.text();
-      }).then(function (responseText) {
-        if (responseText == 'player_does_not_exist') {
-          _this2.props.setErrorMsg("Player '" + username + "' does not exist");
-
-          return;
-        }
-
-        document.getElementById('reset').style.display = 'none';
-
-        _this2.props.setInfoMsg("Successfully reset " + username + "'s password");
-      })["catch"](function (error) {
-        console.error(error);
-
-        _this2.props.setErrorMsg('Error processing password reset attempt. Contact failbeats dev');
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return React.createElement("div", null, React.createElement("form", {
-        onSubmit: this.resetPassword
-      }, React.createElement("p", null, React.createElement("label", {
-        htmlFor: "username",
-        className: "sr-only"
-      }, "Enter your username"), React.createElement("input", {
-        type: "text",
-        name: "username",
-        id: "username",
-        placeholder: "Enter your username",
-        className: "form-control",
-        autoComplete: "off",
-        onFocus: this.props.clearAlerts
-      })), React.createElement("p", null, React.createElement("label", {
-        htmlFor: "password",
-        className: "sr-only"
-      }, "Enter a new password"), React.createElement("input", {
-        type: "password",
-        name: "password",
-        id: "password",
-        placeholder: "Enter a new password",
-        className: "form-control",
-        onFocus: this.props.clearAlerts
-      })), React.createElement("p", null, React.createElement("label", {
-        htmlFor: "password",
-        className: "sr-only"
-      }, "Verify your new password"), React.createElement("input", {
-        type: "password",
-        name: "passwordVerify",
-        id: "passwordVerify",
-        placeholder: "Verify your new password",
-        className: "form-control",
-        onFocus: this.props.clearAlerts
-      })), React.createElement("button", {
-        type: "submit",
-        id: "reset",
-        className: "btn btn-info dg-btn-space"
-      }, "Reset"), React.createElement("button", {
-        onClick: this.props.back,
-        className: "btn btn-light"
-      }, "Back")));
-    }
-  }]);
-
-  return ForgotPassword;
-}(React.Component);
-
-/***/ }),
-
-/***/ "./src/main/js/login/login.js":
-/*!************************************!*\
-  !*** ./src/main/js/login/login.js ***!
-  \************************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _forgotpassword_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./forgotpassword.js */ "./src/main/js/login/forgotpassword.js");
-/* harmony import */ var _signup_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./signup.js */ "./src/main/js/login/signup.js");
-/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 
 
 
@@ -32139,407 +31996,95 @@ var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 
-var LoginContainer =
+var GameHistory =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(LoginContainer, _React$Component);
+  _inherits(GameHistory, _React$Component);
 
-  function LoginContainer(props) {
+  function GameHistory(props) {
     var _this;
 
-    _classCallCheck(this, LoginContainer);
+    _classCallCheck(this, GameHistory);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(LoginContainer).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(GameHistory).call(this, props));
     _this.state = {
-      page: 'login'
+      games: []
     };
-    _this.changePage = _this.changePage.bind(_assertThisInitialized(_this));
-    _this.back = _this.back.bind(_assertThisInitialized(_this));
-    _this.setErrorMsg = _this.setErrorMsg.bind(_assertThisInitialized(_this));
-    _this.setInfoMsg = _this.setInfoMsg.bind(_assertThisInitialized(_this));
-    _this.clearAlerts = _this.clearAlerts.bind(_assertThisInitialized(_this));
     return _this;
   }
 
-  _createClass(LoginContainer, [{
-    key: "back",
-    value: function back() {
-      this.setState({
-        page: 'login',
-        errorMsg: '',
-        infoMsg: ''
-      });
-    }
-  }, {
-    key: "changePage",
-    value: function changePage(page) {
-      this.setState({
-        page: page,
-        errorMsg: '',
-        infoMsg: ''
-      });
-    }
-  }, {
-    key: "setErrorMsg",
-    value: function setErrorMsg(msg) {
-      this.setState({
-        errorMsg: msg,
-        infoMsg: ''
-      });
-    }
-  }, {
-    key: "setInfoMsg",
-    value: function setInfoMsg(msg) {
-      this.setState({
-        infoMsg: msg,
-        errorMsg: ''
-      });
-    }
-  }, {
-    key: "clearAlerts",
-    value: function clearAlerts() {
-      this.setState({
-        infoMsg: '',
-        errorMsg: ''
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      // TODO: add <input name="_csrf" type="hidden">
-      var page;
-
-      switch (this.state.page) {
-        case 'forgotPassword':
-          page = React.createElement(_forgotpassword_js__WEBPACK_IMPORTED_MODULE_0__["ForgotPassword"], {
-            back: this.back,
-            setErrorMsg: this.setErrorMsg,
-            clearAlerts: this.clearAlerts,
-            setInfoMsg: this.setInfoMsg
-          });
-          break;
-
-        case 'signUp':
-          page = React.createElement(_signup_js__WEBPACK_IMPORTED_MODULE_1__["SignUp"], {
-            back: this.back,
-            setErrorMsg: this.setErrorMsg,
-            clearAlerts: this.clearAlerts,
-            setInfoMsg: this.setInfoMsg
-          });
-          break;
-
-        default:
-          page = React.createElement(Login, {
-            changePage: this.changePage,
-            setErrorMsg: this.setErrorMsg,
-            clearAlerts: this.clearAlerts,
-            setInfoMsg: this.setInfoMsg
-          });
-          break;
-      }
-
-      var errorMsg = this.state.errorMsg;
-      var infoMsg = this.state.infoMsg;
-      return React.createElement("div", {
-        className: "container dg-login"
-      }, React.createElement("h1", {
-        className: "welcome-msg"
-      }, "Welcome to DiceGame"), errorMsg ? React.createElement("div", {
-        className: "alert alert-danger",
-        role: "alert"
-      }, errorMsg) : '', infoMsg ? React.createElement("div", {
-        className: "alert alert-success",
-        role: "alert"
-      }, infoMsg) : '', page);
-    }
-  }]);
-
-  return LoginContainer;
-}(React.Component);
-
-var Login =
-/*#__PURE__*/
-function (_React$Component2) {
-  _inherits(Login, _React$Component2);
-
-  function Login(props) {
-    var _this2;
-
-    _classCallCheck(this, Login);
-
-    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Login).call(this, props));
-    _this2.state = {
-      errorMsg: ''
-    };
-    _this2.showForgotPassword = _this2.showForgotPassword.bind(_assertThisInitialized(_this2));
-    _this2.showSignUp = _this2.showSignUp.bind(_assertThisInitialized(_this2));
-    _this2.login = _this2.login.bind(_assertThisInitialized(_this2));
-    return _this2;
-  }
-
-  _createClass(Login, [{
-    key: "showForgotPassword",
-    value: function showForgotPassword() {
-      this.props.changePage('forgotPassword');
-    }
-  }, {
-    key: "showSignUp",
-    value: function showSignUp() {
-      this.props.changePage('signUp');
-    }
-  }, {
-    key: "login",
-    value: function login(event) {
-      var _this3 = this;
-
-      event.preventDefault();
-      var data = new FormData(event.target);
-      var username = data.get('username');
-
-      if (!username) {
-        this.props.setErrorMsg('Enter a username');
-        return;
-      }
-
-      if (!data.get('password')) {
-        this.props.setErrorMsg('Enter a password');
-        return;
-      }
-
-      data.set('username', Object(_util_js__WEBPACK_IMPORTED_MODULE_2__["normalizeUsername"])(username));
-      fetch('/login', {
-        method: 'POST',
-        body: data
-      }).then(function (response) {
-        if (response.url.indexOf('login?error') > -1) {
-          _this3.props.setErrorMsg('Invalid credentials');
-
-          return;
-        }
-
-        window.location.href = response.url;
-      })["catch"](function (error) {
-        console.error(error);
-
-        _this3.props.setErrorMsg('Server failed to process login attempt. Contact failbeats dev');
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return React.createElement("form", {
-        onSubmit: this.login
-      }, React.createElement("p", null, React.createElement("label", {
-        htmlFor: "username",
-        className: "sr-only"
-      }, "Username"), React.createElement("input", {
-        type: "text",
-        name: "username",
-        id: "username",
-        placeholder: "Username",
-        className: "form-control",
-        autoComplete: "off",
-        onFocus: this.props.clearAlerts
-      })), React.createElement("p", null, React.createElement("label", {
-        htmlFor: "password",
-        className: "sr-only"
-      }, "Password"), React.createElement("input", {
-        type: "password",
-        name: "password",
-        id: "password",
-        placeholder: "Password",
-        className: "form-control",
-        onFocus: this.props.clearAlerts
-      })), React.createElement("button", {
-        type: "submit",
-        className: "btn btn-info"
-      }, "Login"), React.createElement("button", {
-        type: "button",
-        className: "btn btn-link",
-        onClick: this.showForgotPassword
-      }, "Forgot password?"), React.createElement("button", {
-        type: "button",
-        className: "btn btn-link dg-no-left-padding",
-        onClick: this.showSignUp
-      }, "Sign up"));
-    }
-  }]);
-
-  return Login;
-}(React.Component);
-
-ReactDOM.render(React.createElement(LoginContainer, null), document.getElementById('react'));
-
-/***/ }),
-
-/***/ "./src/main/js/login/signup.js":
-/*!*************************************!*\
-  !*** ./src/main/js/login/signup.js ***!
-  \*************************************/
-/*! exports provided: SignUp */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SignUp", function() { return SignUp; });
-/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-
-
-
-
-var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var SignUp =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(SignUp, _React$Component);
-
-  function SignUp(props) {
-    var _this;
-
-    _classCallCheck(this, SignUp);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(SignUp).call(this, props));
-    _this.wowClass = null;
-    _this.signUp = _this.signUp.bind(_assertThisInitialized(_this));
-    _this.selectClass = _this.selectClass.bind(_assertThisInitialized(_this));
-
-    _this.props.setInfoMsg("Careful... I'm too poor to afford an HTTPS certificate");
-
-    return _this;
-  }
-
-  _createClass(SignUp, [{
-    key: "signUp",
-    value: function signUp(event) {
+  _createClass(GameHistory, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
       var _this2 = this;
 
-      event.preventDefault();
-      var data = new FormData(event.target);
-      var formErrorMsg = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["verifyFormData"])(data);
-
-      if (formErrorMsg) {
-        this.props.setErrorMsg(formErrorMsg);
-        return;
-      }
-
-      if (!this.wowClass) {
-        this.props.setErrorMsg('Choose a class');
-        return;
-      }
-
-      data.set('wowclass', this.wowClass);
-      var username = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["normalizeUsername"])(data.get("username"));
-      fetch('/signUp', {
-        method: 'POST',
-        body: data
-      }).then(function (response) {
+      fetch('/gameHistory').then(function (response) {
         return response.text();
-      }).then(function (responseText) {
-        if (responseText == 'player_already_exists') {
-          _this2.props.setErrorMsg("Player '" + username + "' already exists");
+      }).then(function (games) {
+        try {
+          games = JSON.parse(games);
 
-          return;
+          for (var i = 0; i < games.length; i += 1) {
+            var game = games[i];
+            game.winningPlayer.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["wowClassFromEnum"])(game.winningPlayer.wowClass);
+            game.players = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["normalizeWowClasses"])(game.players);
+          }
+        } catch (e) {
+          console.log("Error parsing game history", e);
+          gameHistory = [];
         }
 
-        document.getElementById('signUp').style.display = 'none';
-
-        _this2.props.setInfoMsg("Successfully created player '" + username + "'");
-      })["catch"](function (error) {
-        console.error(error);
-
-        _this2.props.setErrorMsg('Error processing sign up attempt. Contact failbeats dev');
+        _this2.setState({
+          games: games
+        });
+      }, function (e) {
+        console.error(e);
       });
-    }
-  }, {
-    key: "selectClass",
-    value: function selectClass(event) {
-      var prevSelectedClass = document.getElementsByClassName('wow-class-icon-selected')[0];
-      if (prevSelectedClass) prevSelectedClass.classList.remove('wow-class-icon-selected');
-      this.wowClass = event.target.id;
-      event.target.classList.add("wow-class-icon-selected");
     }
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
-
-      return React.createElement("div", null, React.createElement("form", {
-        onSubmit: this.signUp
-      }, React.createElement("p", null, React.createElement("label", {
-        htmlFor: "username",
-        className: "sr-only"
-      }, "Enter a username"), React.createElement("input", {
-        type: "text",
-        name: "username",
-        id: "username",
-        placeholder: "Enter a username",
-        className: "form-control",
-        autoComplete: "off",
-        onFocus: this.props.clearAlerts
-      })), React.createElement("p", null, React.createElement("label", {
-        htmlFor: "password",
-        className: "sr-only"
-      }, "Enter a password"), React.createElement("input", {
-        type: "password",
-        name: "password",
-        id: "password",
-        placeholder: "Enter a password",
-        className: "form-control",
-        autoComplete: "new-password",
-        onFocus: this.props.clearAlerts
-      })), React.createElement("p", null, React.createElement("label", {
-        htmlFor: "password",
-        className: "sr-only"
-      }, "Verify your password"), React.createElement("input", {
-        type: "password",
-        name: "passwordVerify",
-        id: "passwordVerify",
-        placeholder: "Verify your password",
-        className: "form-control",
-        onFocus: this.props.clearAlerts
-      })), React.createElement("div", {
-        className: "form-group"
-      }, React.createElement("div", null, "Choose a class:"), React.createElement("div", {
-        className: "dg-wowclass-container"
-      }, _util_js__WEBPACK_IMPORTED_MODULE_0__["wowClasses"].map(function (wowClass) {
-        return React.createElement("span", {
-          onClick: _this3.selectClass,
-          className: "wow-class-icon rounded ".concat(wowClass, "-bg"),
-          id: wowClass,
-          key: wowClass
-        });
-      }))), React.createElement("button", {
-        type: "submit",
-        id: "signUp",
-        className: "btn btn-info dg-btn-space"
-      }, "Sign up"), React.createElement("button", {
-        onClick: this.props.back,
-        className: "btn btn-light"
-      }, "Back")));
+      return React.createElement("div", {
+        "class": "dg-gh container"
+      }, React.createElement("div", {
+        className: "dg-gh-num-games"
+      }, this.state.games.length, " games played"), React.createElement("table", {
+        className: "dg-recount table-dark table-sm table-striped table-hover"
+      }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", {
+        className: "dg-gh-column"
+      }, "Game time"), React.createElement("th", {
+        className: "dg-gh-column"
+      }, "Winner"), React.createElement("th", {
+        className: "dg-gh-column"
+      }, "Players"), React.createElement("th", {
+        className: "dg-gh-column"
+      }, "Total number of rolls"))), React.createElement("tbody", null, this.state.games.map(function (game, i) {
+        return React.createElement("tr", {
+          key: i
+        }, React.createElement("td", {
+          className: "dg-gh-column"
+        }, game.gameTimeStr), React.createElement("td", {
+          className: "".concat(game.winningPlayer.wowClass, " dg-gh-column")
+        }, game.winningPlayer.name), React.createElement("td", {
+          className: "dg-gh-column"
+        }, game.players.map(function (player, j) {
+          var playerName = player.name;
+          if (j < game.players.length - 1) playerName += ", ";
+          return React.createElement("span", {
+            key: j,
+            className: "".concat(player.wowClass)
+          }, playerName);
+        })), React.createElement("td", {
+          className: "dg-gh-column"
+        }, game.numRolls));
+      }))));
     }
   }]);
 
-  return SignUp;
+  return GameHistory;
 }(React.Component);
+
+ReactDOM.render(React.createElement(GameHistory, null), document.getElementById('react'));
 
 /***/ }),
 
@@ -32591,17 +32136,17 @@ function verifyFormData(data) {
 
 /***/ }),
 
-/***/ 1:
-/*!******************************************!*\
-  !*** multi ./src/main/js/login/login.js ***!
-  \******************************************/
+/***/ 2:
+/*!********************************************!*\
+  !*** multi ./src/main/js/history/games.js ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ./src/main/js/login/login.js */"./src/main/js/login/login.js");
+module.exports = __webpack_require__(/*! ./src/main/js/history/games.js */"./src/main/js/history/games.js");
 
 
 /***/ })
 
 /******/ });
-//# sourceMappingURL=login.js.map
+//# sourceMappingURL=games.js.map

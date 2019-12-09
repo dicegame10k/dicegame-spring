@@ -2,7 +2,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import ReactModal from 'react-modal';
 
-import {wowClasses} from './dicegameutil.js';
+import {wowClasses} from '../util.js';
 
 const React = require('react');
 

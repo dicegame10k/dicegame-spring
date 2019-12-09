@@ -4,10 +4,10 @@ import {DiceGameNav} from './nav.js'
 import {DiceGame} from './dicegame.js';
 import {Recount} from './recount.js';
 
-import {normalizeUsername} from './dicegameutil.js';
-import {wowClassFromEnum} from './dicegameutil.js';
-import {normalizeWowClasses} from './dicegameutil.js';
-import {dicegameAscii} from './dicegameutil.js';
+import {normalizeUsername} from '../util.js';
+import {wowClassFromEnum} from '../util.js';
+import {normalizeWowClasses} from '../util.js';
+import {dicegameAscii} from '../util.js';
 
 const React = require('react');
 const ReactDOM = require('react-dom');

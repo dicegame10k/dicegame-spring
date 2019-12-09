@@ -1,5 +1,6 @@
 package com.cb.dicegame.db;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -11,7 +12,7 @@ public interface DiceGameRecordRepository<T, ID> extends Repository<DiceGameReco
 
 	DiceGameRecord save(DiceGameRecord diceGameRecord);
 
-	List<DiceGameRecord> findAll();
+	List<DiceGameRecord> findAll(Sort var1);
 
 	// all games won by Player p
 	List<DiceGameRecord> findByWinningPlayer(Player p);

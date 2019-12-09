@@ -1,5 +1,7 @@
 package com.cb.dicegame.controller;
 
+import com.cb.dicegame.db.DiceGameRecord;
+import com.cb.dicegame.db.DiceGameRecordRepository;
 import com.cb.dicegame.db.Player;
 import com.cb.dicegame.db.PlayerRepository;
 import com.cb.dicegame.model.Recount;
@@ -11,6 +13,7 @@ import com.cb.dicegame.util.Log;
 import com.cb.dicegame.util.SocketUtil;
 import com.cb.dicegame.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +30,16 @@ public class DiceGameController {
 	private DiceGameService diceGameService;
 	private RecountService recountService;
 	private PlayerRepository playerRepository;
+	private DiceGameRecordRepository diceGameRecordRepository;
 	private SocketUtil socketUtil;
 
 	@Autowired
 	public DiceGameController(DiceGameService diceGameService, RecountService recountService,
-			PlayerRepository playerRepository, SocketUtil socketUtil) {
+			PlayerRepository playerRepository, DiceGameRecordRepository diceGameRecordRepository, SocketUtil socketUtil) {
 		this.diceGameService = diceGameService;
 		this.recountService = recountService;
 		this.playerRepository = playerRepository;
+		this.diceGameRecordRepository = diceGameRecordRepository;
 		this.socketUtil = socketUtil;
 	}
 
@@ -114,6 +119,18 @@ public class DiceGameController {
 	@ResponseBody
 	public List<Recount> recount() {
 		return recountService.recount();
+	}
+
+	@GetMapping(value="/games")
+	public String games() {
+		return "games"; // alias for src/main/resources/templates/ + x + .html
+	}
+
+	@GetMapping(value="/gameHistory")
+	@ResponseBody
+	public List<DiceGameRecord> gameHistory() {
+		Sort.Order one = Sort.Order.desc("gameTime");
+		return diceGameRecordRepository.findAll(Sort.by(one));
 	}
 
 	/**

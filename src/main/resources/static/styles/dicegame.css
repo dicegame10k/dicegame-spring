@@ -212,6 +212,23 @@ th {
 	margin-right: 20%;
 }
 
+.dg-game-history-link {
+	padding-left: 2.25rem;
+}
+
+.dg-gh {
+	text-align: center;
+}
+
+.dg-gh-column {
+	width: 25%;
+}
+
+.dg-gh-num-games {
+	margin-top: 1rem;
+	font-weight: bold;
+}
+
 .footer {
 	position: fixed;
 	left: 0;

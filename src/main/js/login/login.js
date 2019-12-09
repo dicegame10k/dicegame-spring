@@ -1,6 +1,6 @@
 import {ForgotPassword} from './forgotpassword.js';
 import {SignUp} from './signup.js';
-import {normalizeUsername} from './loginutil.js';
+import {normalizeUsername} from '../util.js';
 
 const React = require('react');
 const ReactDOM = require('react-dom');

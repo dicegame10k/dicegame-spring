@@ -48392,7 +48392,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./nav.js */ "./src/main/js/app/nav.js");
 /* harmony import */ var _dicegame_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dicegame.js */ "./src/main/js/app/dicegame.js");
 /* harmony import */ var _recount_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./recount.js */ "./src/main/js/app/recount.js");
-/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
+/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
 
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -48530,7 +48530,7 @@ function (_React$Component) {
     value: function updatePlayerInfo(playerInfo) {
       try {
         playerInfo = JSON.parse(playerInfo);
-        playerInfo.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
+        playerInfo.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(playerInfo.wowClass);
       } catch (e) {
         alert("Failed to parse player info");
         console.error("Error parsing player info", e);
@@ -48596,7 +48596,7 @@ function (_React$Component) {
   }, {
     key: "kick",
     value: function kick(username) {
-      username = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeUsername"])(username);
+      username = Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["normalizeUsername"])(username);
       this.socket.send('/app/kick', {}, username);
     } // Receives response from /app/chat
 
@@ -48607,7 +48607,7 @@ function (_React$Component) {
 
       try {
         chatMsg = JSON.parse(response.body);
-        chatMsg.player.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(chatMsg.player.wowClass);
+        chatMsg.player.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["wowClassFromEnum"])(chatMsg.player.wowClass);
       } catch (e) {
         console.error("Failed to parse chat message", e);
         return;
@@ -48623,7 +48623,7 @@ function (_React$Component) {
     key: "updateLobby",
     value: function updateLobby(lobbyResponse) {
       try {
-        var lobby = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(JSON.parse(lobbyResponse.body));
+        var lobby = Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(JSON.parse(lobbyResponse.body));
         this.setState({
           lobby: lobby
         });
@@ -48639,8 +48639,8 @@ function (_React$Component) {
 
       try {
         var gameState = JSON.parse(gameStateResponse.body);
-        Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.dgPlayers);
-        Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.graveyard);
+        Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.dgPlayers);
+        Object(_util_js__WEBPACK_IMPORTED_MODULE_3__["normalizeWowClasses"])(gameState.graveyard);
 
         if (gameState.isARoll) {
           var prevRoll = this.state.gameState.currentRoll;
@@ -49351,39 +49351,6 @@ function (_React$Component7) {
 
 /***/ }),
 
-/***/ "./src/main/js/app/dicegameutil.js":
-/*!*****************************************!*\
-  !*** ./src/main/js/app/dicegameutil.js ***!
-  \*****************************************/
-/*! exports provided: wowClasses, normalizeUsername, wowClassFromEnum, normalizeWowClasses, dicegameAscii */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wowClasses", function() { return wowClasses; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeUsername", function() { return normalizeUsername; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wowClassFromEnum", function() { return wowClassFromEnum; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeWowClasses", function() { return normalizeWowClasses; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dicegameAscii", function() { return dicegameAscii; });
-var wowClasses = ["death-knight", "demon-hunter", "druid", "hunter", "mage", "monk", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"];
-function normalizeUsername(username) {
-  return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
-}
-function wowClassFromEnum(enumStr) {
-  return enumStr.toLowerCase().replace('_', '-');
-}
-function normalizeWowClasses(listOfPlayers) {
-  for (var i = 0; i < listOfPlayers.length; i += 1) {
-    var player = listOfPlayers[i];
-    player.wowClass = wowClassFromEnum(player.wowClass);
-  }
-
-  return listOfPlayers;
-}
-var dicegameAscii = ["    ____  _           ______                   ", "   / __ \\(_)_______  / ____/___ _____ ___  ___ ", "  / / / / / ___/ _ \\/ / __/ __ `/ __ `__ \\/ _ \\", " / /_/ / / /__/  __/ /_/ / /_/ / / / / / /  __/", "/_____/_/\\___/\\___/\\____/\\__,_/_/ /_/ /_/\\___/"];
-
-/***/ }),
-
 /***/ "./src/main/js/app/nav.js":
 /*!********************************!*\
   !*** ./src/main/js/app/nav.js ***!
@@ -49398,7 +49365,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_bootstrap_Popover__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-bootstrap/Popover */ "./node_modules/react-bootstrap/esm/Popover.js");
 /* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-modal */ "./node_modules/react-modal/lib/index.js");
 /* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_modal__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
+/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49628,7 +49595,7 @@ function (_React$Component3) {
         className: "form-group"
       }, React.createElement("div", null, "Choose a new class:"), React.createElement("div", {
         className: "dg-wowclass-container"
-      }, _dicegameutil_js__WEBPACK_IMPORTED_MODULE_3__["wowClasses"].map(function (wowClass) {
+      }, _util_js__WEBPACK_IMPORTED_MODULE_3__["wowClasses"].map(function (wowClass) {
         var selectedClass = '';
         if (wowClass === currClass) selectedClass = "wow-class-icon-selected";
         return React.createElement("span", {
@@ -49664,7 +49631,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Recount", function() { return Recount; });
 /* harmony import */ var react_tooltip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-tooltip */ "./node_modules/react-tooltip/dist/index.js");
 /* harmony import */ var react_tooltip__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_tooltip__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _dicegameutil_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dicegameutil.js */ "./src/main/js/app/dicegameutil.js");
+/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49675,9 +49642,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -49703,6 +49670,7 @@ function (_React$Component) {
       recountList: []
     };
     _this.playerToDkpWidth = [];
+    _this.viewGameHistory = _this.viewGameHistory.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -49719,7 +49687,7 @@ function (_React$Component) {
 
           for (var i = 0; i < recountList.length; i += 1) {
             var recount = recountList[i];
-            recount.player.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_1__["wowClassFromEnum"])(recount.player.wowClass);
+            recount.player.wowClass = Object(_util_js__WEBPACK_IMPORTED_MODULE_1__["wowClassFromEnum"])(recount.player.wowClass);
           }
         } catch (e) {
           recountList = [];
@@ -49743,6 +49711,11 @@ function (_React$Component) {
           if (progressBarElem) progressBarElem.style.width = p.width;
         }
       });
+    }
+  }, {
+    key: "viewGameHistory",
+    value: function viewGameHistory() {
+      window.location.href = '/games/all';
     }
   }, {
     key: "render",
@@ -49793,12 +49766,64 @@ function (_React$Component) {
         }, player.name), React.createElement("span", {
           className: "dg-rc-cell-right"
         }, player.dkp)));
-      }))));
+      }))), React.createElement("a", {
+        target: "_blank",
+        href: "/games",
+        className: "dg-game-history-link"
+      }, "View game history"));
     }
   }]);
 
   return Recount;
 }(React.Component);
+
+/***/ }),
+
+/***/ "./src/main/js/util.js":
+/*!*****************************!*\
+  !*** ./src/main/js/util.js ***!
+  \*****************************/
+/*! exports provided: wowClasses, normalizeUsername, wowClassFromEnum, normalizeWowClasses, dicegameAscii, verifyFormData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wowClasses", function() { return wowClasses; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeUsername", function() { return normalizeUsername; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wowClassFromEnum", function() { return wowClassFromEnum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeWowClasses", function() { return normalizeWowClasses; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dicegameAscii", function() { return dicegameAscii; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "verifyFormData", function() { return verifyFormData; });
+var wowClasses = ["death-knight", "demon-hunter", "druid", "hunter", "mage", "monk", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"];
+function normalizeUsername(username) {
+  return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
+}
+function wowClassFromEnum(enumStr) {
+  return enumStr.toLowerCase().replace('_', '-');
+}
+function normalizeWowClasses(listOfPlayers) {
+  for (var i = 0; i < listOfPlayers.length; i += 1) {
+    var player = listOfPlayers[i];
+    player.wowClass = wowClassFromEnum(player.wowClass);
+  }
+
+  return listOfPlayers;
+}
+var dicegameAscii = ["    ____  _           ______                   ", "   / __ \\(_)_______  / ____/___ _____ ___  ___ ", "  / / / / / ___/ _ \\/ / __/ __ `/ __ `__ \\/ _ \\", " / /_/ / / /__/  __/ /_/ / /_/ / / / / / /  __/", "/_____/_/\\___/\\___/\\____/\\__,_/_/ /_/ /_/\\___/"];
+function verifyFormData(data) {
+  var username = data.get('username');
+  if (!username) return 'Enter a username';
+  username = normalizeUsername(username);
+  if (username.length > 8) return 'Username too long';
+  if (username.indexOf('Nig') > -1) return "C'mon now Mike";
+  data.set('username', username);
+  var password = data.get('password');
+  if (!password) return 'Enter a password';
+  var passwordVerify = data.get('passwordVerify');
+  if (!passwordVerify) return 'Verify your password';
+  if (password !== passwordVerify) return 'Passwords do not match';
+  return null;
+}
 
 /***/ }),
 

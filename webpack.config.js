@@ -4,6 +4,7 @@ module.exports = {
 	entry: {
 		app: ['./src/main/js/app/app.js'],
 		login: ['./src/main/js/login/login.js'],
+		games: ['./src/main/js/history/games.js'],
 	},
 	devtool: 'sourcemaps',
 	cache: true,
