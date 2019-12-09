@@ -2,6 +2,7 @@ package com.cb.dicegame.db;
 
 import javax.persistence.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -10,17 +11,19 @@ public class DiceGameRecord {
 	private @Id @GeneratedValue Long id;
 	private @ManyToMany List<Player> players;
 	private @ManyToOne Player winningPlayer;
+	private @Temporal(TemporalType.TIME) Date gameTime;
 	private int numPlayers;
 	private int numRolls;
 
 	public DiceGameRecord() {
 	}
 
-	public DiceGameRecord(List<Player> players, Player winningPlayer, int numPlayers, int numRolls) {
+	public DiceGameRecord(List<Player> players, Player winningPlayer, int numPlayers, int numRolls, Date gameTime) {
 		this.players = players;
 		this.winningPlayer = winningPlayer;
 		this.numPlayers = numPlayers;
 		this.numRolls = numRolls;
+		this.gameTime = gameTime;
 	}
 
 	public List<Player> getPlayers() {
@@ -61,6 +64,14 @@ public class DiceGameRecord {
 
 	public void setNumRolls(int numRolls) {
 		this.numRolls = numRolls;
+	}
+
+	public Date getGameTime() {
+		return gameTime;
+	}
+
+	public void setGameTime(Date gameTime) {
+		this.gameTime = gameTime;
 	}
 
 }

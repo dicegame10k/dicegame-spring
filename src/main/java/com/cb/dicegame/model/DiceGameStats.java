@@ -47,7 +47,7 @@ public class DiceGameStats {
 
 		// write down the record of the game information
 		int numPlayers = players.size();
-		DiceGameRecord dgr = new DiceGameRecord(players, winningPlayer, numPlayers, numRolls);
+		DiceGameRecord dgr = new DiceGameRecord(players, winningPlayer, numPlayers, numRolls, new Date());
 		diceGameRecordRepository.save(dgr);
 		return dkpWonMap;
 	}
