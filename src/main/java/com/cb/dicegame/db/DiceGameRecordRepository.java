@@ -13,4 +13,10 @@ public interface DiceGameRecordRepository<T, ID> extends Repository<DiceGameReco
 
 	List<DiceGameRecord> findAll();
 
+	// all games won by Player p
+	List<DiceGameRecord> findByWinningPlayer(Player p);
+
+	// all games played by Player p
+	List<DiceGameRecord> findByPlayers(Player p);
+
 }

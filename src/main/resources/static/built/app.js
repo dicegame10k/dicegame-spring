@@ -49686,7 +49686,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var Recount =
@@ -49701,7 +49700,7 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Recount).call(this, props));
     _this.state = {
-      players: []
+      recountList: []
     };
     _this.playerToDkpWidth = [];
     return _this;
@@ -49714,17 +49713,21 @@ function (_React$Component) {
 
       fetch('/recount').then(function (response) {
         return response.text();
-      }).then(function (players) {
-        //TODO: check response code for a 302 redirect to the login (everywhere not just here)
+      }).then(function (recountList) {
         try {
-          players = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_1__["normalizeWowClasses"])(JSON.parse(players));
+          recountList = JSON.parse(recountList);
+
+          for (var i = 0; i < recountList.length; i += 1) {
+            var recount = recountList[i];
+            recount.player.wowClass = Object(_dicegameutil_js__WEBPACK_IMPORTED_MODULE_1__["wowClassFromEnum"])(recount.player.wowClass);
+          }
         } catch (e) {
-          players = [];
+          recountList = [];
           console.error("Failed to load recount", e);
         }
 
         _this2.setState({
-          players: players
+          recountList: recountList
         });
       });
     }
@@ -49747,9 +49750,9 @@ function (_React$Component) {
       var _this4 = this;
 
       this.playerToDkpWidth = [];
-      var players = this.state.players;
+      var recountList = this.state.recountList;
       var maxDkp = 1;
-      if (players[0] && players[0].dkp > 0) maxDkp = players[0].dkp;
+      if (recountList[0] && recountList[0].player && recountList[0].player.dkp > 0) maxDkp = recountList[0].player.dkp;
       return React.createElement("div", null, React.createElement("div", {
         className: "dg-recount table-dark table-sm"
       }, React.createElement("div", {
@@ -49763,7 +49766,8 @@ function (_React$Component) {
       }, "DKP"), React.createElement(react_tooltip__WEBPACK_IMPORTED_MODULE_0___default.a, {
         id: "dkpHeader",
         effect: "solid"
-      }, React.createElement("span", null, "DiceGame Kill Points: You get 1 DKP for each person you beat in a game"))), React.createElement("div", null, players.map(function (player, i) {
+      }, React.createElement("span", null, "DiceGame Kill Points: You get 1 DKP for each person you beat in a game"))), React.createElement("div", null, recountList.map(function (recount, i) {
+        var player = recount.player;
         var width = player.dkp / maxDkp * 100 + '%';
 
         _this4.playerToDkpWidth.push({
@@ -49782,7 +49786,7 @@ function (_React$Component) {
         }), React.createElement(react_tooltip__WEBPACK_IMPORTED_MODULE_0___default.a, {
           id: "".concat(player.name, "-rc-tt"),
           place: "right"
-        }, React.createElement("div", null, "Games played: ", player.dkp), React.createElement("div", null, "Games won: ", player.dkp), React.createElement("div", null, "Win %: ", player.dkp), React.createElement("div", null, "Avg dkp/game: ", player.dkp / 5), React.createElement("div", null, "Avg # players/game: ", player.dkp / 5)), React.createElement("div", {
+        }, React.createElement("div", null, "Games played: ", recount.numGamesPlayed), React.createElement("div", null, "Games won: ", recount.numGamesWon), React.createElement("div", null, "Win %: ", recount.winPercentage), React.createElement("div", null, "Avg dkp/game: ", recount.avgDkpPerGame), React.createElement("div", null, "Avg # players/game: ", recount.avgNumPlayersPerGame)), React.createElement("div", {
           className: "dg-rc-row"
         }, React.createElement("span", {
           className: "dg-rc-cell-left"

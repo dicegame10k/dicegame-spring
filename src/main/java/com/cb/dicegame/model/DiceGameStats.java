@@ -5,10 +5,7 @@ import com.cb.dicegame.db.DiceGameRecordRepository;
 import com.cb.dicegame.db.Player;
 import com.cb.dicegame.db.PlayerRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DiceGameStats {
 
@@ -20,7 +17,7 @@ public class DiceGameStats {
 
 	public DiceGameStats(DiceGame dg) {
 		this.dg = dg;
-		dkpWonMap = new HashMap<>();
+		dkpWonMap = new LinkedHashMap<>();
 	}
 
 	public void incrementRoll() {
@@ -39,6 +36,7 @@ public class DiceGameStats {
 										 DiceGameRecordRepository diceGameRecordRepository) {
 		List<Player> players = new ArrayList<>();
 		for (Map.Entry<Player, Integer> entry : dkpWonMap.entrySet()) {
+			// update the player's DKP
 			Player p = entry.getKey();
 			int dkpWon = entry.getValue();
 			p.setDkp(p.getDkp() + dkpWon);
@@ -47,6 +45,7 @@ public class DiceGameStats {
 			players.add(p);
 		}
 
+		// write down the record of the game information
 		int numPlayers = players.size();
 		DiceGameRecord dgr = new DiceGameRecord(players, winningPlayer, numPlayers, numRolls);
 		diceGameRecordRepository.save(dgr);

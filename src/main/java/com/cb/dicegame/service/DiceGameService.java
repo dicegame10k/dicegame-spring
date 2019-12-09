@@ -101,17 +101,24 @@ public class DiceGameService implements IDiceGameConstants {
 		socketUtil.broadcastSystemChat(rollMsg);
 
 		if (dg.isGameOver()) {
-			// TODO persist DG stats
 			// no winning player means they were playing alone
-			String winMsg = (dg.getWinningPlayer() != null) ? String.format("%s wins!", dg.getWinningPlayer().getName())
-				: String.format("%s loses. You were playing alone, what did you expect?", p.getName());
+			Player winningPlayer = dg.getWinningPlayer();
+			// if someone won, persist the stats and send out DKP won messages
+			if (winningPlayer != null) {
+				HashMap<Player, Integer> dkpWonMap = dg.saveStats(playerRepository, diceGameRecordRepository);
+				for (Map.Entry<Player, Integer> entry : dkpWonMap.entrySet()) {
+					String dkpWonMsg = String.format("%s won %d DKP", entry.getKey().getName(), entry.getValue());
+					Log.info(dkpWonMsg);
+					socketUtil.broadcastSystemChat(dkpWonMsg);
+					// sleep a little so the messages have a better chance of arriving in the correct order
+					DiceGameUtil.sleep(100);
+				}
+			}
+
+			String winMsg = (winningPlayer != null) ? String.format("%s wins!", winningPlayer.getName())
+					: String.format("%s loses. You were playing alone, what did you expect?", p.getName());
 			Log.info(winMsg);
 			socketUtil.broadcastSystemChat(winMsg);
-
-			HashMap<Player, Integer> dkpWonMap = dg.saveStats(playerRepository, diceGameRecordRepository);
-			for (Map.Entry<Player, Integer> entry : dkpWonMap.entrySet())
-				socketUtil.broadcastSystemChat(String.format("%s won %d DKP", entry.getKey().getName(), entry.getValue()));
-
 			// sleep for a few seconds to let the winner bask in their glory
 			DiceGameUtil.sleep(5000);
 			resetGame();

@@ -2,14 +2,15 @@ package com.cb.dicegame.controller;
 
 import com.cb.dicegame.db.Player;
 import com.cb.dicegame.db.PlayerRepository;
+import com.cb.dicegame.model.Recount;
 import com.cb.dicegame.model.WowClass;
 import com.cb.dicegame.service.DiceGameService;
+import com.cb.dicegame.service.RecountService;
 import com.cb.dicegame.util.DiceGameUtil;
 import com.cb.dicegame.util.Log;
 import com.cb.dicegame.util.SocketUtil;
 import com.cb.dicegame.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +25,15 @@ import java.util.Map;
 public class DiceGameController {
 
 	private DiceGameService diceGameService;
+	private RecountService recountService;
 	private PlayerRepository playerRepository;
 	private SocketUtil socketUtil;
 
 	@Autowired
-	public DiceGameController(DiceGameService diceGameService,
+	public DiceGameController(DiceGameService diceGameService, RecountService recountService,
 			PlayerRepository playerRepository, SocketUtil socketUtil) {
 		this.diceGameService = diceGameService;
+		this.recountService = recountService;
 		this.playerRepository = playerRepository;
 		this.socketUtil = socketUtil;
 	}
@@ -109,10 +112,8 @@ public class DiceGameController {
 
 	@GetMapping("/recount")
 	@ResponseBody
-	public List<Player> recount() {
-		Sort.Order one = Sort.Order.desc("dkp");
-		Sort.Order two = Sort.Order.asc("name");
-		return playerRepository.findAll(Sort.by(one, two));
+	public List<Recount> recount() {
+		return recountService.recount();
 	}
 
 	/**

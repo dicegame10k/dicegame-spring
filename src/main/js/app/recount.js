@@ -1,7 +1,6 @@
 import ReactTooltip from 'react-tooltip';
 
 import {wowClassFromEnum} from './dicegameutil.js';
-import {normalizeWowClasses} from './dicegameutil.js';
 
 const React = require('react');
 
@@ -9,23 +8,26 @@ export class Recount extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { players: [] };
+		this.state = { recountList: [] };
 		this.playerToDkpWidth = [];
 	}
 
 	componentDidMount() {
 		fetch('/recount')
 		.then((response) => response.text())
-		.then((players) => {
-			//TODO: check response code for a 302 redirect to the login (everywhere not just here)
+		.then((recountList) => {
 			try {
-				players = normalizeWowClasses(JSON.parse(players));
+				recountList = JSON.parse(recountList);
+				for (let i = 0; i < recountList.length; i += 1) {
+					let recount = recountList[i];
+					recount.player.wowClass = wowClassFromEnum(recount.player.wowClass);
+				}
 			} catch (e) {
-				players = [];
+				recountList = [];
 				console.error("Failed to load recount", e);
 			}
 
-			this.setState({ players: players });
+			this.setState({ recountList: recountList });
 		});
 	}
 
@@ -42,10 +44,10 @@ export class Recount extends React.Component {
 
 	render() {
 		this.playerToDkpWidth = [];
-		let players = this.state.players;
+		let recountList = this.state.recountList;
 		let maxDkp = 1;
-		if (players[0] && players[0].dkp > 0)
-			maxDkp = players[0].dkp;
+		if (recountList[0] && recountList[0].player && recountList[0].player.dkp > 0)
+			maxDkp = recountList[0].player.dkp;
 
 		return (
 			<div>
@@ -61,7 +63,8 @@ export class Recount extends React.Component {
 					</div>
 
 					<div>
-						{players.map((player, i) => {
+						{recountList.map((recount, i) => {
+							let player = recount.player;
 							let width = ((player.dkp / maxDkp) * 100) + '%';
 							this.playerToDkpWidth.push({ player: player.name + '-rc', width: width });
 
@@ -69,11 +72,11 @@ export class Recount extends React.Component {
 								<div className={`${player.wowClass}-bg progress-bar dg-rc-progress-bar`} id={`${player.name}-rc`}
 									/>
 								<ReactTooltip id={`${player.name}-rc-tt`} place="right">
-									<div>Games played: {player.dkp}</div>
-									<div>Games won: {player.dkp}</div>
-									<div>Win %: {player.dkp}</div>
-									<div>Avg dkp/game: {player.dkp / 5}</div>
-									<div>Avg # players/game: {player.dkp / 5}</div>
+									<div>Games played: {recount.numGamesPlayed}</div>
+									<div>Games won: {recount.numGamesWon}</div>
+									<div>Win %: {recount.winPercentage}</div>
+									<div>Avg dkp/game: {recount.avgDkpPerGame}</div>
+									<div>Avg # players/game: {recount.avgNumPlayersPerGame}</div>
 								</ReactTooltip>
 								<div className="dg-rc-row">
 									<span className="dg-rc-cell-left">{player.name}</span>
