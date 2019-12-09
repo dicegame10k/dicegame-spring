@@ -49465,7 +49465,14 @@ function (_React$Component) {
         onClick: this.showRecount,
         "data-toggle": "tooltip",
         title: "Deeps meter"
-      }, "Recount"), React.createElement(PlayerProfile, {
+      }, "Recount"), React.createElement("div", {
+        className: "dicegame-nav-item",
+        onMouseEnter: this.addNavItemHoverClass,
+        onMouseLeave: this.removeNavItemHoverClass,
+        onClick: function onClick() {
+          return window.open('/games');
+        }
+      }, "History"), React.createElement(PlayerProfile, {
         player: this.props.player,
         toggleWowClassModal: this.toggleWowClassModal
       }), changeClassModal);
@@ -49642,9 +49649,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -49670,7 +49677,6 @@ function (_React$Component) {
       recountList: []
     };
     _this.playerToDkpWidth = [];
-    _this.viewGameHistory = _this.viewGameHistory.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -49711,11 +49717,6 @@ function (_React$Component) {
           if (progressBarElem) progressBarElem.style.width = p.width;
         }
       });
-    }
-  }, {
-    key: "viewGameHistory",
-    value: function viewGameHistory() {
-      window.location.href = '/games/all';
     }
   }, {
     key: "render",
@@ -49766,11 +49767,7 @@ function (_React$Component) {
         }, player.name), React.createElement("span", {
           className: "dg-rc-cell-right"
         }, player.dkp)));
-      }))), React.createElement("a", {
-        target: "_blank",
-        href: "/games",
-        className: "dg-game-history-link"
-      }, "View game history"));
+      }))));
     }
   }]);
 

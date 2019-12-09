@@ -10,7 +10,6 @@ export class Recount extends React.Component {
 		super(props);
 		this.state = { recountList: [] };
 		this.playerToDkpWidth = [];
-		this.viewGameHistory = this.viewGameHistory.bind(this);
 	}
 
 	componentDidMount() {
@@ -41,10 +40,6 @@ export class Recount extends React.Component {
 					progressBarElem.style.width = p.width;
 			}
 		});
-	}
-
-	viewGameHistory() {
-		window.location.href = '/games/all';
 	}
 
 	render() {
@@ -91,7 +86,6 @@ export class Recount extends React.Component {
 						})}
 					</div>
 				</div>
-				<a target="_blank" href="/games" className="dg-game-history-link">View game history</a>
 			</div>
 		)
 	}

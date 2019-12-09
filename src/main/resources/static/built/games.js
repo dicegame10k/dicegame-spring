@@ -34520,6 +34520,8 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(GameHistory).call(this, props));
     _this.state = {
       games: [],
+      endpoint: '/allGameHistory',
+      playerFilter: '',
       sort: {
         column: 'gameTime',
         order: 'desc'
@@ -34527,21 +34529,26 @@ function (_React$Component) {
     };
     _this.loadGames = _this.loadGames.bind(_assertThisInitialized(_this));
     _this.updateSort = _this.updateSort.bind(_assertThisInitialized(_this));
+    _this.filterByWins = _this.filterByWins.bind(_assertThisInitialized(_this));
+    _this.filterByPlayerHistory = _this.filterByPlayerHistory.bind(_assertThisInitialized(_this));
+    _this.clearFilter = _this.clearFilter.bind(_assertThisInitialized(_this));
+    _this.getFilterMessageElem = _this.getFilterMessageElem.bind(_assertThisInitialized(_this));
+    _this.getURL = _this.getURL.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(GameHistory, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.loadGames(this.state.sort);
+      this.loadGames(this.state.endpoint, this.state.playerFilter, this.state.sort);
     }
   }, {
     key: "loadGames",
-    value: function loadGames(sort) {
+    value: function loadGames(endpoint, playerFilter, sort) {
       var _this2 = this;
 
-      var endpoint = '/gameHistory?column=' + sort.column + '&order=' + sort.order;
-      fetch(endpoint).then(function (response) {
+      var endpointURL = this.getURL(endpoint, playerFilter, sort);
+      fetch(endpointURL).then(function (response) {
         return response.text();
       }).then(function (games) {
         try {
@@ -34559,6 +34566,8 @@ function (_React$Component) {
 
         _this2.setState({
           games: games,
+          endpoint: endpoint,
+          playerFilter: playerFilter,
           sort: sort
         });
       }, function (e) {
@@ -34571,6 +34580,7 @@ function (_React$Component) {
       var currSortColumn = this.state.sort.column;
       var currSortOrder = this.state.sort.order;
       var newSortColumn = event.target.id;
+      if (!newSortColumn) newSortColumn = event.target.parentElement.id;
       var newSortOrder = 'desc'; // sort order only switches if clicking on the same column
 
       if (currSortColumn === newSortColumn) {
@@ -34581,22 +34591,71 @@ function (_React$Component) {
         column: newSortColumn,
         order: newSortOrder
       };
-      this.loadGames(sort);
+      this.loadGames(this.state.endpoint, this.state.playerFilter, sort);
+    }
+  }, {
+    key: "filterByWins",
+    value: function filterByWins(event) {
+      var playerName = event.target.innerText;
+      this.loadGames('/winHistory', playerName, this.state.sort);
+    }
+  }, {
+    key: "filterByPlayerHistory",
+    value: function filterByPlayerHistory(event) {
+      var playerName = event.target.innerText; // strip out the comma
+
+      var commaIndex = playerName.indexOf(',');
+      if (commaIndex > -1) playerName = playerName.substring(0, commaIndex);
+      this.loadGames('/playerHistory', playerName, this.state.sort);
+    }
+  }, {
+    key: "clearFilter",
+    value: function clearFilter() {
+      this.loadGames('/allGameHistory', '', this.state.sort);
+    }
+  }, {
+    key: "getURL",
+    value: function getURL(endpoint, playerFilter, sort) {
+      var sortParams = 'column=' + sort.column + '&order=' + sort.order;
+      var endpointURL = endpoint;
+      if (endpoint == '/allGameHistory') endpointURL += '?' + sortParams;else endpointURL += '?player=' + playerFilter + '&' + sortParams;
+      return endpointURL;
+    }
+  }, {
+    key: "getFilterMessageElem",
+    value: function getFilterMessageElem() {
+      var games = this.state.games;
+      var endpoint = this.state.endpoint;
+      var player = this.state.playerFilter;
+      var filterElem = '';
+      if (endpoint === '/allGameHistory') filterElem = React.createElement("div", {
+        className: "dg-gh-num-games"
+      }, games.length, " games played");else {
+        var filterWord = endpoint === '/winHistory' ? 'won' : 'played';
+        filterElem = React.createElement("div", {
+          className: "dg-gh-num-games"
+        }, "Filtering on: Games ", filterWord, " by ", player, " (", games.length, " found)", React.createElement("button", {
+          className: "btn btn-link",
+          onClick: this.clearFilter
+        }, "Clear filter"));
+      }
+      return filterElem;
     }
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       var sortColumn = this.state.sort.column;
       var arrowClass = this.state.sort.order === 'desc' ? 'dg-down-arrow' : 'dg-up-arrow';
+      var filterElem = this.getFilterMessageElem();
       return React.createElement("div", {
         className: "dg-gh container"
-      }, React.createElement("div", {
-        className: "dg-gh-num-games"
-      }, this.state.games.length, " games played"), React.createElement("table", {
+      }, filterElem, React.createElement("table", {
         className: "dg-recount table-dark table-sm table-striped table-hover"
       }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", {
         id: "gameTime",
-        className: "dg-gh-column dg-gh-sort",
+        className: "dg-gh-column dg-gh-pointer",
         onClick: this.updateSort,
         "data-tip": true,
         "data-for": "sortTooltip"
@@ -34606,7 +34665,7 @@ function (_React$Component) {
         className: "dg-gh-column"
       }, "Winner"), React.createElement("th", {
         id: "numPlayers",
-        className: "dg-gh-column dg-gh-sort",
+        className: "dg-gh-column dg-gh-pointer",
         onClick: this.updateSort,
         "data-tip": true,
         "data-for": "sortTooltip"
@@ -34614,7 +34673,7 @@ function (_React$Component) {
         className: sortColumn == 'numPlayers' ? "".concat(arrowClass) : ''
       })), React.createElement("th", {
         id: "numRolls",
-        className: "dg-gh-column dg-gh-sort",
+        className: "dg-gh-column dg-gh-pointer",
         onClick: this.updateSort,
         "data-tip": true,
         "data-for": "sortTooltip"
@@ -34630,7 +34689,10 @@ function (_React$Component) {
         }, React.createElement("td", {
           className: "dg-gh-column"
         }, game.gameTimeStr), React.createElement("td", {
-          className: "".concat(game.winningPlayer.wowClass, " dg-gh-column")
+          onClick: _this3.filterByWins,
+          className: "".concat(game.winningPlayer.wowClass, " dg-gh-column dg-gh-pointer"),
+          "data-tip": true,
+          "data-for": "winTooltip"
         }, game.winningPlayer.name), React.createElement("td", {
           className: "dg-gh-column"
         }, game.players.map(function (player, j) {
@@ -34638,7 +34700,10 @@ function (_React$Component) {
           if (j < game.players.length - 1) playerName += ", ";
           return React.createElement("span", {
             key: j,
-            className: "".concat(player.wowClass)
+            className: "".concat(player.wowClass, " dg-gh-pointer"),
+            onClick: _this3.filterByPlayerHistory,
+            "data-tip": true,
+            "data-for": "playedTooltip"
           }, playerName);
         })), React.createElement("td", {
           className: "dg-gh-column"

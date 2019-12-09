@@ -228,10 +228,6 @@ th {
 	margin-right: 20%;
 }
 
-.dg-game-history-link {
-	padding-left: 2.25rem;
-}
-
 .dg-gh {
 	text-align: center;
 }
@@ -240,7 +236,7 @@ th {
 	width: 25%;
 }
 
-.dg-gh-sort {
+.dg-gh-pointer {
 	cursor: pointer;
 }
 

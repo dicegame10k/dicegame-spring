@@ -126,16 +126,27 @@ public class DiceGameController {
 		return "games"; // alias for src/main/resources/templates/ + x + .html
 	}
 
-	@GetMapping(value="/gameHistory")
+	@GetMapping(value="/allGameHistory")
 	@ResponseBody
 	public List<DiceGameRecord> gameHistory(@RequestParam String column, @RequestParam String order) {
-		Sort.Order one;
-		if (StringUtil.areEqual(order,"desc"))
-			one = Sort.Order.desc(column);
-		else
-			one = Sort.Order.asc(column);
+		Sort.Order sortOrder = getSortOrder(column, order);
+		return diceGameRecordRepository.findAll(Sort.by(sortOrder));
+	}
 
-		return diceGameRecordRepository.findAll(Sort.by(one));
+	@GetMapping(value="/winHistory")
+	@ResponseBody
+	public List<DiceGameRecord> winHistory(@RequestParam String player, @RequestParam String column, @RequestParam String order) {
+		Sort.Order sortOrder = getSortOrder(column, order);
+		// TODO: sort order doesn't work
+		return diceGameRecordRepository.findByWinningPlayer(playerRepository.findByName(player));
+	}
+
+	@GetMapping(value="/playerHistory")
+	@ResponseBody
+	public List<DiceGameRecord> playerHistory(@RequestParam String player, @RequestParam String column, @RequestParam String order) {
+		Sort.Order sortOrder = getSortOrder(column, order);
+		// TODO: sort order doesn't work
+		return diceGameRecordRepository.findByPlayers(playerRepository.findByName(player));
 	}
 
 	/**
@@ -218,6 +229,16 @@ public class DiceGameController {
 	private Player getPlayer() {
 		String username = DiceGameUtil.getPlayerName();
 		return playerRepository.findByName(username);
+	}
+
+	private Sort.Order getSortOrder(String column, String order) {
+		Sort.Order sortOrder;
+		if (StringUtil.areEqual(order,"desc"))
+			sortOrder = Sort.Order.desc(column);
+		else
+			sortOrder = Sort.Order.asc(column);
+
+		return sortOrder;
 	}
 
 }
