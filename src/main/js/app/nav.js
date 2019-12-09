@@ -103,8 +103,8 @@ class PlayerProfile extends React.Component {
 				<div className="dicegame-nav-item dicegame-nav-username" id="playerProfile">
 					<div className={`${this.props.player.wowClass}`}
 							data-tip data-for="playerProfile">
-						{this.props.player.name + "  "}
-						<span className="dg-dropdown-caret"/>
+						{this.props.player.name}
+						<span className="dg-down-arrow"/>
 					</div>
 				</div>
 			</OverlayTrigger>

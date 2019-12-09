@@ -47,7 +47,7 @@ th {
 	margin-right: 30px !important;
 }
 
-.dg-dropdown-caret {
+.dg-down-arrow {
     display: inline-block;
     width: 0;
     height: 0;
@@ -58,6 +58,22 @@ th {
     border-right: 4px solid transparent;
     border-bottom: 0 solid transparent;
     border-left: 4px solid transparent;
+    margin-left: 3px;
+}
+
+.dg-up-arrow {
+	display: inline-block;
+	width: 0;
+    height: 0;
+    vertical-align: middle;
+    content: "";
+
+	border-top: 0 solid transparent;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom-width: 4px;
+    border-bottom-style: solid;
+    margin-left: 3px;
 }
 
 .dg-change-class-modal {
@@ -222,6 +238,10 @@ th {
 
 .dg-gh-column {
 	width: 25%;
+}
+
+.dg-gh-sort {
+	cursor: pointer;
 }
 
 .dg-gh-num-games {

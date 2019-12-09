@@ -49527,8 +49527,8 @@ function (_React$Component2) {
         className: "".concat(this.props.player.wowClass),
         "data-tip": true,
         "data-for": "playerProfile"
-      }, this.props.player.name + "  ", React.createElement("span", {
-        className: "dg-dropdown-caret"
+      }, this.props.player.name, React.createElement("span", {
+        className: "dg-down-arrow"
       }))));
     }
   }]);

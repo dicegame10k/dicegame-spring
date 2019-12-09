@@ -128,8 +128,13 @@ public class DiceGameController {
 
 	@GetMapping(value="/gameHistory")
 	@ResponseBody
-	public List<DiceGameRecord> gameHistory() {
-		Sort.Order one = Sort.Order.desc("gameTime");
+	public List<DiceGameRecord> gameHistory(@RequestParam String column, @RequestParam String order) {
+		Sort.Order one;
+		if (StringUtil.areEqual(order,"desc"))
+			one = Sort.Order.desc(column);
+		else
+			one = Sort.Order.asc(column);
+
 		return diceGameRecordRepository.findAll(Sort.by(one));
 	}
 
