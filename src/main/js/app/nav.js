@@ -59,7 +59,7 @@ export class DiceGameNav extends React.Component {
 					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showRecount}
 					title="Deeps meter">Recount</div>
 				<div className="dicegame-nav-item" onMouseEnter={this.addNavItemHoverClass}
-					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showHistory}>History</div>
+					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showHistory}>Logs</div>
 				<PlayerProfile player={this.props.player} toggleWowClassModal={this.toggleWowClassModal}/>
 				{changeClassModal}
 			</nav>

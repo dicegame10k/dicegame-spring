@@ -49755,7 +49755,7 @@ function (_React$Component) {
         onMouseEnter: this.addNavItemHoverClass,
         onMouseLeave: this.removeNavItemHoverClass,
         onClick: this.showHistory
-      }, "History"), React.createElement(PlayerProfile, {
+      }, "Logs"), React.createElement(PlayerProfile, {
         player: this.props.player,
         toggleWowClassModal: this.toggleWowClassModal
       }), changeClassModal);
