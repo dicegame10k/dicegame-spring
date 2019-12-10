@@ -48799,9 +48799,17 @@ function (_React$Component) {
     }
   }, {
     key: "toggleAutoscroll",
-    value: function toggleAutoscroll() {
-      var isChecked = document.getElementById('autoscrollCheckbox').checked;
-      if (isChecked) this.turnOnAutoscroll();else this.turnOffAutoscroll();
+    value: function toggleAutoscroll(event) {
+      var checkbox = event.target;
+      var isChecked = checkbox.checked;
+
+      if (isChecked) {
+        checkbox.removeAttribute('checked');
+        this.turnOnAutoscroll();
+      } else {
+        checkbox.setAttribute('checked', true);
+        this.turnOffAutoscroll();
+      }
     }
   }, {
     key: "turnOnAutoscroll",
@@ -48859,16 +48867,15 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      // TODO: this doesn't really work
-      var autoScrollCheckboxMobile = !this.isMobileDevice ? '' : React.createElement("div", null, React.createElement("input", {
+      var autoScrollCheckboxMobile = !this.isMobileDevice ? '' : React.createElement("div", null, React.createElement("label", {
+        htmlFor: "autoscrollCheckbox"
+      }, React.createElement("input", {
         type: "checkbox",
         id: "autoscrollCheckbox",
         name: "autoscrollChat",
-        onChange: this.toggleAutoscroll,
-        checked: true
-      }), React.createElement("label", {
-        htmlFor: "autoscrollCheckbox"
-      }, "Autoscroll Chat"));
+        onClick: this.toggleAutoscroll,
+        defaultChecked: true
+      }), "Autoscroll Chat"));
       return React.createElement("div", {
         id: "chat",
         className: "chat"
@@ -49569,7 +49576,7 @@ function (_React$Component) {
         onClick: this.updateSort,
         "data-tip": true,
         "data-for": "sortTooltip"
-      }, "Game time", React.createElement("span", {
+      }, "Game time (Pacific)", React.createElement("span", {
         className: sortColumn == 'gameTime' ? "".concat(arrowClass) : ''
       })), React.createElement("th", {
         className: "dg-gh-column"

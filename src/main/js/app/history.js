@@ -140,7 +140,7 @@ export class GameHistory extends React.Component {
 					<thead>
 						<tr>
 							<th id="gameTime" className="dg-gh-column dg-gh-pointer" onClick={this.updateSort} data-tip data-for="sortTooltip">
-								Game time
+								Game time (Pacific)
 								<span className={(sortColumn == 'gameTime') ? `${arrowClass}` : ''}/>
 							</th>
 							<th className="dg-gh-column">Winner</th>

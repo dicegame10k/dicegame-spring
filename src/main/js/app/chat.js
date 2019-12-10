@@ -18,17 +18,21 @@ export class Chat extends React.Component {
 		this.turnOffAutoscroll();
 	}
 
-	toggleAutoscroll() {
-		var isChecked = document.getElementById('autoscrollCheckbox').checked;
-		if (isChecked)
+	toggleAutoscroll(event) {
+		let checkbox = event.target;
+		let isChecked = checkbox.checked;
+		if (isChecked) {
+			checkbox.removeAttribute('checked');
 			this.turnOnAutoscroll();
-		else
+		} else {
+			checkbox.setAttribute('checked', true);
 			this.turnOffAutoscroll();
+		}
 	}
 
 	turnOnAutoscroll() {
 		this.chatWindowScrollIntvlId = setInterval(() => {
-			var chatBoxElem = document.getElementById('allChatMessages');
+			let chatBoxElem = document.getElementById('allChatMessages');
 			if (chatBoxElem)
 				chatBoxElem.scrollTop = chatBoxElem.scrollHeight;
 		}, 100);
@@ -76,11 +80,13 @@ export class Chat extends React.Component {
 	}
 
 	render() {
-		// TODO: this doesn't really work
 		let autoScrollCheckboxMobile = !this.isMobileDevice ? '' :
 			<div>
-				<input type="checkbox" id="autoscrollCheckbox" name="autoscrollChat" onChange={this.toggleAutoscroll} checked/>
-				<label htmlFor="autoscrollCheckbox">Autoscroll Chat</label>
+				<label htmlFor="autoscrollCheckbox">
+					<input type="checkbox" id="autoscrollCheckbox" name="autoscrollChat"
+                    	onClick={this.toggleAutoscroll} defaultChecked={true}/>
+					Autoscroll Chat
+				</label>
 			</div>;
 
 		return (
