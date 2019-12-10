@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @Entity
 public class DiceGameRecord {
@@ -26,7 +27,9 @@ public class DiceGameRecord {
 		this.numPlayers = numPlayers;
 		this.numRolls = numRolls;
 		this.gameTime = gameTime;
-		this.gameTimeStr = new SimpleDateFormat().format(gameTime);
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.setTimeZone(TimeZone.getDefault());
+		this.gameTimeStr = sdf.format(gameTime);
 	}
 
 	public List<Player> getPlayers() {

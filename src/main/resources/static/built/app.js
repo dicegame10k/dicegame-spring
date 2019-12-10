@@ -48455,6 +48455,8 @@ function (_React$Component) {
         currentRoll: 100
       }
     };
+    _this.lobbyLoaded = false;
+    _this.gameStateLoaded = false;
     _this.heartbeat = _this.heartbeat.bind(_assertThisInitialized(_this));
     _this.receiveChat = _this.receiveChat.bind(_assertThisInitialized(_this));
     _this.updateLobby = _this.updateLobby.bind(_assertThisInitialized(_this));
@@ -48463,6 +48465,8 @@ function (_React$Component) {
     _this.logout = _this.logout.bind(_assertThisInitialized(_this));
     _this.changeWowClass = _this.changeWowClass.bind(_assertThisInitialized(_this));
     _this.updatePlayerInfo = _this.updatePlayerInfo.bind(_assertThisInitialized(_this));
+    _this.enterLobby = _this.enterLobby.bind(_assertThisInitialized(_this));
+    _this.enterLobbyOnload = _this.enterLobbyOnload.bind(_assertThisInitialized(_this));
     _this.lightUp = _this.lightUp.bind(_assertThisInitialized(_this));
     _this.stuck = _this.stuck.bind(_assertThisInitialized(_this));
     _this.roll = _this.roll.bind(_assertThisInitialized(_this));
@@ -48500,21 +48504,40 @@ function (_React$Component) {
 
         setInterval(_this2.heartbeat.bind(_this2), 10 * 1000); // registrations done, now try to enter the lobby
 
-        fetch('/enterLobby').then(function (response) {
-          return response.text();
-        }).then(function (playerInfo) {
-          _this2.updatePlayerInfo(playerInfo);
-        }, function (e) {
-          console.error(e);
-        });
+        _this2.enterLobby();
+
+        _this2.lobbyIntvlId = setInterval(_this2.enterLobbyOnload.bind(_this2), 1000);
       }, function (e) {
         console.error("Failed to setup connections to server", e);
       });
     }
   }, {
+    key: "enterLobbyOnload",
+    value: function enterLobbyOnload() {
+      if (this.lobbyLoaded && this.gameStateLoaded) {
+        clearInterval(this.lobbyIntvlId);
+        return;
+      }
+
+      this.enterLobby();
+    }
+  }, {
+    key: "enterLobby",
+    value: function enterLobby() {
+      var _this3 = this;
+
+      fetch('/enterLobby').then(function (response) {
+        return response.text();
+      }).then(function (playerInfo) {
+        _this3.updatePlayerInfo(playerInfo);
+      }, function (e) {
+        console.error(e);
+      });
+    }
+  }, {
     key: "changeWowClass",
     value: function changeWowClass(formData) {
-      var _this3 = this;
+      var _this4 = this;
 
       fetch('/changeWowClass', {
         method: 'POST',
@@ -48522,7 +48545,7 @@ function (_React$Component) {
       }).then(function (response) {
         return response.text();
       }).then(function (playerInfo) {
-        _this3.updatePlayerInfo(playerInfo);
+        _this4.updatePlayerInfo(playerInfo);
       }, function (e) {
         console.error(e);
       });
@@ -48624,6 +48647,8 @@ function (_React$Component) {
   }, {
     key: "updateLobby",
     value: function updateLobby(lobbyResponse) {
+      this.lobbyLoaded = true;
+
       try {
         var lobby = Object(_util_js__WEBPACK_IMPORTED_MODULE_4__["normalizeWowClasses"])(JSON.parse(lobbyResponse.body));
         this.setState({
@@ -48637,7 +48662,9 @@ function (_React$Component) {
   }, {
     key: "updateGameState",
     value: function updateGameState(gameStateResponse) {
-      var _this4 = this;
+      var _this5 = this;
+
+      this.gameStateLoaded = true;
 
       try {
         var gameState = JSON.parse(gameStateResponse.body);
@@ -48651,14 +48678,14 @@ function (_React$Component) {
             if (i++ == 20) {
               clearInterval(suspenseIntvlId);
 
-              _this4.setState({
+              _this5.setState({
                 gameState: gameState
               });
             } else {
-              var tempGameState = _this4.state.gameState;
+              var tempGameState = _this5.state.gameState;
               tempGameState.currentRoll = Math.floor(Math.random() * prevRoll) + 1;
 
-              _this4.setState({
+              _this5.setState({
                 gameState: tempGameState
               });
             }

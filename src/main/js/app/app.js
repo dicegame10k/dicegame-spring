@@ -34,6 +34,9 @@ class DiceGameContainer extends React.Component {
 			},
 		};
 
+		this.lobbyLoaded = false;
+		this.gameStateLoaded = false;
+
 		this.heartbeat = this.heartbeat.bind(this);
 		this.receiveChat = this.receiveChat.bind(this);
 		this.updateLobby = this.updateLobby.bind(this);
@@ -42,6 +45,8 @@ class DiceGameContainer extends React.Component {
 		this.logout = this.logout.bind(this);
 		this.changeWowClass = this.changeWowClass.bind(this);
 		this.updatePlayerInfo = this.updatePlayerInfo.bind(this);
+		this.enterLobby = this.enterLobby.bind(this);
+		this.enterLobbyOnload = this.enterLobbyOnload.bind(this);
 
 		this.lightUp = this.lightUp.bind(this);
 		this.stuck = this.stuck.bind(this);
@@ -74,14 +79,28 @@ class DiceGameContainer extends React.Component {
         	setInterval(this.heartbeat.bind(this), 10 * 1000);
 
         	// registrations done, now try to enter the lobby
-        	fetch('/enterLobby')
-			.then((response) => response.text())
-			.then((playerInfo) => {
-				this.updatePlayerInfo(playerInfo);
-			}, (e) => { console.error(e); });
+        	this.enterLobby();
+        	this.lobbyIntvlId = setInterval(this.enterLobbyOnload.bind(this), 1000);
         }, (e) => {
 			console.error("Failed to setup connections to server", e);
 		});
+	}
+
+	enterLobbyOnload() {
+		if (this.lobbyLoaded && this.gameStateLoaded) {
+			clearInterval(this.lobbyIntvlId);
+			return;
+		}
+
+		this.enterLobby();
+	}
+
+	enterLobby() {
+		fetch('/enterLobby')
+		.then((response) => response.text())
+		.then((playerInfo) => {
+			this.updatePlayerInfo(playerInfo);
+		}, (e) => { console.error(e); });
 	}
 
 	changeWowClass(formData) {
@@ -173,6 +192,7 @@ class DiceGameContainer extends React.Component {
 	}
 
 	updateLobby(lobbyResponse) {
+		this.lobbyLoaded = true;
 		try {
 			let lobby = normalizeWowClasses(JSON.parse(lobbyResponse.body));
 			this.setState({ lobby: lobby });
@@ -183,6 +203,7 @@ class DiceGameContainer extends React.Component {
 	}
 
 	updateGameState(gameStateResponse) {
+		this.gameStateLoaded = true;
 		try {
 			let gameState = JSON.parse(gameStateResponse.body);
 			normalizeWowClasses(gameState.dgPlayers);
