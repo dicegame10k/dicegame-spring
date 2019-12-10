@@ -28,7 +28,7 @@ public class DiceGameRecord {
 		this.numRolls = numRolls;
 		this.gameTime = gameTime;
 		SimpleDateFormat sdf = new SimpleDateFormat();
-		sdf.setTimeZone(TimeZone.getDefault());
+		sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
 		this.gameTimeStr = sdf.format(gameTime);
 	}
 
