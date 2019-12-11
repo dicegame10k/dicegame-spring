@@ -170,8 +170,7 @@ export class GameHistory extends React.Component {
 										if (j < game.players.length - 1)
 											playerName += ", ";
 
-										return <span key={j} className={`${player.wowClass} dg-gh-pointer`} onClick={this.filterByPlayerHistory}
-											title={`${j} DKP won`}>
+										return <span key={j} className={`${player.wowClass} dg-gh-pointer`} onClick={this.filterByPlayerHistory}>
 											{playerName}
 										</span>
 									})}
