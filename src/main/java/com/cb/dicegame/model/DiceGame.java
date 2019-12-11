@@ -55,8 +55,7 @@ public class DiceGame {
 		isPrevRollOne = currentRoll == 1;
 		if (currentRoll == 1)
 			handleRollOne();
-
-		if (!isGameOver)
+		else if (!isGameOver)
 			currentlyRollingPlayer = getNextRollingPlayer();
 
 		return true;
@@ -113,21 +112,27 @@ public class DiceGame {
 	}
 
 	private Player getNextRollingPlayer() {
+		int currPos = players.indexOf(currentlyRollingPlayer);
+		return getNextRollingPlayer(currPos);
+	}
+
+	private Player getNextRollingPlayer(int currPos) {
 		if (players.size() == 0)
 			return null;
 
-		int nextIndex = (players.indexOf(currentlyRollingPlayer) + 1) % players.size();
+		int nextIndex = (currPos + 1) % players.size();
 		return players.get(nextIndex);
 	}
 
 	private void handleRollOne() {
+		int playerPos = players.indexOf(currentlyRollingPlayer);
 		players.remove(currentlyRollingPlayer);
 		graveyard.add(currentlyRollingPlayer);
 		stats.recordDkpWon(currentlyRollingPlayer, dkpWon);
 		dkpWon += 1;
 		if (checkGameOver()) {
 			isGameOver = true;
-			winningPlayer = getNextRollingPlayer();
+			winningPlayer = getNextRollingPlayer(playerPos);
 			// null winningPlayer means one person was playing alone
 			if (winningPlayer != null) {
 				stats.recordDkpWon(winningPlayer, dkpWon);
@@ -135,8 +140,10 @@ public class DiceGame {
 			}
 
 			currentlyRollingPlayer = null;
-		} else
+		} else {
 			currentRoll = 100;
+			currentlyRollingPlayer = getNextRollingPlayer(playerPos - 1);
+		}
 	}
 
 	private boolean checkGameOver() {

@@ -49616,8 +49616,7 @@ function (_React$Component) {
           return React.createElement("span", {
             key: j,
             className: "".concat(player.wowClass, " dg-gh-pointer"),
-            onClick: _this3.filterByPlayerHistory,
-            title: "".concat(j, " DKP won")
+            onClick: _this3.filterByPlayerHistory
           }, playerName);
         })), React.createElement("td", {
           className: "dg-gh-column"
