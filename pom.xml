@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.cb</groupId>
 	<artifactId>dicegame</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>dicegame</name>
-	<description>Demo project for Spring Boot</description>
+	<description>The chillest gambling game around. 10k let's go!</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -56,6 +56,11 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>2.6.0</version>
 		</dependency>
 
 		<dependency>
