@@ -19,7 +19,7 @@ public class DiceGameSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint(SOCKET_URL_ENDPOINT).withSockJS();
+		registry.addEndpoint(SOCKET_URL_ENDPOINT).setAllowedOrigins("*").withSockJS();
 	}
 
 	@Override

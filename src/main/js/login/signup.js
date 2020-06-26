@@ -11,7 +11,6 @@ export class SignUp extends React.Component {
 		this.wowClass = null;
 		this.signUp = this.signUp.bind(this);
 		this.selectClass = this.selectClass.bind(this);
-		this.props.setInfoMsg("Careful... I'm too poor to afford an HTTPS certificate");
 	}
 
 	signUp(event) {

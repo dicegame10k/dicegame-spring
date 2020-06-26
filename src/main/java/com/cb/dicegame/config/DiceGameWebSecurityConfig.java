@@ -45,6 +45,7 @@ public class DiceGameWebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll()
 				.and()
 			.csrf().disable() //TODO: remove this eventually
+			.headers().frameOptions().disable().and()
 			.logout()
 				.logoutSuccessHandler(diceGameLogoutSuccessHandler);
 	}
