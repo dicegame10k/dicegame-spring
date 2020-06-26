@@ -1,9 +1,11 @@
 import {ForgotPassword} from './forgotpassword.js';
 import {SignUp} from './signup.js';
 import {normalizeUsername} from '../util.js';
+import {particlesJSON} from '../particlesConfig.js';
 
 const React = require('react');
 const ReactDOM = require('react-dom');
+require('particles.js');
 
 class LoginContainer extends React.Component {
 
@@ -15,6 +17,7 @@ class LoginContainer extends React.Component {
 		this.setErrorMsg = this.setErrorMsg.bind(this);
 		this.setInfoMsg = this.setInfoMsg.bind(this);
 		this.clearAlerts = this.clearAlerts.bind(this);
+        particlesJS('particles', particlesJSON);
 	}
 
 	back() {
@@ -58,7 +61,7 @@ class LoginContainer extends React.Component {
 		const errorMsg = this.state.errorMsg;
 		const infoMsg = this.state.infoMsg;
 		return (
-			<div className="container dg-login">
+			<div className="dg-login">
 				<h1 className="welcome-msg">Welcome to DiceGame</h1>
 				{errorMsg ? <div className="alert alert-danger" role="alert">{errorMsg}</div> : ''}
 				{infoMsg ? <div className="alert alert-success" role="alert">{infoMsg}</div> : ''}
