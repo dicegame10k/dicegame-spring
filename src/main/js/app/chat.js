@@ -92,7 +92,7 @@ export class Chat extends React.Component {
 		return (
 			<div id="chat" className="chat">
 				{autoScrollCheckboxMobile}
-				<div id="allChatMessages" className="all-chat-messages border border-dark rounded"
+				<div id="allChatMessages" className="all-chat-messages border border-dark rounded dg-opaque"
 					onMouseEnter={this.turnOffAutoscroll} onMouseLeave={this.turnOnAutoscroll}>
 					{this.props.chatMsgs.map((chat, i) => {
 						return <ChatMessage key={i} chat={chat}/>

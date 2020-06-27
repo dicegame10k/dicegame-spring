@@ -136,7 +136,7 @@ export class GameHistory extends React.Component {
 		return (
 			<div className="dg-gh">
 				{filterElem}
-				<table className="dg-recount table-dark table-sm table-striped table-hover">
+				<table className="dg-recount table-sm table-striped table-hover dg-opaque">
 					<thead>
 						<tr>
 							<th id="gameTime" className="dg-gh-column dg-gh-pointer" onClick={this.updateSort} data-tip data-for="sortTooltip">

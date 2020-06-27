@@ -51,7 +51,7 @@ export class Recount extends React.Component {
 
 		return (
 			<div>
-				<div className="dg-recount table-dark table-sm">
+				<div className="dg-recount table-sm dg-opaque">
 					<div className="dg-rc-header">
 						<span className="dg-rc-cell-left">Username</span>
 						<span className="dg-rc-cell-right dg-dkp-header" data-tip data-for="dkpHeader">

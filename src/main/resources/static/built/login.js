@@ -30308,7 +30308,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _forgotpassword_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./forgotpassword.js */ "./src/main/js/login/forgotpassword.js");
 /* harmony import */ var _signup_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./signup.js */ "./src/main/js/login/signup.js");
 /* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util.js */ "./src/main/js/util.js");
-/* harmony import */ var _particlesConfig_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../particlesConfig.js */ "./src/main/js/particlesConfig.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -30340,8 +30339,6 @@ var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 
-var particleImport = __webpack_require__(/*! particles.js */ "./node_modules/particles.js/particles.js");
-
 var LoginContainer = /*#__PURE__*/function (_React$Component) {
   _inherits(LoginContainer, _React$Component);
 
@@ -30361,7 +30358,7 @@ var LoginContainer = /*#__PURE__*/function (_React$Component) {
     _this.setErrorMsg = _this.setErrorMsg.bind(_assertThisInitialized(_this));
     _this.setInfoMsg = _this.setInfoMsg.bind(_assertThisInitialized(_this));
     _this.clearAlerts = _this.clearAlerts.bind(_assertThisInitialized(_this));
-    particlesJS('particles', _particlesConfig_js__WEBPACK_IMPORTED_MODULE_3__["particlesJSON"]);
+    Object(_util_js__WEBPACK_IMPORTED_MODULE_2__["setParticles"])('login');
     return _this;
   }
 
@@ -30748,17 +30745,17 @@ var SignUp = /*#__PURE__*/function (_React$Component) {
 
 /***/ }),
 
-/***/ "./src/main/js/particlesConfig.js":
-/*!****************************************!*\
-  !*** ./src/main/js/particlesConfig.js ***!
-  \****************************************/
-/*! exports provided: particlesJSON */
+/***/ "./src/main/js/particles/linesParticles.js":
+/*!*************************************************!*\
+  !*** ./src/main/js/particles/linesParticles.js ***!
+  \*************************************************/
+/*! exports provided: linesParticlesJSON */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "particlesJSON", function() { return particlesJSON; });
-var particlesJSON = {
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "linesParticlesJSON", function() { return linesParticlesJSON; });
+var linesParticlesJSON = {
   "particles": {
     "number": {
       "value": 90,
@@ -30828,7 +30825,130 @@ var particlesJSON = {
     }
   },
   "interactivity": {
-    "detect_on": "canvas",
+    "detect_on": "window",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "grab"
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "repulse"
+      },
+      "resize": true
+    },
+    "modes": {
+      "grab": {
+        "distance": 100,
+        "line_linked": {
+          "opacity": 1
+        }
+      },
+      "bubble": {
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 3
+      },
+      "repulse": {
+        "distance": 200,
+        "duration": 0.4
+      },
+      "push": {
+        "particles_nb": 4
+      },
+      "remove": {
+        "particles_nb": 2
+      }
+    }
+  },
+  "retina_detect": true
+};
+
+/***/ }),
+
+/***/ "./src/main/js/particles/loginParticles.js":
+/*!*************************************************!*\
+  !*** ./src/main/js/particles/loginParticles.js ***!
+  \*************************************************/
+/*! exports provided: loginParticlesJSON */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loginParticlesJSON", function() { return loginParticlesJSON; });
+var loginParticlesJSON = {
+  "particles": {
+    "number": {
+      "value": 80,
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
+    },
+    "color": {
+      "value": "#ffffff"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#000000"
+      },
+      "polygon": {
+        "nb_sides": 3
+      },
+      "image": {
+        "src": "",
+        "width": 250,
+        "height": 250
+      }
+    },
+    "opacity": {
+      "value": 0.6,
+      "random": false,
+      "anim": {
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 2,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 21.926084732136317,
+        "size_min": 21.114007519834974,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#ffffff",
+      "opacity": 0.6,
+      "width": 1
+    },
+    "move": {
+      "enable": true,
+      "speed": 2,
+      "direction": "none",
+      "random": false,
+      "straight": false,
+      "out_mode": "bounce",
+      "bounce": false,
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
+    }
+  },
+  "interactivity": {
+    "detect_on": "window",
     "events": {
       "onhover": {
         "enable": true,
@@ -30871,11 +30991,162 @@ var particlesJSON = {
 
 /***/ }),
 
+/***/ "./src/main/js/particles/particlesConfig.js":
+/*!**************************************************!*\
+  !*** ./src/main/js/particles/particlesConfig.js ***!
+  \**************************************************/
+/*! exports provided: particlesConfig, particlesPrefs */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "particlesConfig", function() { return particlesConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "particlesPrefs", function() { return particlesPrefs; });
+/* harmony import */ var _loginParticles_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./loginParticles.js */ "./src/main/js/particles/loginParticles.js");
+/* harmony import */ var _linesParticles_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./linesParticles.js */ "./src/main/js/particles/linesParticles.js");
+/* harmony import */ var _snowParticles_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./snowParticles.js */ "./src/main/js/particles/snowParticles.js");
+
+
+
+var particlesConfig = {
+  'login': _loginParticles_js__WEBPACK_IMPORTED_MODULE_0__["loginParticlesJSON"],
+  'lines': _linesParticles_js__WEBPACK_IMPORTED_MODULE_1__["linesParticlesJSON"],
+  'snow': _snowParticles_js__WEBPACK_IMPORTED_MODULE_2__["snowParticlesJSON"]
+};
+/* user facing */
+
+var particlesPrefs = ['lines', 'snow', 'off'];
+
+/***/ }),
+
+/***/ "./src/main/js/particles/snowParticles.js":
+/*!************************************************!*\
+  !*** ./src/main/js/particles/snowParticles.js ***!
+  \************************************************/
+/*! exports provided: snowParticlesJSON */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "snowParticlesJSON", function() { return snowParticlesJSON; });
+var snowParticlesJSON = {
+  "particles": {
+    "number": {
+      "value": 150,
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
+    },
+    "color": {
+      "value": "#fff"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#000000"
+      },
+      "polygon": {
+        "nb_sides": 5
+      },
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100
+      }
+    },
+    "opacity": {
+      "value": 0.5,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 6,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 20,
+        "size_min": 0.1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": false,
+      "distance": 500,
+      "color": "#ffffff",
+      "opacity": 0.4,
+      "width": 2
+    },
+    "move": {
+      "enable": true,
+      "speed": 2,
+      "direction": "bottom",
+      "random": false,
+      "straight": false,
+      "out_mode": "out",
+      "bounce": false,
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
+    }
+  },
+  "interactivity": {
+    "detect_on": "window",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "bubble"
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "repulse"
+      },
+      "resize": true
+    },
+    "modes": {
+      "grab": {
+        "distance": 400,
+        "line_linked": {
+          "opacity": 0.5
+        }
+      },
+      "bubble": {
+        "distance": 100,
+        "size": 4,
+        "duration": 2,
+        "opacity": 1,
+        "speed": 3
+      },
+      "repulse": {
+        "distance": 200,
+        "duration": 0.4
+      },
+      "push": {
+        "particles_nb": 4
+      },
+      "remove": {
+        "particles_nb": 2
+      }
+    }
+  },
+  "retina_detect": true
+};
+
+/***/ }),
+
 /***/ "./src/main/js/util.js":
 /*!*****************************!*\
   !*** ./src/main/js/util.js ***!
   \*****************************/
-/*! exports provided: wowClasses, normalizeUsername, wowClassFromEnum, normalizeWowClasses, dicegameAscii, verifyFormData */
+/*! exports provided: wowClasses, normalizeUsername, wowClassFromEnum, normalizeWowClasses, dicegameAscii, verifyFormData, setParticles */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30886,6 +31157,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeWowClasses", function() { return normalizeWowClasses; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dicegameAscii", function() { return dicegameAscii; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "verifyFormData", function() { return verifyFormData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setParticles", function() { return setParticles; });
+/* harmony import */ var _particles_particlesConfig_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./particles/particlesConfig.js */ "./src/main/js/particles/particlesConfig.js");
+
+
+__webpack_require__(/*! particles.js */ "./node_modules/particles.js/particles.js");
+
 var wowClasses = ["death-knight", "demon-hunter", "druid", "hunter", "mage", "monk", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"];
 function normalizeUsername(username) {
   return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
@@ -30915,6 +31192,18 @@ function verifyFormData(data) {
   if (!passwordVerify) return 'Verify your password';
   if (password !== passwordVerify) return 'Passwords do not match';
   return null;
+}
+function setParticles(configName) {
+  // destroy current config if it exists
+  try {
+    pJSDom[0].pJS.fn.vendors.destroypJS();
+    pJSDom = [];
+  } catch (e) {// happens before particlesJS has been loaded once
+  }
+
+  if (configName === 'off') return; // args are: id, config JSON
+
+  particlesJS('particles', _particles_particlesConfig_js__WEBPACK_IMPORTED_MODULE_0__["particlesConfig"][configName]);
 }
 
 /***/ }),

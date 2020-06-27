@@ -1,9 +1,9 @@
 package com.cb.dicegame.controller;
 
-import com.cb.dicegame.db.DiceGameRecord;
-import com.cb.dicegame.db.DiceGameRecordRepository;
-import com.cb.dicegame.db.Player;
-import com.cb.dicegame.db.PlayerRepository;
+import static com.cb.dicegame.IDiceGameConstants.PARTICLES;
+
+import com.cb.dicegame.db.*;
+import com.cb.dicegame.model.Particles;
 import com.cb.dicegame.model.Recount;
 import com.cb.dicegame.model.WowClass;
 import com.cb.dicegame.service.DiceGameService;
@@ -30,15 +30,18 @@ public class DiceGameController {
 	private DiceGameService diceGameService;
 	private RecountService recountService;
 	private PlayerRepository playerRepository;
+	private PlayerPreferenceRepository playerPreferenceRepository;
 	private DiceGameRecordRepository diceGameRecordRepository;
 	private SocketUtil socketUtil;
 
 	@Autowired
 	public DiceGameController(DiceGameService diceGameService, RecountService recountService,
-			PlayerRepository playerRepository, DiceGameRecordRepository diceGameRecordRepository, SocketUtil socketUtil) {
+			PlayerRepository playerRepository, PlayerPreferenceRepository playerPreferenceRepository,
+			DiceGameRecordRepository diceGameRecordRepository, SocketUtil socketUtil) {
 		this.diceGameService = diceGameService;
 		this.recountService = recountService;
 		this.playerRepository = playerRepository;
+		this.playerPreferenceRepository = playerPreferenceRepository;
 		this.diceGameRecordRepository = diceGameRecordRepository;
 		this.socketUtil = socketUtil;
 	}
@@ -66,6 +69,8 @@ public class DiceGameController {
 		WowClass wowclass = WowClass.fromString(parameterMap.get("wowclass")[0]);
 		Player p = new Player(username, password, wowclass, 0);
 		playerRepository.save(p);
+		PlayerPreference pp = new PlayerPreference(p, Particles.LINES);
+		playerPreferenceRepository.save(pp);
 		Log.info(String.format("Successfully created player %s", username));
 		return "success";
 	}
@@ -101,6 +106,21 @@ public class DiceGameController {
 		return p;
 	}
 
+	@PostMapping("/changePrefs")
+	@ResponseBody
+	public PlayerPreference changePrefs(@RequestBody Map<String, Object> prefs) {
+		Player p = getPlayer();
+		if (p == null)
+			return null;
+
+		String particleStr = (String) prefs.get(PARTICLES);
+		Particles particles = Particles.fromString(particleStr);
+		PlayerPreference pp = playerPreferenceRepository.findByPlayer(p);
+		pp.setParticles(particles);
+		playerPreferenceRepository.save(pp);
+		return pp;
+	}
+
 	@GetMapping("/heartbeat")
 	@ResponseBody
 	public String heartbeat() {
@@ -113,6 +133,12 @@ public class DiceGameController {
 		Player p = getPlayer();
 		diceGameService.enterLobby(p);
 		return p;
+	}
+
+	@GetMapping("/loadPrefs")
+	@ResponseBody
+	public PlayerPreference loadPrefs() {
+		return playerPreferenceRepository.findByPlayer(getPlayer());
 	}
 
 	@GetMapping("/recount")

@@ -1,3 +1,7 @@
+import {particlesConfig} from './particles/particlesConfig.js';
+
+require('particles.js');
+
 export const wowClasses = ["death-knight", "demon-hunter", "druid", "hunter", "mage",
 	"monk", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"];
 
@@ -51,4 +55,20 @@ export function verifyFormData(data) {
 		return 'Passwords do not match';
 
 	return null;
+}
+
+export function setParticles(configName) {
+	// destroy current config if it exists
+	try {
+		pJSDom[0].pJS.fn.vendors.destroypJS();
+		pJSDom = [];
+	} catch (e) {
+		// happens before particlesJS has been loaded once
+	}
+
+	if (configName === 'off')
+		return;
+
+	// args are: id, config JSON
+	particlesJS('particles', particlesConfig[configName]);
 }

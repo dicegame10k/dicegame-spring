@@ -1,4 +1,4 @@
-export const particlesJSON =
+export const linesParticlesJSON =
 {
   "particles": {
 	"number": {
@@ -69,7 +69,7 @@ export const particlesJSON =
 	}
   },
   "interactivity": {
-	"detect_on": "canvas",
+	"detect_on": "window",
 	"events": {
 	  "onhover": {
 		"enable": true,
@@ -77,7 +77,7 @@ export const particlesJSON =
 	  },
 	  "onclick": {
 		"enable": true,
-		"mode": "push"
+		"mode": "repulse"
 	  },
 	  "resize": true
 	},

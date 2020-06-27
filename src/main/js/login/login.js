@@ -1,11 +1,10 @@
 import {ForgotPassword} from './forgotpassword.js';
 import {SignUp} from './signup.js';
 import {normalizeUsername} from '../util.js';
-import {particlesJSON} from '../particlesConfig.js';
+import {setParticles} from '../util.js';
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-require('particles.js');
 
 class LoginContainer extends React.Component {
 
@@ -17,7 +16,7 @@ class LoginContainer extends React.Component {
 		this.setErrorMsg = this.setErrorMsg.bind(this);
 		this.setInfoMsg = this.setInfoMsg.bind(this);
 		this.clearAlerts = this.clearAlerts.bind(this);
-        particlesJS('particles', particlesJSON);
+        setParticles('login');
 	}
 
 	back() {

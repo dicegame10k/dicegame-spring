@@ -20,4 +20,6 @@ public interface IDiceGameConstants {
 	String IS_A_ROLL = "isARoll";
 	String CURRENT_ROLL = "currentRoll";
 
+	// preferences
+	String PARTICLES = "particles";
 }

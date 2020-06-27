@@ -3,6 +3,8 @@ import Popover from 'react-bootstrap/Popover';
 import ReactModal from 'react-modal';
 
 import {wowClasses} from '../util.js';
+import {particlesPrefs} from '../particles/particlesConfig.js';
+import {setParticles} from '../util.js';
 
 const React = require('react');
 
@@ -12,8 +14,8 @@ export class DiceGameNav extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { showChangeClassModal: false };
-		this.toggleWowClassModal = this.toggleWowClassModal.bind(this);
+		this.state = { showSettingsModal: false };
+		this.toggleSettingsModal = this.toggleSettingsModal.bind(this);
 		this.addNavItemHoverClass = this.addNavItemHoverClass.bind(this);
 		this.removeNavItemHoverClass = this.removeNavItemHoverClass.bind(this);
 		this.showDiceGame = this.showDiceGame.bind(this);
@@ -21,8 +23,8 @@ export class DiceGameNav extends React.Component {
 		this.showHistory = this.showHistory.bind(this);
 	}
 
-	toggleWowClassModal(shouldShow) {
-		this.setState({ showChangeClassModal: shouldShow });
+	toggleSettingsModal(shouldShow) {
+		this.setState({ showSettingsModal: shouldShow });
 	}
 
 	addNavItemHoverClass(event) {
@@ -46,13 +48,14 @@ export class DiceGameNav extends React.Component {
 	}
 
 	render() {
-		let changeClassModal = '';
-		if (this.state.showChangeClassModal)
-			changeClassModal = <ChangeClassModal player={this.props.player} changeWowClass={this.props.changeWowClass}
-				toggleWowClassModal={this.toggleWowClassModal} showModal={this.state.showChangeClassModal}/>;
+		let settingsModal = '';
+		if (this.state.showSettingsModal)
+			settingsModal = <SettingsModal player={this.props.player} changeWowClass={this.props.changeWowClass}
+				toggleSettingsModal={this.toggleSettingsModal} showModal={this.state.showSettingsModal}
+				prefs={this.props.prefs} changePrefs={this.props.changePrefs}/>;
 
 		return (
-			<nav className="dicegame-nav">
+			<nav className="dicegame-nav dg-opaque">
 				<div className="dicegame-nav-item" onMouseEnter={this.addNavItemHoverClass}
 					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showDiceGame}>DiceGame</div>
 				<div className="dicegame-nav-item" onMouseEnter={this.addNavItemHoverClass}
@@ -60,8 +63,8 @@ export class DiceGameNav extends React.Component {
 					title="Deeps meter">Recount</div>
 				<div className="dicegame-nav-item" onMouseEnter={this.addNavItemHoverClass}
 					onMouseLeave={this.removeNavItemHoverClass} onClick={this.showHistory}>Logs</div>
-				<PlayerProfile player={this.props.player} toggleWowClassModal={this.toggleWowClassModal}/>
-				{changeClassModal}
+				<PlayerProfile player={this.props.player} toggleSettingsModal={this.toggleSettingsModal}/>
+				{settingsModal}
 			</nav>
 		)
 	}
@@ -73,15 +76,15 @@ class PlayerProfile extends React.Component {
 	constructor(props) {
 		super(props);
 		this.logout = this.logout.bind(this);
-		this.openChangeWowClassModal = this.openChangeWowClassModal.bind(this);
+		this.openSettingsModal = this.openSettingsModal.bind(this);
 	}
 
 	logout() {
 		window.location.href = '/logout';
 	}
 
-	openChangeWowClassModal() {
-		this.props.toggleWowClassModal(true);
+	openSettingsModal() {
+		this.props.toggleSettingsModal(true);
 		// close the profile popover
 		let profileElem = document.getElementById('playerProfile');
 		if (profileElem)
@@ -91,11 +94,11 @@ class PlayerProfile extends React.Component {
 	render() {
 		let popover =
 			<Popover>
-				<Popover.Content className="table-dark table-hover text-white">
+				<Popover.Content className="table-hover text-white dg-settings-popover">
 					<table>
 						<tbody>
 							<tr>
-								<td onClick={this.openChangeWowClassModal} className="dicegame-nav-item">Change class</td>
+								<td onClick={this.openSettingsModal} className="dicegame-nav-item">Settings</td>
 							</tr>
 							<tr>
 								<td onClick={this.logout} className="dicegame-nav-item death-knight">Logout</td>
@@ -120,7 +123,7 @@ class PlayerProfile extends React.Component {
 
 }
 
-class ChangeClassModal extends React.Component {
+class SettingsModal extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -128,18 +131,33 @@ class ChangeClassModal extends React.Component {
 		this.change = this.change.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 		this.selectClass = this.selectClass.bind(this);
+		this.changeParticles = this.changeParticles.bind(this);
 	}
 
 	change(event) {
 		event.preventDefault();
 		const data = new FormData(event.target);
 		data.set('newWowClass', this.newWowClass);
-		this.props.changeWowClass(data);
+		// only update server if class actually changed
+		if (this.newWowClass && (this.props.player.wowClass !== this.newWowClass))
+			this.props.changeWowClass(data);
+
 		this.closeModal();
 	}
 
+	changeParticles(event) {
+		// update particleJS immediately
+		let particles = event.target.value;
+		setParticles(particles);
+
+		// update pref on the server
+		let prefs = this.props.prefs;
+		prefs['particles'] = particles;
+		this.props.changePrefs(prefs);
+	}
+
 	closeModal() {
-		this.props.toggleWowClassModal(false);
+		this.props.toggleSettingsModal(false);
 	}
 
 	selectClass(event) {
@@ -155,7 +173,15 @@ class ChangeClassModal extends React.Component {
 		let currClass = this.props.player.wowClass;
 		return (
 			<ReactModal isOpen={this.props.showModal} className="dg-noop-class-for-some-reason-it-is-necessary">
-				<div className="dg-change-class-modal table-dark">
+				<div className="dg-settings-modal table-dark">
+					<div className="dg-particles-container">
+						<span className="dg-particles-label">Background: </span>
+						<select onChange={this.changeParticles} defaultValue={this.props.prefs['particles']}>
+							{particlesPrefs.map((particleOpt) => {
+								return <option key={particleOpt} value={particleOpt}>{particleOpt}</option>
+							})}
+						</select>
+					</div>
 					<form onSubmit={this.change}>
 						<input type="hidden"/>
 						<div className="form-group">

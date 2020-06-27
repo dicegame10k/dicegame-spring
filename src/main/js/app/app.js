@@ -9,6 +9,7 @@ import {normalizeUsername} from '../util.js';
 import {wowClassFromEnum} from '../util.js';
 import {normalizeWowClasses} from '../util.js';
 import {dicegameAscii} from '../util.js';
+import {setParticles} from '../util.js';
 
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -22,6 +23,7 @@ class DiceGameContainer extends React.Component {
 		super(props);
 		this.state = {
 			player: {},
+			prefs: {},
 			page: 'dicegame',
 			chatMsgs: [],
 			lobby: [],
@@ -47,6 +49,8 @@ class DiceGameContainer extends React.Component {
 		this.updatePlayerInfo = this.updatePlayerInfo.bind(this);
 		this.enterLobby = this.enterLobby.bind(this);
 		this.enterLobbyOnload = this.enterLobbyOnload.bind(this);
+		this.loadPrefs = this.loadPrefs.bind(this);
+		this.changePrefs = this.changePrefs.bind(this);
 
 		this.lightUp = this.lightUp.bind(this);
 		this.stuck = this.stuck.bind(this);
@@ -63,6 +67,7 @@ class DiceGameContainer extends React.Component {
 	}
 
 	componentDidMount() {
+		this.loadPrefs();
 		const sjs = SockJS('/10k'); // url endpoint that initiates the socket
         this.socket = Stomp.over(sjs); // the stompClient web socket
         this.socket.connect({}, () => {
@@ -103,6 +108,26 @@ class DiceGameContainer extends React.Component {
 		}, (e) => { console.error(e); });
 	}
 
+	/* Loads user preferences */
+	loadPrefs() {
+		fetch('/loadPrefs')
+		.then((response) => response.text())
+        .then((prefs) => {
+        	try {
+				prefs = JSON.parse(prefs);
+				let particles = prefs.particles.toLowerCase();
+				setParticles(particles);
+        		// prefs from the server have a bunch of junk like sys_id and user obj
+        		// so make a more lightweight object
+				let userPrefs = {};
+				userPrefs['particles'] = particles;
+				this.setState({ prefs: userPrefs });
+			} catch (e) {
+				console.error("Error parsing player prefs", e);
+			}
+        }, (e) => { console.error(e); });
+	}
+
 	changeWowClass(formData) {
 		fetch('/changeWowClass', {
 			method: 'POST',
@@ -110,6 +135,19 @@ class DiceGameContainer extends React.Component {
 		}).then((response) => response.text())
 		.then((playerInfo) => {
 			this.updatePlayerInfo(playerInfo);
+		}, (e) => { console.error(e); });
+	}
+
+	changePrefs(prefs) {
+		this.setState({ prefs: prefs });
+
+		fetch('/changePrefs', {
+			method: 'POST',
+			headers: {
+      			'Content-Type': 'application/json'
+    		},
+			body: JSON.stringify(prefs),
+		}).then(() => {
 		}, (e) => { console.error(e); });
 	}
 
@@ -247,7 +285,8 @@ class DiceGameContainer extends React.Component {
 
 		return (
 			<div>
-				<DiceGameNav player={this.state.player} switchPage={this.switchPage} changeWowClass={this.changeWowClass}/>
+				<DiceGameNav player={this.state.player} switchPage={this.switchPage} changeWowClass={this.changeWowClass}
+					prefs={this.state.prefs} changePrefs={this.changePrefs}/>
 				{page}
 			</div>
 		)
