@@ -5,9 +5,8 @@ module.exports = {
 		app: ['./src/main/js/app/app.js'],
 		login: ['./src/main/js/login/login.js'],
 	},
-	devtool: 'sourcemaps',
 	cache: true,
-	mode: 'development',
+	mode: 'production',
 	output: {
 		path: __dirname,
 		filename: './src/main/resources/static/built/[name].js',

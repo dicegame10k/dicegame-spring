@@ -66,7 +66,7 @@ class DiceGameContainer extends React.Component {
 		const sjs = SockJS('/10k'); // url endpoint that initiates the socket
         this.socket = Stomp.over(sjs); // the stompClient web socket
         this.socket.connect({}, () => {
-        	// this.socket.debug = function(str) {}; TODO: uncomment to turn off console debugging messages
+        	this.socket.debug = function(str) {};
         	// topic is for broadcasted messages, user/queue is for individual messages
         	this.lobbyTopicRegistration = this.socket.subscribe('/topic/lobby', this.updateLobby);
         	this.lobbyQueueRegistration = this.socket.subscribe('/user/queue/lobby', this.updateLobby);
